@@ -26,6 +26,8 @@ export default {
 
         if(!user) throw new Error("Invalid credentials")
 
+          //valido la contraseña hasheada del usuario
+
         const passwordMatch = await bcrypt.compare(data.password, user.password!)
 
         if (!passwordMatch) { 
