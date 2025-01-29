@@ -1,7 +1,7 @@
 "use server"
 
 import { z } from "zod"
-import { loginSchema, registerSchema } from "@/lib/zod"
+import { registerSchema } from "@/lib/zod"
 import { signIn } from "../auth"
 import { AuthError } from "next-auth"
 import { prisma } from "@/lib/prisma"
