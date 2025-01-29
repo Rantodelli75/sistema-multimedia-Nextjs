@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { handleRegister, handleSignIn } from "../../actions/auth-action";
+import { handleRegister } from "../../actions/auth-action";
 import { useState, useTransition } from "react";
 import { useRouter } from 'next/navigation'
 
