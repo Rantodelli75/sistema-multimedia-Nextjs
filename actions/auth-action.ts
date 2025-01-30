@@ -10,23 +10,20 @@ import { revalidatePath } from 'next/cache'
 
 export async function authenticate(formData: FormData) {
   try {
-    await signIn('credentials', {
+    const result = await signIn('credentials', {
       email: formData.get('email') as string,
       password: formData.get('password') as string,
       redirect: false,
     })
 
-    return { success: true, message: 'Login exitoso' }
-  } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case 'CredentialsSignin':
-          return { success: false, message: 'Credenciales inválidas' }
-        default:
-          return { success: false, message: 'Algo salió mal' }
-      }
+    if (result?.error) {
+      return { success: false, message: 'Credenciales inválidas' }
     }
-    throw error
+
+    return { success: true }
+  } catch (error) {
+    console.error('Auth error:', error)
+    return { success: false, message: 'Algo salió mal' }
   }
 }
 
