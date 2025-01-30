@@ -26,8 +26,8 @@ export default function LandingPage() {
     offset: ["start start", "end start"],
   })
 
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
-  const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "100%"])
+  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0])
 
   const [circles, setCircles] = useState<Circle[]>([])
   
@@ -48,13 +48,13 @@ export default function LandingPage() {
   }, [])
 
   return (
-    <div ref={ref} className="bg-black min-h-screen">
+    <div ref={ref} className="bg-white min-h-screen">
       <Navbar />
 
       {/* Hero Section with Parallax */}
       <motion.div className="relative h-screen flex items-center justify-center overflow-hidden" style={{ opacity }}>
         {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#f72585] via-[#7209b7] to-[#3a0ca3] opacity-50" />
+        <div className="absolute inset-0 bg-gradient-to-br from-nightgroove-primary via-nightgroove-secondary to-nightgroove-tertiary " />
 
         {/* Animated circles background */}
         <motion.div
@@ -66,7 +66,7 @@ export default function LandingPage() {
           {circles.map((circle, i) => (
             <motion.div
               key={i}
-              className="absolute rounded-full bg-white/10 backdrop-blur-sm"
+              className="absolute rounded-full bg-nightgroove-white-alpha-10 backdrop-blur-sm"
               style={{
                 width: circle.width,
                 height: circle.height,
@@ -94,13 +94,13 @@ export default function LandingPage() {
           transition={{ duration: 0.8 }}
         >
           <motion.div className="flex justify-center mb-6" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-            <FaHeadphones className="text-8xl text-[#f72585]" />
+            <FaHeadphones className="text-8xl text-nightgroove-primary" />
           </motion.div>
           <h1 className="text-6xl font-bold mb-6">
-            <span className="text-white">Night</span>
-            <span className="text-[#f72585]">Groove</span>
+            <span className="text-nightgroove-white-alpha-80">Night</span>
+            <span className="text-nightgroove-primary">Groove</span>
           </h1>
-          <p className="text-white/80 text-xl mb-8 max-w-2xl mx-auto">
+          <p className="text-black/60 text-xl mb-8 max-w-2xl mx-auto">
             Experience the future of music streaming with our revolutionary platform. Join millions of users and
             discover your next favorite track.
           </p>
@@ -110,13 +110,13 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <Button size="lg" className="bg-[#f72585] hover:bg-[#f72585]/80 text-white px-8 py-6 text-lg rounded-full">
+            <Button size="lg" className="bg-nightgroove-primary hover:bg-nightgroove-primary/80 text-white px-8 py-6 text-lg rounded-full">
               Start Listening
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="border-[#f72585] text-[#f72585] hover:bg-[#f72585] hover:text-white px-8 py-6 text-lg rounded-full"
+              className="border-nightgroove-primary text-nightgroove-primary hover:bg-nightgroove-primary hover:text-white px-8 py-6 text-lg rounded-full"
             >
               Learn More
             </Button>
@@ -134,8 +134,8 @@ export default function LandingPage() {
             repeat: Number.POSITIVE_INFINITY,
           }}
         >
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/30 rounded-full mt-2" />
+          <div className="w-6 h-10 border-2 border-black/30 rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-black/30 rounded-full mt-2" />
           </div>
         </motion.div>
       </motion.div>
@@ -149,10 +149,10 @@ export default function LandingPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-white mb-4">
-              Why Choose <span className="text-[#f72585]">NightGroove</span>
+            <h2 className="text-4xl font-bold text-black mb-4">
+              Why Choose <span className="text-nightgroove-primary">NightGroove</span>
             </h2>
-            <p className="text-white/60 max-w-2xl mx-auto">
+            <p className="text-black/60 max-w-2xl mx-auto">
               Discover the features that make us stand out from the crowd
             </p>
           </motion.div>
@@ -165,11 +165,11 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.2 }}
                 whileHover={{ scale: 1.05 }}
-                className="bg-white/5 backdrop-blur-lg rounded-2xl p-6 border border-white/10"
+                className="bg-black/5 backdrop-blur-lg rounded-2xl p-6 border border-black/10"
               >
-                <div className="text-[#f72585] text-4xl mb-4">{feature.icon}</div>
-                <h3 className="text-white text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-white/60">{feature.description}</p>
+                <div className="text-nightgroove-primary text-4xl mb-4">{feature.icon}</div>
+                <h3 className="text-black text-xl font-semibold mb-2">{feature.title}</h3>
+                <p className="text-black/60">{feature.description}</p>
               </motion.div>
             ))}
           </div>
@@ -177,7 +177,7 @@ export default function LandingPage() {
       </div>
 
       {/* Testimonials Section */}
-      <div className="py-20 px-4 bg-gradient-to-b from-black to-[#3a0ca3]">
+      <div className="py-20 px-4 bg-gradient-to-b from-black to-nightgroove-tertiary">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -185,8 +185,8 @@ export default function LandingPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-white mb-4">What Our Users Say</h2>
-            <p className="text-white/60 max-w-2xl mx-auto">
+            <h2 className="text-4xl font-bold text-black mb-4">What Our Users Say</h2>
+            <p className="text-black/60 max-w-2xl mx-auto">
               Dont just take our word for it - hear from our satisfied users
             </p>
           </motion.div>
@@ -220,8 +220,8 @@ export default function LandingPage() {
             transition={{ duration: 0.8 }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl font-bold text-white mb-4">Choose Your Plan</h2>
-            <p className="text-white/60 max-w-2xl mx-auto">Find the perfect plan for your listening needs</p>
+            <h2 className="text-4xl font-bold text-black mb-4">Choose Your Plan</h2>
+            <p className="text-black/60 max-w-2xl mx-auto">Find the perfect plan for your listening needs</p>
           </motion.div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -247,13 +247,13 @@ export default function LandingPage() {
 
       {/* Call to Action */}
       <motion.div className="relative py-20 px-4" style={{ y }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-[#f72585] via-[#7209b7] to-[#3a0ca3] opacity-30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-nightgroove-primary via-nightgroove-secondary to-nightgroove-tertiary opacity-30" />
         <div className="relative z-10 max-w-4xl mx-auto text-center">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-4xl font-bold text-white mb-6"
+            className="text-4xl font-bold text-black mb-6"
           >
             Ready to Experience the Future of Music?
           </motion.h2>
@@ -261,7 +261,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-white/80 text-xl mb-8"
+            className="text-black/80 text-xl mb-8"
           >
             Join millions of music lovers and start your journey today.
           </motion.p>
@@ -271,13 +271,13 @@ export default function LandingPage() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="flex gap-4 justify-center"
           >
-            <Button size="lg" className="bg-white text-[#f72585] hover:bg-white/90 px-8 py-6 text-lg rounded-full">
+            <Button size="lg" className="bg-nightgroove-primary hover:bg-nightgroove-primary/80 text-white px-8 py-6 text-lg rounded-full">
               Get Started Now
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="border-white text-white hover:bg-white hover:text-[#f72585] px-8 py-6 text-lg rounded-full"
+              className="border-nightgroove-primary text-nightgroove-primary hover:bg-nightgroove-primary hover:text-white px-8 py-6 text-lg rounded-full"
             >
               View Plans
             </Button>

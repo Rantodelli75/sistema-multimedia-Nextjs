@@ -50,6 +50,28 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
+  			},
+  			nightgroove: {
+  				primary: '#00BAFF',    // Azul claro
+  				secondary: '#066AFF',  // Azul grisáceo
+  				tertiary: '#066AFF',   // Mantenemos el azul oscuro
+  				background: '#FFFFFF', // Blanco
+  				'white-alpha': {
+  					5: 'rgb(255 255 255 / 0.05)',
+  					10: 'rgb(255 255 255 / 0.1)',
+  					30: 'rgb(255 255 255 / 0.3)',
+  					50: 'rgb(255 255 255 / 0.5)',
+  					60: 'rgb(255 255 255 / 0.6)',
+  					80: 'rgb(255 255 255 / 0.8)',
+  					90: 'rgb(255 255 255 / 0.9)',
+  				},
+  				'black-alpha': {
+  					50: 'rgb(0 0 0 / 0.5)',
+  				},
+  				gray: {
+  					400: '#E5E7EB',
+  					800: '#1F2937',
+  				}
   			}
   		},
   		borderRadius: {
