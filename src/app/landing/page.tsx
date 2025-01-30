@@ -3,11 +3,21 @@
 import { motion, useScroll, useTransform } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { FaHeadphones, FaPlay, FaSpotify, FaSoundcloud, FaUser, FaHeart, FaShare } from "react-icons/fa"
-import { useRef } from "react"
+import { useRef, useEffect, useState } from "react"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import TestimonialCard from "@/components/TestimonialCard"
 import PricingCard from "@/components/PricingCard"
+
+interface Circle {
+  width: number
+  height: number
+  left: string
+  top: string
+  duration: number
+  yOffset: number
+  scale: number
+}
 
 export default function LandingPage() {
   const ref = useRef(null)
@@ -18,6 +28,24 @@ export default function LandingPage() {
 
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0])
+
+  const [circles, setCircles] = useState<Circle[]>([])
+  
+  useEffect(() => {
+    const generateCircles = () => {
+      return Array(20).fill(null).map(() => ({
+        width: Math.random() * 200 + 50,
+        height: Math.random() * 200 + 50,
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        duration: Math.random() * 5 + 3,
+        yOffset: Math.random() * 100 - 50,
+        scale: Math.random() + 0.5
+      }))
+    }
+    
+    setCircles(generateCircles())
+  }, [])
 
   return (
     <div ref={ref} className="bg-black min-h-screen">
@@ -35,22 +63,22 @@ export default function LandingPage() {
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          {[...Array(20)].map((_, i) => (
+          {circles.map((circle, i) => (
             <motion.div
               key={i}
               className="absolute rounded-full bg-white/10 backdrop-blur-sm"
               style={{
-                width: Math.random() * 200 + 50,
-                height: Math.random() * 200 + 50,
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
+                width: circle.width,
+                height: circle.height,
+                left: circle.left,
+                top: circle.top,
               }}
               animate={{
-                y: [0, Math.random() * 100 - 50],
-                scale: [1, Math.random() + 0.5],
+                y: [0, circle.yOffset],
+                scale: [1, circle.scale],
               }}
               transition={{
-                duration: Math.random() * 5 + 3,
+                duration: circle.duration,
                 repeat: Number.POSITIVE_INFINITY,
                 repeatType: "reverse",
               }}
