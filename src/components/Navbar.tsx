@@ -10,7 +10,7 @@ const Navbar = () => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className="fixed top-0 left-0 right-0 z-50 bg-nightgroove-black-alpha-50 backdrop-blur-lg"
+      className="fixed top-0 left-0 right-0 z-50 bg-nightgroove-white-alpha-10 backdrop-blur-lg"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -40,7 +40,7 @@ const Navbar = () => {
             </div>
           </div>
           <div>
-            <Button className="bg-[#f72585] hover:bg-[#f72585]/80 text-white px-4 py-2 rounded-full text-sm font-medium">
+            <Button className="bg-[#f72585] hover:bg-[#2CD88F]/80 text-white px-4 py-2 rounded-full text-sm font-medium">
               Login
             </Button>
           </div>

@@ -8,7 +8,7 @@ import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import TestimonialCard from "@/components/TestimonialCard"
 import PricingCard from "@/components/PricingCard"
-
+import BongoCat from "@/components/bongo-cat"
 interface Circle {
   width: number
   height: number
@@ -26,7 +26,7 @@ export default function LandingPage() {
     offset: ["start start", "end start"],
   })
 
-  const y = useTransform(scrollYProgress, [0, 1], ["0%", "100%"])
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "0%"])
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0])
 
   const [circles, setCircles] = useState<Circle[]>([])
@@ -50,7 +50,7 @@ export default function LandingPage() {
   return (
     <div ref={ref} className="bg-white min-h-screen">
       <Navbar />
-
+      <BongoCat />
       {/* Hero Section with Parallax */}
       <motion.div className="relative h-screen flex items-center justify-center overflow-hidden" style={{ opacity }}>
         {/* Background gradient */}
@@ -93,7 +93,19 @@ export default function LandingPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          <motion.div className="flex justify-center mb-6" whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+          <motion.div 
+            className="flex justify-center mb-6"
+            animate={{
+              scale: [1, 1.2, 1, 1.2, 1, 1.3, 1],  // tum tum tuss
+              rotate: [0, 0, 0, 0, 0, 5, -5],      // movimiento adicional en el tuss
+            }}
+            transition={{
+              duration: 1.5,
+              times: [0, 0.2, 0.4, 0.6, 0.8, 0.9, 1], // timing del ritmo
+              repeat: Infinity,
+              ease: [0.4, 0, 0.2, 1], // easing personalizado para el efecto de rebote
+            }}
+          >
             <FaHeadphones className="text-8xl text-nightgroove-primary" />
           </motion.div>
           <h1 className="text-6xl font-bold mb-6">
@@ -177,7 +189,7 @@ export default function LandingPage() {
       </div>
 
       {/* Testimonials Section */}
-      <div className="py-20 px-4 bg-gradient-to-b from-black to-nightgroove-tertiary">
+      <div className="py-20 px-4 bg-gradient-to-b from-nightgroove-primary to-nightgroove-tertiary opacity-80">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -247,7 +259,7 @@ export default function LandingPage() {
 
       {/* Call to Action */}
       <motion.div className="relative py-20 px-4" style={{ y }}>
-        <div className="absolute inset-0 bg-gradient-to-r from-nightgroove-primary via-nightgroove-secondary to-nightgroove-tertiary opacity-30" />
+        <div className="absolute inset-0 bg-gradient-to-r from-nightgroove-primary via-nightgroove-secondary to-nightgroove-tertiary opacity-80" />
         <div className="relative z-10 max-w-4xl mx-auto text-center">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}

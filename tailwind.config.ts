@@ -55,6 +55,8 @@ export default {
   				primary: '#00BAFF',    // Azul claro
   				secondary: '#066AFF',  // Azul grisáceo
   				tertiary: '#066AFF',   // Mantenemos el azul oscuro
+				  darkGreen: "#003447",
+				  darkBlue: "##01204D",
   				background: '#FFFFFF', // Blanco
   				'white-alpha': {
   					5: 'rgb(255 255 255 / 0.05)',

@@ -70,3 +70,79 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+.music-slider .swiper-slide {
+  transition: all 0.3s ease;
+}
+
+.music-slider .swiper-slide:hover {
+  transform: translateY(-10px);
+}
+
+.main-menu {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.music-slider {
+  margin: -20px;
+  padding: 20px;
+}
+
+.music-slider .swiper-slide {
+  width: 280px !important;
+  height: 280px !important;
+}
+
+.music-slider .swiper-pagination {
+  bottom: -30px;
+}
+
+.music-slider .swiper-pagination-bullet {
+  background: white;
+  opacity: 0.5;
+}
+
+.music-slider .swiper-pagination-bullet-active {
+  opacity: 1;
+}
+
+@media (max-width: 1024px) {
+  .music-slider .swiper-slide {
+    width: 240px !important;
+    height: 240px !important;
+  }
+}
+
+.playlist-container {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  cursor: grab;
+}
+
+.playlist-container::-webkit-scrollbar {
+  display: none;
+}
+
+.slide-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 2rem;
+  background: linear-gradient(
+    240deg,
+    transparent,
+    transparent,
+    rgba(38, 21, 149, 0.8)
+  );
+  border-radius: 1rem;
+}
+
+@media (max-width: 768px) {
+  .playlist-container > div {
+    width: 240px;
+    height: 240px;
+  }
+}
