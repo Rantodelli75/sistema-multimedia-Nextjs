@@ -17,23 +17,23 @@ export default function CircularWaveAnimation({ children }: CircularWaveAnimatio
           key={wave}
           className="absolute rounded-full border-2 border-white"
           style={{
-            width: `${80 + wave * 15}%`,
-            height: `${80 + wave * 15}%`,
-            top: "-10%",
-            left: "-10%",
+            width: `${90 + wave * 20}%`,
+            height: `${90 + wave * 20}%`,
+            top: "-15%",
+            left: "-15%",
             transform: "translate(-50%, -50%)",
           }}
           animate={{
-            scale: [1, 1.05, 1],
+            scale: [1, 1.1, 1],
             opacity: [0.2, 0.4, 0.2],
             borderRadius: ["50%", "48%", "52%", "50%"],
           }}
           transition={{
-            duration: 6 + wave,
+            duration: 7 + wave,
             repeat: Number.POSITIVE_INFINITY,
             ease: "easeInOut",
             times: [0, 0.5, 1],
-            delay: wave * 0.2,
+            delay: wave * 0.3,
           }}
         />
       ))}
