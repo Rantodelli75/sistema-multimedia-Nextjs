@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { authenticate } from 'actions/auth-action'
 import FormLogin from "@/components/form-login";
+import LoginPageComponent from '@/components/auth/login_page';
 
 export default function LoginPage() {
   const router = useRouter()
@@ -33,10 +34,9 @@ export default function LoginPage() {
   }
 
   return (
-    <FormLogin 
+    <LoginPageComponent
       onSubmit={handleSubmit}
       error={error}
-      loading={loading}
-    />
+      loading={loading}   />
   );
 }
