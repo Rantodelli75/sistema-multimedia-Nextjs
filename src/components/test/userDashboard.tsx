@@ -7,10 +7,8 @@ import MusicContent from "./MusicContent"
 
 export default function UserDashboardLayout() {
   return (
-    <div className="flex min-h-screen bg-cover bg-center bg-no-repeat" 
-         style={{ 
-           backgroundImage: `url(https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/aa462558-0106-4268-9864-d34a4f35531f)` 
-         }}>
+    <div className="flex min-h-screen bg-[#282828] bg-cover bg-center bg-no-repeat" 
+         >
       <Sidebar />
       <MusicContent />
     </div>

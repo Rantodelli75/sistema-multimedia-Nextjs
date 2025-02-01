@@ -3,13 +3,18 @@
 import { motion } from "framer-motion"
 import { FaPlay, FaHeart, FaEllipsisH, FaPause, FaStepForward, FaStepBackward } from "react-icons/fa"
 import { useState } from "react"
-import { 
-  Carousel, 
-  CarouselContent, 
-  CarouselItem, 
-  CarouselIndicator,
-  useCarousel 
-} from '@/components/ui/carousel'
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel"
+import { Card, CardContent } from "@/components/ui/card"
+import { Separator } from "@/components/ui/separator"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Button } from "@/components/ui/button"
+import { Slider } from "@/components/ui/slider"
 
 const popularPlaylists = [
   {
@@ -83,152 +88,111 @@ const featuredArtists = [
 ]
 
 export default function MusicContent() {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [isPlaying, setIsPlaying] = useState(false)
   const [currentSong, setCurrentSong] = useState(recommendedSongs[0])
-
-  const handleIndexChange = (newIndex: number) => {
-    if (newIndex >= popularPlaylists.length) {
-      setCurrentIndex(0)
-    } else if (newIndex < 0) {
-      setCurrentIndex(popularPlaylists.length - 1)
-    } else {
-      setCurrentIndex(newIndex)
-    }
-  }
-
-  const transition = {
-    type: "spring",
-    bounce: 0,
-    duration: 0.7
-  }
+  const [isPlaying, setIsPlaying] = useState(false)
 
   return (
     <div className="flex flex-1">
       <div className="flex-1 p-8">
         <h1 className="text-4xl font-bold text-white mb-8">Popular Playlist</h1>
-        <div className="relative">
-          <Carousel
-            initialIndex={0}
-            index={currentIndex}
-            onIndexChange={handleIndexChange}
-            className="w-full max-w-5xl mx-auto relative"
-          >
-            <CarouselContent
-              className="h-[30vh] overflow-visible"
-              transition={{
-                duration: 0.7,
-                ease: "easeInOut"
-              }}
-            >
-              {popularPlaylists.map((playlist, idx) => {
-                const isCenter = idx === currentIndex
-                const isLeft = idx === currentIndex - 1 || (currentIndex === 0 && idx === popularPlaylists.length - 1)
-                const isRight = idx === currentIndex + 1 || (currentIndex === popularPlaylists.length - 1 && idx === 0)
-                
-                return (
-                  <CarouselItem 
-                    key={idx}
-                    className="relative flex items-center justify-center basis-1/3"
-                  >
-                    <motion.div
-                      className="relative w-[20vw] h-full rounded-2xl overflow-hidden"
-                      initial={{ scale: 0.9, opacity: 0 }}
-                      animate={{ 
-                        scale: isCenter ? 1 : 0.8,
-                        opacity: isCenter ? 1 : 0.5,
-                        x: isLeft ? -20 : isRight ? 20 : 0,
-                        zIndex: isCenter ? 10 : 0
-                      }}
-                      transition={transition}
-                    >
-                      <img 
-                        src={playlist.image}
-                        alt={playlist.title}
-                        className="w-full h-full object-cover"
-                      />
-                      <motion.div 
-                        className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 flex flex-col justify-end p-4"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: isCenter ? 1 : 0.3 }}
-                      >
-                        <h2 className="text-lg font-bold text-white mb-2">
-                          {playlist.title}
-                        </h2>
-                        <motion.button 
-                          className="flex items-center gap-2 bg-white/20 backdrop-blur-sm text-white px-4 py-2 rounded-xl border border-white/20 w-fit text-sm"
-                          whileHover={{ scale: 1.05, backgroundColor: "rgba(255, 255, 255, 0.3)" }}
-                        >
-                          Listen Now <FaPlay className="text-xs" />
-                        </motion.button>
-                      </motion.div>
-                    </motion.div>
-                  </CarouselItem>
-                )
-              })}
-            </CarouselContent>
-
-            <CarouselIndicator 
-              className="absolute -bottom-8 left-1/2 -translate-x-1/2 flex gap-2"
-              classNameButton="w-2 h-2 rounded-full bg-white/30 hover:bg-white/50 transition-colors [&[data-active]]:bg-white"
-            />
-          </Carousel>
-        </div>
+        
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          className="w-full"
+        >
+          <CarouselContent className="-ml-2 md:-ml-4">
+            {popularPlaylists.map((playlist, index) => (
+              <CarouselItem key={index} className="pl-2 md:pl-4 basis-1/3">
+                <Card className="bg-black/20 border-0">
+                  <CardContent className="p-0 aspect-square relative group">
+                    <img 
+                      src={playlist.image}
+                      alt={playlist.title}
+                      className="w-full h-full object-cover rounded-lg"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 flex flex-col justify-end p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <h2 className="text-lg font-bold text-white mb-2">
+                        {playlist.title}
+                      </h2>
+                      <Button variant="secondary" className="w-fit">
+                        <FaPlay className="mr-2 h-4 w-4" /> Listen Now
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </div>
 
-      {/* Right Sidebar */}
       <div className="w-[350px] bg-black/20 backdrop-blur-md p-6 flex flex-col">
         <h2 className="text-2xl font-bold text-white mb-6">Recommended Songs</h2>
-        <div className="flex-1 overflow-y-auto space-y-4">
-          {recommendedSongs.map((song, index) => (
-            <motion.div
-              key={index}
-              className={`flex items-center gap-4 p-3 rounded-xl cursor-pointer ${
-                currentSong.title === song.title ? 'bg-white/20' : 'hover:bg-white/10'
-              }`}
-              whileHover={{ scale: 1.02 }}
-              onClick={() => setCurrentSong(song)}
-            >
-              <img src={song.image} alt={song.title} className="w-12 h-12 rounded-lg object-cover" />
-              <div className="flex-1">
-                <h3 className="text-white font-medium">{song.title}</h3>
-                <p className="text-white/60 text-sm">{song.artist}</p>
-              </div>
-              <span className="text-white/60 text-sm">{song.duration}</span>
-            </motion.div>
-          ))}
-        </div>
+        <ScrollArea className="flex-1">
+          <div className="space-y-4">
+            {recommendedSongs.map((song, index) => (
+              <motion.div
+                key={index}
+                className={`flex items-center gap-4 p-3 rounded-lg cursor-pointer ${
+                  currentSong.title === song.title ? 'bg-white/20' : 'hover:bg-white/10'
+                }`}
+                whileHover={{ scale: 1.02 }}
+                onClick={() => setCurrentSong(song)}
+              >
+                <img src={song.image} alt={song.title} className="w-12 h-12 rounded-lg object-cover" />
+                <div className="flex-1">
+                  <h3 className="text-white font-medium">{song.title}</h3>
+                  <p className="text-white/60 text-sm">{song.artist}</p>
+                </div>
+                <span className="text-white/60 text-sm">{song.duration}</span>
+              </motion.div>
+            ))}
+          </div>
+        </ScrollArea>
 
-        {/* Player Controls */}
-        <motion.div 
-          className="mt-6 p-4 border-t border-white/10"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <div className="flex items-center gap-4 mb-4">
+        <Separator className="my-6" />
+
+        <div className="space-y-6">
+          <div className="flex items-center gap-4">
             <img src={currentSong.image} alt={currentSong.title} className="w-16 h-16 rounded-lg" />
             <div>
               <h3 className="text-white font-medium">{currentSong.title}</h3>
               <p className="text-white/60 text-sm">{currentSong.artist}</p>
             </div>
           </div>
-          
-          <div className="flex justify-center items-center gap-6">
-            <motion.button whileHover={{ scale: 1.1 }}>
-              <FaStepBackward className="text-white/80" />
-            </motion.button>
-            <motion.button 
-              className="bg-white/20 p-4 rounded-full"
-              whileHover={{ scale: 1.1 }}
+
+          <Slider
+            defaultValue={[0]}
+            max={100}
+            step={1}
+            className="w-full"
+          />
+
+          <div className="flex justify-center items-center gap-4">
+            <Button variant="ghost" size="icon">
+              <FaStepBackward className="text-white/80 h-4 w-4" />
+            </Button>
+            <Button 
+              variant="secondary" 
+              size="icon" 
+              className="h-12 w-12"
               onClick={() => setIsPlaying(!isPlaying)}
             >
-              {isPlaying ? <FaPause className="text-white" /> : <FaPlay className="text-white" />}
-            </motion.button>
-            <motion.button whileHover={{ scale: 1.1 }}>
-              <FaStepForward className="text-white/80" />
-            </motion.button>
+              {isPlaying ? 
+                <FaPause className="text-white h-4 w-4" /> : 
+                <FaPlay className="text-white h-4 w-4" />
+              }
+            </Button>
+            <Button variant="ghost" size="icon">
+              <FaStepForward className="text-white/80 h-4 w-4" />
+            </Button>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   )
