@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import LoginCard from "./login-card"
 import SpinningRecord from "./spinning-record"
+import ParticlesBg from "./particles-background"
 import { registerSchema } from "@/lib/zod"
 import { z } from "zod"
 
@@ -15,22 +16,22 @@ interface FormLoginProps {
 }
 
 export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, loading }: FormLoginProps) {
- const [showLogin, setShowLogin] = useState(false)
+  const [showLogin, setShowLogin] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowLogin(true)
-    }, 3500) // Ajusta este valor para controlar cuándo aparece el formulario de login
+    }, 3500)
 
     return () => clearTimeout(timer)
   }, [])
 
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-black via-nightgroove-tertiary to-nightgroove-secondary p-4 relative overflow-hidden">
-      {/* Decorative circles for background */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
-      <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-pink-500/50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
-      <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-purple-800/50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
+    <main className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+      {/* Particles Background */}
+      <div className="absolute inset-0 z-0 bg-red from-purple-800 via-pink-500 to-purple-800">
+        <ParticlesBg />
+      </div>
 
       <AnimatePresence>
         {showLogin && (
@@ -52,7 +53,7 @@ export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, load
         transition={{ duration: 1.5, ease: "easeInOut" }}
         className="absolute -translate-x-1/2 pointer-events-none z-10"
       >
-          <SpinningRecord />
+        <SpinningRecord />
       </motion.div>
     </main>
   )
