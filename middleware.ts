@@ -1,27 +1,27 @@
-import { NextResponse, NextRequest } from 'next/server'
-import { auth } from "./auth"
+import NextAuth from "next-auth";
+import { NextResponse } from "next/server";
+import authConfig from "./auth.config";
 
-export default async function middleware(request: NextRequest) {
-  const session = await auth()
+const { auth: middleware } = NextAuth(authConfig);
 
-  // Proteger rutas del dashboard
-  if (request.nextUrl.pathname.startsWith('/dashboard')) {
-    if (!session) {
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
+const publicRoutes = ["/", "/login", "/register", "/api/auth/verify-email"];
+
+export default middleware((req) => {
+  const { nextUrl, auth } = req;
+  const isLoggedIn = !!auth?.user;
+
+  console.log('URL actual:', nextUrl.pathname);
+  console.log('Es ruta pública:', publicRoutes.includes(nextUrl.pathname));
+  console.log('Estado de autenticación:', isLoggedIn);
+
+  // proteger /dashboard /admin
+  if (!publicRoutes.includes(nextUrl.pathname) && !isLoggedIn) {
+    return NextResponse.redirect(new URL("/login", nextUrl));
   }
 
-  // Redirigir usuarios autenticados fuera del login
-  if (session && (
-    request.nextUrl.pathname.startsWith('/login') ||
-    request.nextUrl.pathname.startsWith('/register')
-  )) {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
-  }
-
-  return NextResponse.next()
-}
+  return NextResponse.next();
+});
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login', '/register']
+  matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 }
