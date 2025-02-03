@@ -74,6 +74,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                 <Input
                   type="email"
                   id="email"
+                  name="email"
                   placeholder="Enter your email"
                   required
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
@@ -86,6 +87,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                 <Input
                   type="password"
                   id="password"
+                  name="password"
                   placeholder="Enter your password"
                   required
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
@@ -118,6 +120,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
             <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
+              console.log(formData)
               const userData = {
                 name: formData.get('name') as string,
                 email: formData.get('email') as string,
@@ -127,12 +130,24 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
             }} className={`${glassStyle} px-8 pt-6 pb-8 mb-4`}>
               <h2 className="text-2xl font-bold mb-6 text-center text-white">Register</h2>
               <div className="mb-4 space-y-2">
+                <Label htmlFor="register-name" className="text-white">
+                    Name
+                </Label>
+                <Input
+                  type="text"
+                  id="register-name"
+                  name="name"
+                  placeholder="Enter your name"
+                  required
+                  className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
+                />
                 <Label htmlFor="register-email" className="text-white">
                   Email
                 </Label>
                 <Input
                   type="email"
                   id="register-email"
+                  name="email"
                   placeholder="Enter your email"
                   required
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
@@ -145,6 +160,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                 <Input
                   type="password"
                   id="register-password"
+                  name="password"
                   placeholder="Enter your password"
                   required
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
@@ -157,6 +173,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                 <Input
                   type="password"
                   id="confirm-password"
+                  name="confirmPassword"
                   placeholder="Confirm your password"
                   required
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
