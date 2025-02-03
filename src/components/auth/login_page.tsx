@@ -1,6 +1,4 @@
 import LoginForm from "./LoginForm"
-import VideoBackground from "./VideoBackground"
-import CircularWaveAnimation from "./CircularWaveAnimation"
 import { registerSchema } from "@/lib/zod"
 import { z } from "zod"
 

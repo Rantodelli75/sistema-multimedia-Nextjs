@@ -118,7 +118,12 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
             <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
-              onRegisterSubmit(formData);
+              const userData = {
+                name: formData.get('name') as string,
+                email: formData.get('email') as string,
+                password: formData.get('password') as string
+              };
+              onRegisterSubmit(userData);
             }} className={`${glassStyle} px-8 pt-6 pb-8 mb-4`}>
               <h2 className="text-2xl font-bold mb-6 text-center text-white">Register</h2>
               <div className="mb-4 space-y-2">
