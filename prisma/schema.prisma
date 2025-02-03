@@ -40,12 +40,11 @@ model User {
 }
 
 model VerificationToken {
-  identifier String
+  identifier String @unique
   token      String
   expires    DateTime
 
-  @@unique([identifier, token])
-  @@map("verification_tokens")
+  @@id([identifier])
 }
 
 enum Role {
