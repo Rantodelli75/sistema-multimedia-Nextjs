@@ -11,19 +11,33 @@ import { revalidatePath } from 'next/cache'
 export async function authenticate(formData: FormData) {
   try {
     const result = await signIn('credentials', {
-      email: formData.get('email') as string,
-      password: formData.get('password') as string,
+      email: formData.get('email'),
+      password: formData.get('password'),
       redirect: false,
     })
 
     if (result?.error) {
-      return { success: false, message: 'Credenciales inválidas' }
+      // Aquí traducimos los mensajes de error específicos
+      switch (result.error) {
+        case 'Invalid credentials':
+          return { success: false, message: 'Credenciales inválidas' }
+        case 'Email de verificacion enviado':
+          return { success: false, message: 'Por favor verifica tu correo electrónico' }
+        default:
+          return { success: false, message: result.error }
+      }
     }
 
-    return { success: true }
+    return { 
+      success: true, 
+      redirectUrl: '/dashboard'
+    }
   } catch (error) {
-    console.error('Auth error:', error)
-    return { success: false, message: 'Algo salió mal' }
+    console.error('Error de autenticación:', error)
+    return { 
+      success: false, 
+      message: 'Error en el servidor'
+    }
   }
 }
 

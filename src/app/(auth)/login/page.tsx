@@ -23,8 +23,8 @@ export default function LoginPage() {
       
       const response = await authenticate(formData)
       
-      if (response.success) {
-        router.replace('/dashboard')
+      if (response.success && response.redirectUrl) {
+        router.replace(response.redirectUrl)
       } else {
         setError(response.message || 'Error al iniciar sesión')
       }
