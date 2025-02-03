@@ -1,76 +1,59 @@
 'use client'
 
-import { motion } from "framer-motion"
+import { AnimatePresence, motion } from "framer-motion"
+import { useEffect, useState } from "react"
+import LoginCard from "./login-card"
+import SpinningRecord from "./spinning-record"
+import { registerSchema } from "@/lib/zod"
+import { z } from "zod"
 
 interface FormLoginProps {
-  onSubmit: (formData: FormData) => Promise<void>
+  onLoginSubmit: (formData: FormData) => Promise<void>
+  onRegisterSubmit: (values: z.infer<typeof registerSchema>) => Promise<void>
   error: string
   loading: boolean
 }
 
-export default function FormLogin({ onSubmit , error, loading }: FormLoginProps) {
+export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, loading }: FormLoginProps) {
+ const [showLogin, setShowLogin] = useState(false)
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowLogin(true)
+    }, 3500) // Ajusta este valor para controlar cuándo aparece el formulario de login
+
+    return () => clearTimeout(timer)
+  }, [])
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: -50, x: 0 }}
-      animate={{ opacity: 1, y: 0, x: 0 }}
-      transition={{ duration: 0.5 }}
-      className="rounded-xl p-8 w-full max-w-sm md:w-96 bg-transparent mx-auto md:mx-0"
-    >
-      <h1 className="text-3xl font-bold text-white mb-6">Welcome Back</h1>
-      <form action={onSubmit} className="space-y-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.5 }}
-        >
-          <label htmlFor="email" className="block text-sm font-medium text-white">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            required
-            className="mt-1 block w-full px-3 py-2 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-md shadow-inner focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white placeholder-white placeholder-opacity-70"
-            placeholder="Enter your email"
-          />
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.5 }}
-        >
-          <label htmlFor="password" className="block text-sm font-medium text-white">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            required
-            className="mt-1 block w-full px-3 py-2 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-md shadow-inner focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-white placeholder-white placeholder-opacity-70"
-            placeholder="Enter your password"
-          />
-        </motion.div>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.5 }}
-        >
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200"
+    <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-black via-nightgroove-tertiary to-nightgroove-secondary p-4 relative overflow-hidden">
+      {/* Decorative circles for background */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+      <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-pink-500/50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+      <div className="absolute bottom-1/4 left-1/3 w-96 h-96 bg-purple-800/50 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
+
+      <AnimatePresence>
+        {showLogin && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+            transition={{ duration: 0.5 }}
+            className="w-full max-w-md relative mb-24 z-10"
           >
-            {loading ? 'Iniciando sesión...' : 'Iniciar sesión'}
-          </button>
-        </motion.div>
-      </form>
-      {error && (
-        <div className="text-red-500 text-sm mt-2">
-          {error}
-        </div>
-      )}
-    </motion.div>
+            <LoginCard onLoginSubmit={onLoginSubmit} onRegisterSubmit={onRegisterSubmit} error={error} loading={loading}/>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.div
+        initial={{ width: "50vw", height: "50vh", bottom: "50%", left: "50%" }}
+        animate={showLogin ? { width: "150vw", height: "150vh", bottom: "-120vh", left: "50%" } : {}}
+        transition={{ duration: 1.5, ease: "easeInOut" }}
+        className="absolute -translate-x-1/2 pointer-events-none z-10"
+      >
+          <SpinningRecord />
+      </motion.div>
+    </main>
   )
 }

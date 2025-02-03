@@ -1,5 +1,6 @@
 import Logout from "@/components/logout"
 import { auth } from "../../../../auth"
+import UserDashboard from "@/components/test/userDashboard"
 
 
 export default async function DasboardPage() {
@@ -12,7 +13,7 @@ export default async function DasboardPage() {
   return (
     <>
       <pre>{JSON.stringify(session, null, 2)}</pre>
-      <Logout />
+      <UserDashboard />
     </>
   )
 }

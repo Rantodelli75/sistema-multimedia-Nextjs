@@ -1,17 +1,20 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { authenticate } from 'actions/auth-action'
+import { startTransition, useState, useTransition } from 'react'
+import { authenticate, handleRegister } from 'actions/auth-action'
 import FormLogin from "@/components/form-login";
 import LoginPageComponent from '@/components/auth/login_page';
+import { registerSchema } from '@/lib/zod';
+import { z } from 'zod';
 
 export default function LoginPage() {
   const router = useRouter()
-  const [error, setError] = useState<string>('')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isPending, startTransition] = useTransition()
 
-  const handleSubmit = async (formData: FormData) => {
+  const handleLoginSubmit = async (formData: FormData) => {
     if (loading) return
 
     try {
@@ -32,11 +35,25 @@ export default function LoginPage() {
       setLoading(false)
     }
   }
+    const handleRegisterSubmit = async (values: z.infer<typeof registerSchema>) => {
+    if (isPending) return
+
+    setError(null)
+    startTransition(async () => {
+      const response = await handleRegister(values)
+      if (response.error) {
+        setError(response.error)
+      } else {
+        router.push("/dashboard")
+      }
+    })
+  }
 
   return (
     <LoginPageComponent
-      onSubmit={handleSubmit}
-      error={error}
+      onLoginSubmit={handleLoginSubmit}
+      onRegisterSubmit={handleRegisterSubmit}
+      error={error || ''}
       loading={loading}   />
   );
 }
