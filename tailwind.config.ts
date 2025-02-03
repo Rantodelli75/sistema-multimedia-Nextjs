@@ -10,6 +10,17 @@ export default {
   ],
   theme: {
   	extend: {
+		outline: {
+
+        none: '0',
+
+      },
+
+      ringWidth: {
+
+        DEFAULT: '0',
+
+      },
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
@@ -80,7 +91,12 @@ export default {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+  		fontFamily: {
+  			sans: ['var(--font-geist-sans)'],
+  			mono: ['var(--font-geist-mono)'],
+  			coolvetica: ['var(--font-coolvetica)'],
+  		},
   	}
   },
   plugins: [animate],

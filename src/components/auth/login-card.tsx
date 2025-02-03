@@ -23,7 +23,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
     // Handle form submission logic here
   }
 
-  const glassStyle = "bg-white/30 backdrop-blur-xl border border-white/30 shadow-xl rounded-2xl"
+  const glassStyle = "bg-white/10 backdrop-blur-[2px] drop-shadow-2xl rounded-2xl border-[1px] border-white/20 border-r-white/10 border-b-white/10"
 
   const formVariants = {
     initial: {
@@ -50,7 +50,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
   }
 
   return (
-    <div className="relative w-full -top-40">
+    <div className={`relative w-full ${isLogin ? '-top-40' : '-top-60'}`}>
       <AnimatePresence mode="wait">
         {isLogin ? (
           <motion.div
@@ -66,7 +66,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
               const formData = new FormData(e.currentTarget);
               onLoginSubmit(formData);
             }} className={`${glassStyle} px-8 pt-6 pb-8 mb-4`}>
-              <h2 className="text-2xl font-bold mb-6 text-center text-white">Login</h2>
+              <h2 className="text-2xl font-bold mb-6 text-center text-white font-coolvetica">Login</h2>
               <div className="mb-4 space-y-2">
                 <Label htmlFor="email" className="text-white">
                   Email
@@ -77,7 +77,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   name="email"
                   placeholder="Enter your email"
                   required
-                  className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
+                  className="bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60  backdrop-blur-xl rounded-xl"
                 />
               </div>
               <div className="mb-6 space-y-2">
@@ -101,7 +101,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   type="button"
                   variant="outline"
                   onClick={() => setIsLogin(false)}
-                  className="border-white/30 text-white hover:bg-white/20 backdrop-blur-xl"
+                  className="border-white/30 text-black hover:text-white hover:bg-white/20 backdrop-blur-xl"
                 >
                   Register
                 </Button>
