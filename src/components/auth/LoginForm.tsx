@@ -29,7 +29,7 @@ export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, load
   return (
     <main className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
       {/* Particles Background */}
-      <div className="absolute inset-0 z-0 bg-red from-purple-800 via-pink-500 to-purple-800">
+      <div className="absolute inset-0 z-0">
         <ParticlesBg />
       </div>
 
