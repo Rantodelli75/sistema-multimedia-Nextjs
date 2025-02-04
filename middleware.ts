@@ -4,7 +4,8 @@ import authConfig from "./auth.config";
 
 const { auth: middleware } = NextAuth(authConfig);
 
-const publicRoutes = ["/", "/login", "/register", "/api/auth/verify-email"];
+const publicRoutes = ["/", "/login", "/register", "/api/auth/authenticate"];
+const privateRoutes = ["/dashboard", "/admin"];
 
 export default middleware((req) => {
   const { nextUrl, auth } = req;
@@ -17,6 +18,9 @@ export default middleware((req) => {
   // proteger /dashboard /admin
   if (!publicRoutes.includes(nextUrl.pathname) && !isLoggedIn) {
     return NextResponse.redirect(new URL("/login", nextUrl));
+  } else if (privateRoutes.includes(nextUrl.pathname) && isLoggedIn) {
+    alert("No puedes acceder a esta ruta");
+    return NextResponse.redirect(new URL("/", nextUrl));
   }
 
   return NextResponse.next();

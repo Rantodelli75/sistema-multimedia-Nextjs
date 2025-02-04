@@ -8,7 +8,10 @@ import LoginPageComponent from '@/components/auth/login_page';
 import { registerSchema } from '@/lib/zod';
 import { z } from 'zod';
 
-export default function LoginPage() {
+export default function LoginPage(
+  { searchParams }: { searchParams: { verified: string } }
+) {
+  const isVerified = searchParams.verified === 'true'
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -54,6 +57,8 @@ export default function LoginPage() {
       onLoginSubmit={handleLoginSubmit}
       onRegisterSubmit={handleRegisterSubmit}
       error={error || ''}
-      loading={loading}   />
+      loading={loading}   
+      isVerified={isVerified}
+    />
   );
 }
