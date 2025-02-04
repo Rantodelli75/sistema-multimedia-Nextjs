@@ -13,9 +13,10 @@ interface FormLoginProps {
   onRegisterSubmit: (values: z.infer<typeof registerSchema>) => Promise<void>
   error: string
   loading: boolean
+  isVerified: boolean
 }
 
-export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, loading }: FormLoginProps) {
+export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, loading, isVerified }: FormLoginProps) {
   const [showLogin, setShowLogin] = useState(false)
 
   useEffect(() => {
@@ -55,6 +56,9 @@ export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, load
       >
         <SpinningRecord />
       </motion.div>
+      {isVerified && (
+        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+      )}
     </main>
   )
 }
