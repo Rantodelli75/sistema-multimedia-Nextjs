@@ -14,7 +14,7 @@ export default function PopularPlaylistsSection() {
 
   return (
     <section className="py-[20vh] px-4 bg-[#fefefe] bg-opacity-10  bg-gradient-to-b from-blue-900 to-purple-900">
-      <h3 className="text-4xl font-bold text-center mb-12 text-purple-300">Popular Playlists</h3>
+      <h3 className="text-4xl font-bold text-center mb-12 pl-10 text-purple-300">------Popular Playlists</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
         {playlists.map((playlist, index) => (
           <motion.div
