@@ -23,16 +23,17 @@ export default function Sidebar() {
     <motion.nav 
       initial={{ x: -100 }}
       animate={{ x: 0 }}
-      className="main-menu w-64 h-screen bg-black/20 backdrop-blur-lg p-6 flex flex-col justify-between"
+      className="w-[200px] lg:w-64 h-screen bg-black/20 backdrop-blur-lg p-4 lg:p-6 flex flex-col justify-between
+                 shadow-lg"
     >
       <div>
-        <div className="user-info flex flex-col items-center gap-3 mb-8">
+        <div className="user-info flex flex-col items-center gap-2 lg:gap-3 mb-6 lg:mb-8">
           <img
             src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/37e5ccfa-f9ee-458b-afa2-dcd85b495e4e"
             alt="user"
-            className="w-24 h-24 rounded-full"
+            className="w-16 h-16 lg:w-24 lg:h-24 rounded-full"
           />
-          <p className="text-white font-semibold">Jane Wilson</p>
+          <p className="text-white font-semibold text-sm lg:text-base">Jane Wilson</p>
         </div>
 
         <ul className="space-y-2">
