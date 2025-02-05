@@ -30,7 +30,7 @@ export default function PricingSection() {
         {plans.map((plan, index) => (
           <motion.div
             key={index}
-            className="bg-purple-800 bg-opacity-50 p-8 rounded-lg text-center relative overflow-hidden backdrop-filter backdrop-blur-lg"
+            className="bg-[#fefefe] bg-opacity-10 p-8 rounded-lg text-center relative overflow-hidden backdrop-filter backdrop-blur-lg"
             whileHover={{ scale: 1.05 }}
             onHoverStart={() => setHoveredIndex(index)}
             onHoverEnd={() => setHoveredIndex(null)}

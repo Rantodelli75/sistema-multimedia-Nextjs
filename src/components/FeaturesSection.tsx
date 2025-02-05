@@ -2,22 +2,22 @@ import { motion } from "framer-motion"
 import { FaMusic, FaHeadphones, FaMicrophone, FaUserFriends, FaChartLine, FaMobileAlt } from "react-icons/fa"
 
 const features = [
-  { icon: FaMusic, title: "Curated Playlists", description: "Discover new music tailored to your taste" },
-  { icon: FaHeadphones, title: "High Quality Audio", description: "Experience music in crystal clear quality" },
-  { icon: FaMicrophone, title: "Live Sessions", description: "Join exclusive live streaming sessions" },
-  { icon: FaUserFriends, title: "Social Listening", description: "Share and enjoy music with friends" },
+  { icon: FaMusic, title: "Listas de Reproducción Curadas", description: "Descubre nueva música adaptada a tus gustos" },
+  { icon: FaHeadphones, title: "Audio de Alta Calidad", description: "Experimenta la música con una calidad cristalina" },
+  { icon: FaMicrophone, title: "Sesiones en Vivo", description: "Únete a sesiones de transmisión en vivo exclusivas" },
+  { icon: FaUserFriends, title: "Escucha Social", description: "Comparte y disfruta música con amigos" },
   {
     icon: FaChartLine,
-    title: "Personalized Recommendations",
-    description: "Get suggestions based on your listening habits",
+    title: "Recomendaciones Personalizadas",
+    description: "Recibe sugerencias basadas en tus hábitos de escucha",
   },
-  { icon: FaMobileAlt, title: "Offline Mode", description: "Download your favorite tracks for offline listening" },
+  { icon: FaMobileAlt, title: "Modo Offline", description: "Descarga tus pistas favoritas para escuchar sin conexión" },
 ]
 
 export default function FeaturesSection() {
   return (
     <section className="py-[20vh] px-4 bg-gradient-to-b from-[#492bad] to-blue-900">
-      <h3 className="text-4xl font-bold text-center mb-12 text-purple-300">Our Features</h3>
+      <h3 className="text-4xl font-bold text-center mb-12 text-purple-300">Nuestras Funciones</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {features.map((feature, index) => (
           <motion.div
