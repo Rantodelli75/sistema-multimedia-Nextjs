@@ -90,22 +90,23 @@ const featuredArtists = [
 export default function MusicContent() {
   const [currentSong, setCurrentSong] = useState(recommendedSongs[0])
   const [isPlaying, setIsPlaying] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   return (
-    <div className="flex flex-1">
-      <div className="flex-1 p-8">
-        <h1 className="text-4xl font-bold text-white mb-8">Popular Playlist</h1>
+    <div className="flex flex-1 relative">
+      <div className="flex-1 p-4 lg:p-8 pb-[100px] md:pb-8">
+        <h1 className="text-2xl lg:text-4xl font-bold text-white mb-6 lg:mb-8">Popular Playlist</h1>
         
         <Carousel
           opts={{
             align: "start",
             loop: true,
           }}
-          className="w-full"
+          className="w-full relative"
         >
           <CarouselContent className="-ml-2 md:-ml-4">
             {popularPlaylists.map((playlist, index) => (
-              <CarouselItem key={index} className="pl-2 md:pl-4 basis-1/3">
+              <CarouselItem key={index} className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 lg:basis-1/4">
                 <Card className="bg-black/20 border-0">
                   <CardContent className="p-0 aspect-square relative group">
                     <img 
@@ -126,71 +127,91 @@ export default function MusicContent() {
               </CarouselItem>
             ))}
           </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
+          <CarouselPrevious className="hidden lg:flex z-50 bg-white/80 hover:bg-white/60" />
+          <CarouselNext className="hidden lg:flex z-50 bg-white/80 hover:bg-white/60" />
         </Carousel>
       </div>
 
-      <div className="w-[350px] bg-black/20 backdrop-blur-md p-6 flex flex-col">
-        <h2 className="text-2xl font-bold text-white mb-6">Recommended Songs</h2>
-        <ScrollArea className="flex-1">
-          <div className="space-y-4">
-            {recommendedSongs.map((song, index) => (
-              <motion.div
-                key={index}
-                className={`flex items-center gap-4 p-3 rounded-lg cursor-pointer ${
-                  currentSong.title === song.title ? 'bg-white/20' : 'hover:bg-white/10'
-                }`}
-                whileHover={{ scale: 1.02 }}
-                onClick={() => setCurrentSong(song)}
-              >
-                <img src={song.image} alt={song.title} className="w-12 h-12 rounded-lg object-cover" />
-                <div className="flex-1">
-                  <h3 className="text-white font-medium">{song.title}</h3>
-                  <p className="text-white/60 text-sm">{song.artist}</p>
-                </div>
-                <span className="text-white/60 text-sm">{song.duration}</span>
-              </motion.div>
-            ))}
-          </div>
-        </ScrollArea>
+      {/* Music Player and Recommended Songs */}
+      <div className={`fixed bottom-0 left-0 right-0 md:relative md:w-[280px] lg:w-[350px] 
+                      bg-black/20 backdrop-blur-md transform transition-all duration-300 
+                      ease-in-out z-20 ${isExpanded ? 'h-[80vh]' : 'h-[100px]'} md:h-auto`}>
+        
+        {/* Expand/Collapse Handle for Mobile */}
+        <button 
+          className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-6 
+                     bg-black/40 rounded-t-lg md:hidden flex justify-center items-center"
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          <motion.div
+            animate={{ rotate: isExpanded ? 180 : 0 }}
+            className="w-4 h-4 text-white"
+          >
+            ▲
+          </motion.div>
+        </button>
 
-        <Separator className="my-6" />
-
-        <div className="space-y-6">
+        {/* Always Visible Player Section */}
+        <div className="p-4 border-t border-white/10">
           <div className="flex items-center gap-4">
-            <img src={currentSong.image} alt={currentSong.title} className="w-16 h-16 rounded-lg" />
-            <div>
-              <h3 className="text-white font-medium">{currentSong.title}</h3>
+            <img src={currentSong.image} alt={currentSong.title} className="w-12 h-12 rounded-lg" />
+            <div className="flex-1">
+              <h3 className="text-white font-medium truncate">{currentSong.title}</h3>
               <p className="text-white/60 text-sm">{currentSong.artist}</p>
             </div>
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="icon">
+                <FaStepBackward className="text-white/80 h-4 w-4" />
+              </Button>
+              <Button 
+                variant="secondary" 
+                size="icon"
+                onClick={() => setIsPlaying(!isPlaying)}
+              >
+                {isPlaying ? 
+                  <FaPause className="text-white h-4 w-4" /> : 
+                  <FaPlay className="text-white h-4 w-4" />
+                }
+              </Button>
+              <Button variant="ghost" size="icon">
+                <FaStepForward className="text-white/80 h-4 w-4" />
+              </Button>
+            </div>
           </div>
-
           <Slider
             defaultValue={[0]}
             max={100}
             step={1}
-            className="w-full"
+            className="w-full mt-2"
           />
+        </div>
 
-          <div className="flex justify-center items-center gap-4">
-            <Button variant="ghost" size="icon">
-              <FaStepBackward className="text-white/80 h-4 w-4" />
-            </Button>
-            <Button 
-              variant="secondary" 
-              size="icon" 
-              className="h-12 w-12"
-              onClick={() => setIsPlaying(!isPlaying)}
-            >
-              {isPlaying ? 
-                <FaPause className="text-white h-4 w-4" /> : 
-                <FaPlay className="text-white h-4 w-4" />
-              }
-            </Button>
-            <Button variant="ghost" size="icon">
-              <FaStepForward className="text-white/80 h-4 w-4" />
-            </Button>
+        {/* Expandable Recommended Songs Section */}
+        <div className={`overflow-hidden transition-all duration-300
+                        ${isExpanded ? 'h-[calc(80vh-100px)]' : 'h-0'} md:h-auto`}>
+          <div className="p-6">
+            <h2 className="text-2xl font-bold text-white mb-6">Recommended Songs</h2>
+            <ScrollArea className="h-[calc(100vh-300px)]">
+              <div className="space-y-4">
+                {recommendedSongs.map((song, index) => (
+                  <motion.div
+                    key={index}
+                    className={`flex items-center gap-4 p-3 rounded-lg cursor-pointer ${
+                      currentSong.title === song.title ? 'bg-white/20' : 'hover:bg-white/10'
+                    }`}
+                    whileHover={{ scale: 1.02 }}
+                    onClick={() => setCurrentSong(song)}
+                  >
+                    <img src={song.image} alt={song.title} className="w-12 h-12 rounded-lg object-cover" />
+                    <div className="flex-1">
+                      <h3 className="text-white font-medium">{song.title}</h3>
+                      <p className="text-white/60 text-sm">{song.artist}</p>
+                    </div>
+                    <span className="text-white/60 text-sm">{song.duration}</span>
+                  </motion.div>
+                ))}
+              </div>
+            </ScrollArea>
           </div>
         </div>
       </div>

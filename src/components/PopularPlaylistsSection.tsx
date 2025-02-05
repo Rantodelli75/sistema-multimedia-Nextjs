@@ -13,13 +13,13 @@ export default function PopularPlaylistsSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   return (
-    <section className="py-[20vh] px-4 bg-gradient-to-b from-blue-900 to-purple-900">
+    <section className="py-[20vh] px-4 bg-[#fefefe] bg-opacity-10  bg-gradient-to-b from-blue-900 to-purple-900">
       <h3 className="text-4xl font-bold text-center mb-12 text-purple-300">Popular Playlists</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
         {playlists.map((playlist, index) => (
           <motion.div
             key={index}
-            className="bg-purple-800 bg-opacity-50 rounded-lg overflow-hidden shadow-lg relative cursor-pointer backdrop-filter backdrop-blur-lg"
+            className="bg-[#fefefe] bg-opacity-10 rounded-lg overflow-hidden shadow-lg relative cursor-pointer backdrop-filter backdrop-blur-lg"
             whileHover={{ scale: 1.05 }}
             onHoverStart={() => setHoveredIndex(index)}
             onHoverEnd={() => setHoveredIndex(null)}
