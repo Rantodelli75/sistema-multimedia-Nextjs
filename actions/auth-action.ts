@@ -16,27 +16,23 @@ export async function authenticate(formData: FormData) {
       redirect: false,
     })
 
-    if (result?.error) {
-      // Aquí traducimos los mensajes de error específicos
-      switch (result.error) {
-        case 'Invalid credentials':
-          return { success: false, message: 'Credenciales inválidas' }
-        case 'Email de verificacion enviado':
-          return { success: false, message: 'Por favor verifica tu correo electrónico' }
-        default:
-          return { success: false, message: result.error }
+    if (!result?.ok) {
+      return { 
+        success: false, 
+        message: result?.error || 'Error de autenticación'
       }
     }
 
     return { 
-      success: true, 
-      redirectUrl: '/dashboard'
+      success: true,
+      redirectUrl: '/dashboard',
+      message: 'Autenticación exitosa'
     }
   } catch (error) {
-    console.error('Error de autenticación:', error)
-    return { 
-      success: false, 
-      message: 'Error en el servidor'
+    console.error('Error en authenticate:', error)
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'Error de autenticación'
     }
   }
 }
