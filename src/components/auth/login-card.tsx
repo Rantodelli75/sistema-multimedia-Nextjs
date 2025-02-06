@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { loginSchema, registerSchema } from "@/lib/zod"
 import { z } from "zod"
+import { useToast } from "@/hooks/use-toast"
+import React from "react"
 
 interface FormLoginProps {
   onLoginSubmit: (values: z.infer<typeof loginSchema>) => Promise<void>
@@ -17,6 +19,18 @@ interface FormLoginProps {
 
 export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, loading }: FormLoginProps) {
   const [isLogin, setIsLogin] = useState(true)
+  const { toast } = useToast()
+
+  // Show error toast when error prop changes
+  React.useEffect(() => {
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error,
+      })
+    }
+  }, [error, toast])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -96,29 +110,6 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   className="bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60  backdrop-blur-xl rounded-xl"
                 />
               </div>
-              {error && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="bg-red-500/10 border border-red-500/20 rounded-md p-3 text-red-500 text-sm mt-2"
-                >
-                  <div className="flex items-center gap-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-4 w-4"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                    {error}
-                  </div>
-                </motion.div>
-              )}
               <div className="flex items-center justify-between">
                 <Button type="submit" className="bg-white/30 hover:bg-white/40 text-white backdrop-blur-xl">
                   Sign In
