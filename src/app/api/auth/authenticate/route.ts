@@ -55,6 +55,6 @@ export async function GET(request: NextRequest) {
   });
 
   // Redirigir a la página de login con un mensaje de éxito
-  const redirectUrl = new URL('/login?verified=true', request.nextUrl.origin);
+  const redirectUrl = new URL('/login', request.nextUrl.origin);
   return Response.redirect(redirectUrl);
 }

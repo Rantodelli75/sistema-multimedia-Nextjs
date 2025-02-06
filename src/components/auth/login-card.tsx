@@ -93,7 +93,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   name="password"
                   placeholder="Enter your password"
                   required
-                  className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
+                  className="bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60  backdrop-blur-xl rounded-xl"
                 />
               </div>
               {error && (
@@ -103,16 +103,16 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   className="bg-red-500/10 border border-red-500/20 rounded-md p-3 text-red-500 text-sm mt-2"
                 >
                   <div className="flex items-center gap-2">
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      className="h-4 w-4" 
-                      viewBox="0 0 20 20" 
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-4 w-4"
+                      viewBox="0 0 20 20"
                       fill="currentColor"
                     >
-                      <path 
-                        fillRule="evenodd" 
-                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" 
-                        clipRule="evenodd" 
+                      <path
+                        fillRule="evenodd"
+                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                        clipRule="evenodd"
                       />
                     </svg>
                     {error}
@@ -157,7 +157,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
               <h2 className="text-2xl font-bold mb-6 text-center text-white">Register</h2>
               <div className="mb-4 space-y-2">
                 <Label htmlFor="register-name" className="text-white">
-                    Name
+                  Name
                 </Label>
                 <Input
                   type="text"
@@ -213,7 +213,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   type="button"
                   variant="outline"
                   onClick={() => setIsLogin(true)}
-                  className="border-white/30 text-white hover:bg-white/20 backdrop-blur-xl"
+                  className="border-white/30 text-black hover:text-white hover:bg-white/20 backdrop-blur-xl"
                 >
                   Back to Login
                 </Button>
