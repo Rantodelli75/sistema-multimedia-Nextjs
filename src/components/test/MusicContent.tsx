@@ -1,8 +1,9 @@
 "use client"
 
 import { motion } from "framer-motion"
-import { FaPlay, FaHeart, FaEllipsisH, FaPause, FaStepForward, FaStepBackward } from "react-icons/fa"
-import { useState } from "react"
+import { FaPlay, FaHeart, FaEllipsisH, FaPause, FaStepForward, FaStepBackward, FaRedo, FaVolumeUp } from "react-icons/fa"
+import { FaShuffle } from "react-icons/fa6";
+import { useState, useEffect } from "react"
 import {
   Carousel,
   CarouselContent,
@@ -15,6 +16,10 @@ import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from "@/components/ui/button"
 import { Slider } from "@/components/ui/slider"
+import { useAudioPlayer } from '@/hooks/useAudioPlayer'
+import { Song } from '../../../types/music'
+
+const DEFAULT_ALBUM_COVER = "/images/default-album-cover.jpg"
 
 const popularPlaylists = [
   {
@@ -39,36 +44,46 @@ const popularPlaylists = [
   }
 ]
 
-const recommendedSongs = [
+const recommendedSongs: Song[] = [
   {
+    id: '1',
     image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/ea61baa7-9c4b-4f43-805e-81de5fc8aa2b",
     title: "Blank Space",
     artist: "Taylor Swift",
-    duration: "4:33"
+    duration: "4:33",
+    audioUrl: "/music/blank-space.mp3"
   },
   {
+    id: '2',
     image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/666e065b-eb53-4320-a580-30e266370955",
     title: "Lose Control",
     artist: "Teddy Swims",
-    duration: "3:30"
+    duration: "3:30",
+    audioUrl: "/music/lose-control.mp3"
   },
   {
+    id: '3',
     image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/619ed17f-5df2-4d32-a419-78f120a1aa5c",
     title: "Be The One",
     artist: "Dua Lipa",
-    duration: "3:24"
+    duration: "3:24",
+    audioUrl: "/music/be-the-one.mp3"
   },
   {
+    id: '4',
     image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/0ed3f51d-b769-4256-a4dd-8f35b12a1690",
     title: "Delicate",
     artist: "Taylor Swift",
-    duration: "3:54"
+    duration: "3:54",
+    audioUrl: "/music/delicate.mp3"
   },
   {
+    id: '5',
     image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/33779e1a-55f9-402a-b004-002395d0fbf1",
     title: "Last Christmas",
     artist: "Wham!",
-    duration: "4:39"
+    duration: "4:39",
+    audioUrl: "/music/last-christmas.mp3"
   }
 ]
 
@@ -88,14 +103,48 @@ const featuredArtists = [
 ]
 
 export default function MusicContent() {
-  const [currentSong, setCurrentSong] = useState(recommendedSongs[0])
-  const [isPlaying, setIsPlaying] = useState(false)
+  const {
+    currentSong,
+    setCurrentSong,
+    isPlaying,
+    currentTime,
+    duration,
+    volume,
+    setVolume,
+    isShuffle,
+    setIsShuffle,
+    isRepeat,
+    setIsRepeat,
+    togglePlay,
+    seek,
+    handleNext,
+    handlePrevious,
+    handleVolumeChange,
+  } = useAudioPlayer(recommendedSongs)
   const [isExpanded, setIsExpanded] = useState(false)
+
+  useEffect(() => {
+    if (!currentSong && recommendedSongs.length > 0) {
+      setCurrentSong(recommendedSongs[0])
+    }
+  }, [])
+
+  // Convert duration string to seconds
+  const getDurationInSeconds = (duration: string) => {
+    const [minutes, seconds] = duration.split(':').map(Number)
+    return minutes * 60 + seconds
+  }
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = Math.floor(seconds % 60)
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+  }
 
   return (
     <div className="flex flex-1 relative">
       <div className="flex-1 p-4 lg:p-8 pb-[100px] md:pb-8">
-        <h1 className="text-2xl lg:text-4xl font-bold text-white mb-6 lg:mb-8">Popular Playlist</h1>
+        <h1 className="text-2xl lg:text-4xl font-bold text-white max-md:pl-12 mb-6 lg:mb-8">Popular Playlist</h1>
         
         <Carousel
           opts={{
@@ -104,9 +153,9 @@ export default function MusicContent() {
           }}
           className="w-full relative"
         >
-          <CarouselContent className="-ml-2 md:-ml-4">
+          <CarouselContent className="-ml-2 md:-ml-4 ">
             {popularPlaylists.map((playlist, index) => (
-              <CarouselItem key={index} className="pl-2 md:pl-4 basis-1/2 sm:basis-1/3 lg:basis-1/4">
+              <CarouselItem key={index} className="h-fit pl-2 md:pl-4 min-[300px]:basis-1/2 min-[550px]:basis-1/3 min-[1300px]:basis-1/4">
                 <Card className="bg-black/20 border-0">
                   <CardContent className="p-0 aspect-square relative group">
                     <img 
@@ -114,11 +163,11 @@ export default function MusicContent() {
                       alt={playlist.title}
                       className="w-full h-full object-cover rounded-lg"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 flex flex-col justify-end p-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 flex flex-col justify-end p-4 opacity-0 group-hover:opacity-100 max-md:opacity-100 transition-opacity">
                       <h2 className="text-lg font-bold text-white mb-2">
                         {playlist.title}
                       </h2>
-                      <Button variant="secondary" className="w-fit">
+                      <Button variant="secondary" className="w-50% font-size-[50%]">
                         <FaPlay className="mr-2 h-4 w-4" /> Listen Now
                       </Button>
                     </div>
@@ -139,51 +188,109 @@ export default function MusicContent() {
         
         {/* Expand/Collapse Handle for Mobile */}
         <button 
-          className="absolute -top-3 left-1/2 -translate-x-1/2 w-12 h-6 
+          className="absolute -top-7 left-1/2 -translate-x-1/2 w-12 h-7 
                      bg-black/40 rounded-t-lg md:hidden flex justify-center items-center"
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <motion.div
             animate={{ rotate: isExpanded ? 180 : 0 }}
-            className="w-4 h-4 text-white"
+            className={`w-4 h-4 text-white ${isExpanded ? '-mb-2' : 'mb-2'}`}
           >
             ▲
           </motion.div>
         </button>
 
         {/* Always Visible Player Section */}
-        <div className="p-4 border-t border-white/10">
-          <div className="flex items-center gap-4">
-            <img src={currentSong.image} alt={currentSong.title} className="w-12 h-12 rounded-lg" />
+        <div className="p-6 border-t border-white/10">
+          <div className="flex items-center gap-4 mb-4">
+            <img 
+              src={currentSong?.image || DEFAULT_ALBUM_COVER} 
+              alt={currentSong?.title || 'No track selected'} 
+              className="w-14 h-14 rounded-lg shadow-lg" 
+            />
             <div className="flex-1">
-              <h3 className="text-white font-medium truncate">{currentSong.title}</h3>
-              <p className="text-white/60 text-sm">{currentSong.artist}</p>
+              <h3 className="text-white font-medium truncate">{currentSong?.title || ''}</h3>
+              <p className="text-white/60 text-sm">{currentSong?.artist || ''}</p>
             </div>
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" size="icon">
-                <FaStepBackward className="text-white/80 h-4 w-4" />
+            <Button variant="ghost" size="icon" className="bg-white/20 hover:bg-red-500" onClick={() => {}}>
+              <FaHeart className="text-white/60 click:text-white h-5 w-5 transition-colors" />
+            </Button>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="space-y-2">
+            <Slider
+              value={[currentTime]}
+              max={getDurationInSeconds(currentSong?.duration || '')}
+              step={1}
+              className="w-full"
+              onValueChange={([value]) => seek(value)}
+            />
+            <div className="flex justify-between text-xs text-white/60">
+              <span>{formatTime(currentTime)}</span>
+              <span>{currentSong?.duration || ''}</span>
+            </div>
+          </div>
+
+          {/* Controls */}
+          <div className="flex items-center justify-between mt-4">
+            <div className="flex items-center gap-4 justify-around w-[100%]">
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setIsShuffle(!isShuffle)}
+                className={`text-white hover:text-black ${isShuffle ? 'bg-white text-black' : ''}`}
+              >
+                <FaShuffle className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={handlePrevious}
+                className="text-white hover:bg-white hover:text-black"
+              >
+                <FaStepBackward className="h-4 w-4" />
               </Button>
               <Button 
                 variant="secondary" 
                 size="icon"
-                onClick={() => setIsPlaying(!isPlaying)}
+                className="h-12 w-12 rounded-full bg-white text-black hover:bg-white/80"
+                onClick={togglePlay}
               >
                 {isPlaying ? 
-                  <FaPause className="text-white h-4 w-4" /> : 
-                  <FaPlay className="text-white h-4 w-4" />
+                  <FaPause className="h-5 w-5" /> : 
+                  <FaPlay className="h-5 w-5 ml-1" />
                 }
               </Button>
-              <Button variant="ghost" size="icon">
-                <FaStepForward className="text-white/80 h-4 w-4" />
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={handleNext}
+                className="text-white hover:bg-white hover:text-black"
+              >
+                <FaStepForward className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="icon"
+                onClick={() => setIsRepeat(!isRepeat)}
+                className={`text-white hover:text-black ${isRepeat ? 'bg-white text-black' : ''}`}
+              >
+                <FaRedo className="h-4 w-4" />
               </Button>
             </div>
           </div>
-          <Slider
-            defaultValue={[0]}
-            max={100}
-            step={1}
-            className="w-full mt-2"
-          />
+          {/* Volume Control */}
+          <div className="hidden md:flex items-center mx-auto self-center gap-2 mt-4 -mb-10">
+            <FaVolumeUp className="text-white/60 h-4 w-4" />
+            <Slider
+              value={[volume * 100]}
+              max={100}
+              step={1}
+              className="w-24 bg-white/20"
+              onValueChange={([value]) => handleVolumeChange(value)}
+            />
+          </div>
         </div>
 
         {/* Expandable Recommended Songs Section */}
@@ -197,7 +304,7 @@ export default function MusicContent() {
                   <motion.div
                     key={index}
                     className={`flex items-center gap-4 p-3 rounded-lg cursor-pointer ${
-                      currentSong.title === song.title ? 'bg-white/20' : 'hover:bg-white/10'
+                      currentSong?.title === song.title ? 'bg-white/20' : 'hover:bg-white/10'
                     }`}
                     whileHover={{ scale: 1.02 }}
                     onClick={() => setCurrentSong(song)}
