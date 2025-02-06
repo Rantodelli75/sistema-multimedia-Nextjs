@@ -7,6 +7,7 @@ import SpinningRecord from "./spinning-record"
 import ParticlesBg from "./particles-background"
 import { loginSchema, registerSchema } from "@/lib/zod"
 import { z } from "zod"
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction } from "@/components/ui/alert-dialog"
 
 interface FormLoginProps {
   onLoginSubmit: (values: z.infer<typeof loginSchema>) => Promise<void>
@@ -50,14 +51,37 @@ export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, load
 
       <motion.div
         initial={{ width: "50vw", height: "50vh", bottom: "50%", left: "50%" }}
-        animate={showLogin ? { width: "150vw", height: "150vh", bottom: "-120vh", left: "50%" } : {}}
-        transition={{ duration: 1.5, ease: "easeInOut" }}
+        animate={showLogin ? {
+          width: ["50vw", "150vw", "150vw"],
+          height: ["50vh", "150vh", "150vh"],
+          bottom: ["50%", "-200vh", "-120vh"],
+          left: ["50%", "50%", "50%"]
+        } : {}}
+        transition={{ 
+          duration: 2,
+          times: [0, 0.6, 1],
+          ease: "easeInOut"
+        }}
         className="absolute -translate-x-1/2 pointer-events-none z-10"
       >
         <SpinningRecord />
       </motion.div>
       {isVerified && (
-        <div className="absolute top-0 left-0 w-full h-full bg-black opacity-50 z-20"></div>
+        <AlertDialog defaultOpen>
+          <AlertDialogContent className="bg-white/10 backdrop-blur-[2px] drop-shadow-2xl rounded-2xl border-[1px] border-white/20 border-r-white/10 border-b-white/10">
+            <AlertDialogHeader>
+              <AlertDialogTitle className="text-white">Your account is verified</AlertDialogTitle>
+              <AlertDialogDescription className="text-white/80">
+                Your account is verified. You can now login.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogAction className="bg-white/30 hover:bg-white/40 text-white backdrop-blur-xl">
+                Understood
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       )}
     </main>
   )
