@@ -5,7 +5,7 @@ import { startTransition, useState, useTransition } from 'react'
 import { authenticate, handleRegister } from 'actions/auth-action'
 import FormLogin from "@/components/form-login";
 import LoginPageComponent from '@/components/auth/login_page';
-import { registerSchema } from '@/lib/zod';
+import { loginSchema, registerSchema } from '@/lib/zod';
 import { z } from 'zod';
 
 export default function LoginPage() {
@@ -16,27 +16,28 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
 
-  const handleLoginSubmit = async (formData: FormData) => {
-    if (loading) return
+  const handleLoginSubmit = async (values: z.infer<typeof loginSchema>) => {
+    if (loading) return;
 
     try {
-      setLoading(true)
-      setError('')
+      setLoading(true);
+      setError('');
       
-      const response = await authenticate(formData)
+      const response = await authenticate(values);
+      console.log('Respuesta de autenticación:', response); // Para debugging
       
       if (response.success) {
-        router.replace(response.redirectUrl || '/dashboard')
+        router.replace(response.redirectUrl || '/dashboard');
       } else {
-        setError(response.message || 'Error al iniciar sesión')
+        setError(response.message || 'Error al iniciar sesión');
       }
     } catch (error) {
-      setError('Error al iniciar sesión')
-      console.error('Error:', error)
+      console.error('Error completo:', error);
+      setError('Error al iniciar sesión');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
   const handleRegisterSubmit = async (values: z.infer<typeof registerSchema>) => {
     if (isPending) return
 

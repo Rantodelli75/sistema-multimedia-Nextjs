@@ -54,6 +54,7 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  // return Response.json({ token });
-  redirect("/login?verified=true");
+  // Redirigir a la página de login con un mensaje de éxito
+  const redirectUrl = new URL('/login?verified=true', request.nextUrl.origin);
+  return Response.redirect(redirectUrl);
 }

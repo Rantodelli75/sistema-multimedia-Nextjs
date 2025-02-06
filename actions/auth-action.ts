@@ -1,27 +1,20 @@
 "use server"
 
 import { z } from "zod"
-import { registerSchema } from "@/lib/zod"
+import { loginSchema, registerSchema } from "@/lib/zod"
 import { signIn } from "../auth"
 import { AuthError } from "next-auth"
 import { prisma } from "@/lib/prisma"
 import bcrypt from "bcrypt"
 import { revalidatePath } from 'next/cache'
 
-export async function authenticate(formData: FormData) {
+export const authenticate = async (values: z.infer<typeof loginSchema>) => {
   try {
     const result = await signIn('credentials', {
-      email: formData.get('email'),
-      password: formData.get('password'),
+      email: values.email,
+      password: values.password,
       redirect: false,
     })
-
-    if (!result?.ok) {
-      return { 
-        success: false, 
-        message: result?.error || 'Error de autenticación'
-      }
-    }
 
     return { 
       success: true,
@@ -90,6 +83,6 @@ export const handleRegister = async (
         }
     } finally {
         // Revalidar la ruta si es necesario
-        revalidatePath('/register')
+        revalidatePath('/login')
     }
 }

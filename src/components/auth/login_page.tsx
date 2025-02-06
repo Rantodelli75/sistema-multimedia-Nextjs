@@ -1,9 +1,9 @@
 import LoginForm from "./LoginForm"
-import { registerSchema } from "@/lib/zod"
+import { loginSchema, registerSchema } from "@/lib/zod"
 import { z } from "zod"
 
 interface FormLoginProps {
-    onLoginSubmit: (formData: FormData) => Promise<void>
+    onLoginSubmit: (values: z.infer<typeof loginSchema>) => Promise<void>
     onRegisterSubmit: (values: z.infer<typeof registerSchema>) => Promise<void>
     error: string
     loading: boolean

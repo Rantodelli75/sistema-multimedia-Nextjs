@@ -5,7 +5,8 @@ import Credentials from "next-auth/providers/credentials"
 import bcrypt from "bcrypt"
 import { randomUUID } from "crypto"
 import { sendEmail } from "@/lib/email"
-
+import { error } from "console"
+import { nanoid } from "nanoid"
 
 export default {
   providers: [
@@ -40,29 +41,29 @@ export default {
 
           const emailToken = await prisma.verificationToken.findFirst({
             where: {
-              identifier: user.email || ''
+              identifier: user.email!
             },
           })
 
           if (emailToken?.identifier) {
             await prisma.verificationToken.delete({
               where: {
-                  identifier: user.email || ''
+                  identifier: user.email!
               },
             })
           }
 
-          const token = randomUUID()
+          const token = nanoid()
 
           await prisma.verificationToken.create({
             data: {
-              identifier: user.email || '',
+              identifier: user.email!,
               token: token,
               expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
             },
           })
 
-          await sendEmail(user.email || '', token)
+          await sendEmail(user.email!, token)
 
           throw new Error("Email de verificacion enviado")
         }

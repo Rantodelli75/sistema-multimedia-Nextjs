@@ -5,11 +5,11 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { registerSchema } from "@/lib/zod"
+import { loginSchema, registerSchema } from "@/lib/zod"
 import { z } from "zod"
 
 interface FormLoginProps {
-  onLoginSubmit: (formData: FormData) => Promise<void>
+  onLoginSubmit: (values: z.infer<typeof loginSchema>) => Promise<void>
   onRegisterSubmit: (values: z.infer<typeof registerSchema>) => Promise<void>
   error: string
   loading: boolean
@@ -64,7 +64,10 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
             <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
               e.preventDefault();
               const formData = new FormData(e.currentTarget);
-              onLoginSubmit(formData);
+              onLoginSubmit({
+                email: formData.get('email') as string,
+                password: formData.get('password') as string
+              });
             }} className={`${glassStyle} px-8 pt-6 pb-8 mb-4`}>
               <h2 className="text-2xl font-bold mb-6 text-center text-white font-coolvetica">Login</h2>
               <div className="mb-4 space-y-2">
