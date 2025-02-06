@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -22,13 +22,14 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
   const { toast } = useToast()
 
   // Show error toast when error prop changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (error) {
       toast({
         variant: "destructive",
         title: "Error",
         description: error,
       })
+      console.log("error")
     }
   }, [error, toast])
 

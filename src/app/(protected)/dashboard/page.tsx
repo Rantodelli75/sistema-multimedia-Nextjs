@@ -12,7 +12,6 @@ export default async function DasboardPage() {
 
   return (
     <>
-      <pre>{JSON.stringify(session, null, 2)}</pre>
       <UserDashboard />
     </>
   )

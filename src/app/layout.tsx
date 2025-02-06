@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import localFont from "next/font/local";
+import { Toaster } from "@/components/ui/toaster"
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -33,6 +34,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${coolvetica.variable} font-coolvetica antialiased`}
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );
