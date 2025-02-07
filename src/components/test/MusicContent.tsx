@@ -144,7 +144,7 @@ export default function MusicContent() {
   return (
     <div className="flex flex-1 relative">
       <div className="flex-1 p-4 lg:p-8 pb-[100px] md:pb-8">
-        <h1 className="text-2xl lg:text-4xl font-bold text-white max-md:pl-12 mb-6 lg:mb-8">Popular Playlist</h1>
+        <h1 className="text-2xl lg:text-4xl font-bold text-white max-md:pl-12 mb-6 lg:mb-8">Playlists Populares</h1>
         
         <Carousel
           opts={{
@@ -168,7 +168,7 @@ export default function MusicContent() {
                         {playlist.title}
                       </h2>
                       <Button variant="secondary" className="w-50% font-size-[50%]">
-                        <FaPlay className="mr-2 h-4 w-4" /> Listen Now
+                        <FaPlay className="mr-2 h-4 w-4" /> Escuchar Ahora
                       </Button>
                     </div>
                   </CardContent>
@@ -297,7 +297,7 @@ export default function MusicContent() {
         <div className={`overflow-hidden transition-all duration-300
                         ${isExpanded ? 'h-[calc(80vh-100px)]' : 'h-0'} md:h-auto`}>
           <div className="p-6">
-            <h2 className="text-2xl font-bold text-white mb-6">Recommended Songs</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">Canciones Recomendadas</h2>
             <ScrollArea className="h-[calc(100vh-300px)]">
               <div className="space-y-4">
                 {recommendedSongs.map((song, index) => (
