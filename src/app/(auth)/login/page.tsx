@@ -62,6 +62,7 @@ export default function LoginPage() {
         if (response.success) {
           router.push('/login')
           setError(response.message || 'Usuario registrado exitosamente')
+          setStatus(200)
         } else {
           setError(response.message || 'Error durante el registro')
         }

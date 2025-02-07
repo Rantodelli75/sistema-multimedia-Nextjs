@@ -22,7 +22,23 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
   const [isLogin, setIsLogin] = useState(true)
   const { toast } = useToast()
 
-  // Show error toast when error prop changes
+  // Estados para el formulario de login
+  const [loginEmail, setLoginEmail] = useState("")
+  const [loginPassword, setLoginPassword] = useState("")
+  const [loginErrors, setLoginErrors] = useState<{ email?: string; password?: string }>({})
+
+  // Estados para el formulario de registro
+  const [registerName, setRegisterName] = useState("")
+  const [registerEmail, setRegisterEmail] = useState("")
+  const [registerPassword, setRegisterPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [registerErrors, setRegisterErrors] = useState<{ name?: string; email?: string; password?: string; confirmPassword?: string }>({})
+
+  // Regex para validaciones
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
+
+  // Mostrar error toast cuando cambia el error prop
   useEffect(() => {
     if (error) {
       if (status !== undefined) {
@@ -30,20 +46,73 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
           variant: "destructive",
           title: "Alerta",
           description: error,
-        }) :
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error,
+        }) : status === 200 ? toast({
+          variant: "default",
+          title: "Exito",
+          description: error,
+        }) : toast({
+          variant: "destructive",
+          title: "Error",
+          description: error,
+        })
+        console.log("error")
+      }
+    }
+  }, [error, toast, status])
+
+  const handleLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const errors: { email?: string; password?: string } = {}
+
+    if (!emailRegex.test(loginEmail)) {
+      errors.email = "Correo electrónico inválido."
+    }
+
+    if (!passwordRegex.test(loginPassword)) {
+      errors.password = "La contraseña debe tener al menos 8 caracteres, incluyendo una letra y un número."
+    }
+
+    setLoginErrors(errors)
+
+    if (Object.keys(errors).length === 0) {
+      await onLoginSubmit({
+        email: loginEmail,
+        password: loginPassword
       })
-      console.log("error")
     }
   }
-}, [error, toast])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Handle form submission logic here
+    const errors: { name?: string; email?: string; password?: string; confirmPassword?: string } = {}
+
+    if (registerName.trim() === "") {
+      errors.name = "El nombre es requerido."
+    }
+
+    if (!emailRegex.test(registerEmail)) {
+      errors.email = "Correo electrónico inválido."
+    }
+
+    if (!passwordRegex.test(registerPassword)) {
+      errors.password = "La contraseña debe tener al menos 8 caracteres, incluyendo una letra y un número."
+    }
+
+    if (registerPassword !== confirmPassword) {
+      errors.confirmPassword = "Las contraseñas no coinciden."
+    }
+
+    setRegisterErrors(errors)
+
+    if (Object.keys(errors).length === 0) {
+      const userData = {
+        name: registerName,
+        email: registerEmail,
+        password: registerPassword
+      }
+      await onRegisterSubmit(userData)
+      setIsLogin(true)
+    }
   }
 
   const glassStyle = "bg-white/10 backdrop-blur-[2px] drop-shadow-2xl rounded-2xl border-[1px] border-white/20 border-r-white/10 border-b-white/10"
@@ -84,14 +153,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
             exit="exit"
             className="absolute w-full"
           >
-            <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              onLoginSubmit({
-                email: formData.get('email') as string,
-                password: formData.get('password') as string
-              });
-            }} className={`${glassStyle} px-8 pt-6 pb-8 mb-4`}>
+            <form onSubmit={handleLoginSubmit} className={`${glassStyle} px-8 pt-6 pb-8 mb-4`}>
               <h2 className="text-2xl font-bold mb-6 text-center text-white font-coolvetica">Login</h2>
               <div className="mb-4 space-y-2">
                 <Label htmlFor="email" className="text-white">
@@ -103,8 +165,11 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   name="email"
                   placeholder="Ingresa tu email"
                   required
-                  className="bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60  backdrop-blur-xl rounded-xl"
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  className={`bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60  backdrop-blur-xl rounded-xl ${loginErrors.email ? 'border-red-500' : ''}`}
                 />
+                {loginErrors.email && <p className="text-red-500 text-sm">{loginErrors.email}</p>}
               </div>
               <div className="mb-6 space-y-2">
                 <Label htmlFor="password" className="text-white">
@@ -116,12 +181,15 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   name="password"
                   placeholder="Ingresa tu contraseña"
                   required
-                  className="bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60  backdrop-blur-xl rounded-xl"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  className={`bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60  backdrop-blur-xl rounded-xl ${loginErrors.password ? 'border-red-500' : ''}`}
                 />
+                {loginErrors.password && <p className="text-red-500 text-sm">{loginErrors.password}</p>}
               </div>
               <div className="flex items-center justify-between">
-                <Button type="submit" className="bg-white/30 hover:bg-white/40 text-white backdrop-blur-xl">
-                  Iniciar sesión
+                <Button type="submit" className="bg-white/30 hover:bg-white/40 text-white backdrop-blur-xl" disabled={loading}>
+                  {loading ? "Cargando..." : "Iniciar sesión"}
                 </Button>
                 <Button
                   type="button"
@@ -143,18 +211,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
             exit="exit"
             className="absolute w-full"
           >
-            <form onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              console.log(formData)
-              const userData = {
-                name: formData.get('name') as string,
-                email: formData.get('email') as string,
-                password: formData.get('password') as string
-              };
-              onRegisterSubmit(userData);
-              setIsLogin(true);
-            }} className={`${glassStyle} px-8 pt-6 pb-8 mb-4`}>
+            <form onSubmit={handleRegisterSubmit} className={`${glassStyle} px-8 pt-6 pb-8 mb-4`}>
               <h2 className="text-2xl font-bold mb-6 text-center text-white">Register</h2>
               <div className="mb-4 space-y-2">
                 <Label htmlFor="register-name" className="text-white">
@@ -166,8 +223,11 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   name="name"
                   placeholder="Ingresa tu nombre"
                   required
-                  className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
+                  value={registerName}
+                  onChange={(e) => setRegisterName(e.target.value)}
+                  className={`bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl ${registerErrors.name ? 'border-red-500' : ''}`}
                 />
+                {registerErrors.name && <p className="text-red-500 text-sm">{registerErrors.name}</p>}
                 <Label htmlFor="register-email" className="text-white">
                   Email
                 </Label>
@@ -177,8 +237,11 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   name="email"
                   placeholder="Ingresa tu email"
                   required
-                  className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
+                  value={registerEmail}
+                  onChange={(e) => setRegisterEmail(e.target.value)}
+                  className={`bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl ${registerErrors.email ? 'border-red-500' : ''}`}
                 />
+                {registerErrors.email && <p className="text-red-500 text-sm">{registerErrors.email}</p>}
               </div>
               <div className="mb-4 space-y-2">
                 <Label htmlFor="register-password" className="text-white">
@@ -190,8 +253,11 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   name="password"
                   placeholder="Ingresa tu contraseña"
                   required
-                  className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
+                  value={registerPassword}
+                  onChange={(e) => setRegisterPassword(e.target.value)}
+                  className={`bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl ${registerErrors.password ? 'border-red-500' : ''}`}
                 />
+                {registerErrors.password && <p className="text-red-500 text-sm">{registerErrors.password}</p>}
               </div>
               <div className="mb-6 space-y-2">
                 <Label htmlFor="confirm-password" className="text-white">
@@ -203,12 +269,15 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   name="confirmPassword"
                   placeholder="Confirma tu contraseña"
                   required
-                  className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className={`bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl ${registerErrors.confirmPassword ? 'border-red-500' : ''}`}
                 />
+                {registerErrors.confirmPassword && <p className="text-red-500 text-sm">{registerErrors.confirmPassword}</p>}
               </div>
               <div className="flex items-center justify-between">
-                <Button type="submit" className="bg-white/30 hover:bg-white/40 text-white backdrop-blur-xl">
-                  Registrarse
+                <Button type="submit" className="bg-white/30 hover:bg-white/40 text-white backdrop-blur-xl" disabled={loading}>
+                  {loading ? "Cargando..." : "Registrarse"}
                 </Button>
                 <Button
                   type="button"
