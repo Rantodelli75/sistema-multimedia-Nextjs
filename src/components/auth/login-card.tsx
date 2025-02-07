@@ -145,6 +145,11 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                 password: formData.get('password') as string
               };
               onRegisterSubmit(userData);
+              setIsLogin(true);
+              toast({
+                title: "Registrado con éxito",
+                description: "Ahora puedes iniciar sesión para que se envie el correo de verificación",
+              })
             }} className={`${glassStyle} px-8 pt-6 pb-8 mb-4`}>
               <h2 className="text-2xl font-bold mb-6 text-center text-white">Register</h2>
               <div className="mb-4 space-y-2">
