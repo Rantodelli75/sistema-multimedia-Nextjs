@@ -3,10 +3,10 @@ import Image from "next/image"
 import { useState } from "react"
 
 const playlists = [
-  { name: "Late Night Vibes", image: "/placeholder.svg?height=300&width=300", tracks: 20 },
-  { name: "Chill Electronica", image: "/placeholder.svg?height=300&width=300", tracks: 15 },
-  { name: "Midnight Jazz", image: "/placeholder.svg?height=300&width=300", tracks: 18 },
-  { name: "Dark Ambient", image: "/placeholder.svg?height=300&width=300", tracks: 12 },
+  { name: "Late Night Vibes", image: "/assets/images/late-night-vibes.jpeg", tracks: 20 },
+  { name: "Chill Electronica", image: "/assets/images/chill-electronica.jpg", tracks: 15 },
+  { name: "Midnight Jazz", image: "/assets/images/midnight-jazz.jpeg", tracks: 18 },
+  { name: "Dark Ambient", image: "/assets/images/dark-ambient.webp", tracks: 12 },
 ]
 
 export default function PopularPlaylistsSection() {
@@ -14,7 +14,7 @@ export default function PopularPlaylistsSection() {
 
   return (
     <section className="py-[20vh] px-4 bg-[#fefefe] bg-opacity-10  bg-gradient-to-b from-blue-900 to-purple-900">
-      <h3 className="text-4xl font-bold text-center mb-12 pl-10 text-purple-300">------Popular Playlists</h3>
+      <h3 className="text-4xl font-bold text-center mb-12 pl-10 text-purple-300">Popular Playlists</h3>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-6xl mx-auto">
         {playlists.map((playlist, index) => (
           <motion.div

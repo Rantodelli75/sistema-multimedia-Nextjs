@@ -5,6 +5,6 @@ import UserDashboard from "@/components/test/userDashboard";
 
 export default function Home() {
   return (
-    <UserDashboard />
+    <LandingPage />
   );
 }

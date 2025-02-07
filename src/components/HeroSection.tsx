@@ -22,11 +22,20 @@ export default function HeroSection() {
           Discover the best nocturnal beats
         </motion.p>
         <motion.button
-          className="bg-purple-600 hover:bg-purple-800 text-white font-bold py-3 px-6 rounded-full flex items-center mx-auto"
-          whileHover={{ scale: 1.2 }}
+          className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full flex items-center mx-auto transition-all duration-300 relative overflow-hidden group"
+          whileHover={{ 
+            scale: 1.05,
+            boxShadow: "0 0 20px rgba(147, 51, 234, 0.5)" 
+          }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => {
+            window.location.href = '/login';
+          }}
         >
-          <FaPlay className="mr-2" /> Start Listening
+          <span className="relative z-10 group-hover:text-white flex items-center">
+            <FaPlay className="mr-2" /> Start Listening
+          </span>
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </motion.button>
       </div>
       <motion.div
