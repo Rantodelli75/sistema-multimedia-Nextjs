@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import { FaMap, FaChartLine, FaCompactDisc, FaPlay, FaHeart, FaUser, FaCog, FaSignOutAlt } from "react-icons/fa"
 import { signOut } from "next-auth/react"
+import { useEffect } from "react"
 
 const menuItems = [
   { icon: FaMap, text: "Discover", href: "#" },
@@ -17,8 +18,23 @@ const bottomMenuItems = [
   { icon: FaUser, text: "Profile", href: "#" },
   { icon: FaCog, text: "Settings", href: "#" },
 ]
+interface User {
+  name: string;
+  email: string;
+  image: null | string;
+}
 
-export default function Sidebar() {
+interface Session {
+  user: User;
+  expires: string;
+}
+
+interface SessionData {
+  session: Session;
+}
+
+export default function Sidebar({ session }: { session: SessionData }) {
+
   return (
     <motion.nav 
       initial={{ x: -100 }}
@@ -29,11 +45,11 @@ export default function Sidebar() {
       <div>
         <div className="user-info flex flex-col items-center gap-2 lg:gap-3 mb-6 lg:mb-8">
           <img
-            src="https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/37e5ccfa-f9ee-458b-afa2-dcd85b495e4e"
+            src={session.session.user.image ? session.session.user.image : "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/37e5ccfa-f9ee-458b-afa2-dcd85b495e4e"}
             alt="user"
             className="w-16 h-16 lg:w-24 lg:h-24 rounded-full"
           />
-          <p className="text-white font-semibold text-sm lg:text-base">Jane Wilson</p>
+          <p className="text-white font-semibold text-sm lg:text-base">{session.session.user.name ? session.session.user.name : session.session.user.email}</p>
         </div>
 
         <ul className="space-y-2">

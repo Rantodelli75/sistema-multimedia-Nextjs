@@ -4,9 +4,10 @@ import Sidebar from "./Sidebar"
 import MusicContent from "./MusicContent"
 import { FaBars, FaMusic } from "react-icons/fa"
 
-export default function UserDashboardLayout() {
+export default function UserDashboardLayout(session: any) {
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(false)
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false)
+  
 
   return (
     <div className="relative flex min-h-screen bg-[#282828] bg-cover bg-center bg-no-repeat">
@@ -26,7 +27,7 @@ export default function UserDashboardLayout() {
 
       {/* Left Sidebar */}
       <div className={`fixed md:relative z-40 ${isLeftSidebarOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300`}>
-        <Sidebar />
+        <Sidebar session={session}/>
       </div>
 
       {/* Main Content */}
