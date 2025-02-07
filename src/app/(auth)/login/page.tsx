@@ -45,7 +45,7 @@ export default function LoginPage() {
       const response = await handleRegister(values)
       if (response.success) {
         router.push('/login')
-        setError(response.error || 'Usuario registrado exitosamente')
+        setError(response.message || 'Usuario registrado exitosamente')
       } else {
         setError(response.message || 'Error durante el registro')
       }
