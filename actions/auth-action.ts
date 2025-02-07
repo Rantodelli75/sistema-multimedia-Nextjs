@@ -10,6 +10,21 @@ import { revalidatePath } from 'next/cache'
 
 export const authenticate = async (values: z.infer<typeof loginSchema>) => {
   try {
+    // Primero verificamos si el usuario existe
+    const existingUser = await prisma.user.findUnique({
+      where: { email: values.email }
+    });
+
+    if (!existingUser) {
+      console.log("Usuario no existe");
+      return {
+        success: false,
+        status: 401,
+        message: "El usuario no existe",
+        redirect: false
+      };
+    }
+
     await signIn("credentials", {
       ...values,
       redirect: false
@@ -17,11 +32,22 @@ export const authenticate = async (values: z.infer<typeof loginSchema>) => {
 
     return { success: true, status: 200 };
   } catch (error: any) {
-    console.log("Error en autenticación:", error.cause);
-    let message = error.cause.err.toString().replace('Error: ', '')
+    console.log("Error en autenticación:", error);
+    
+    let message = "Error de autenticación";
+    
+    if (error instanceof AuthError) {
+      message = error.message;
+    } else if (error.cause?.message) {
+      message = error.cause.message;
+    } else if (error.message) {
+      message = error.message;
+    }
+
     return {
+      success: false,
       status: message === 'Email de verificacion enviado' ? 418 : 401,
-      message: message === 'Email de verificacion enviado' ? 'Email de verificacion enviado' : message,
+      message: message,
       redirect: false
     };
   }
@@ -29,7 +55,6 @@ export const authenticate = async (values: z.infer<typeof loginSchema>) => {
 
 export async function handleRegister(values: z.infer<typeof registerSchema>) {
   try {
-    // Primero verificamos si el usuario existe
     const existingUser = await prisma.user.findUnique({
       where: { email: values.email }
     });
@@ -43,17 +68,15 @@ export async function handleRegister(values: z.infer<typeof registerSchema>) {
       };
     }
 
-    // Si no existe, continuamos con el registro
     const hashedPassword = await bcrypt.hash(values.password, 10);
     
-    //creacion del usuario
     await prisma.user.create({
       data: {
         name: values.name,
         email: values.email,
         password: hashedPassword
       }
-    })
+    });
 
     return {
       success: true,

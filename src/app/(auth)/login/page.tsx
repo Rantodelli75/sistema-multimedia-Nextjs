@@ -46,13 +46,19 @@ export default function LoginPage() {
     setStatus(null)
     
     startTransition(async () => {
-      const response = await handleRegister(values)
-      setStatus(response.status !== undefined ? response.status : null)
-      if (response.success) {
-        router.push('/login')
-        setError(response.message || 'Usuario registrado exitosamente')
-      } else {
-        setError(response.message || 'Error durante el registro')
+      try {
+        const response = await handleRegister(values)
+        setStatus(response.status)
+        
+        if (response.success) {
+          router.push('/login')
+          setError(response.message || 'Usuario registrado exitosamente')
+        } else {
+          setError(response.message || 'Error durante el registro')
+        }
+      } catch (error) {
+        setError('Error durante el registro')
+        setStatus(500)
       }
     })
   }
