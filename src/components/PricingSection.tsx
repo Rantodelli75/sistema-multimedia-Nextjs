@@ -24,7 +24,7 @@ export default function PricingSection() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   const handleLogin = () => {
-    window.location.href = '/login'  // O usa router.push('/login') si estás usando Next.js
+    window.location.href = '/login'  
   }
 
   return (
