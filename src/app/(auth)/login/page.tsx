@@ -1,11 +1,13 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { startTransition, useState, useTransition } from 'react'
+import { startTransition, useState, useTransition, useEffect } from 'react'
 import LoginPageComponent from '@/components/auth/login_page'
 import { loginSchema, registerSchema } from '@/lib/zod'
 import { z } from 'zod'
 import { authenticate, handleRegister } from 'actions/auth-action'
+import { useSession } from 'next-auth/react'
+import LoadingSpinner from '@/components/auth/loading-spinner'
 
 export default function LoginPage() {
   const searchParams = useSearchParams()
@@ -15,6 +17,13 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [status, setStatus] = useState<number | null>(null)
   const [isPending, startTransition] = useTransition()
+  const session = useSession()
+
+  useEffect(() => {
+    if (session.status === 'authenticated') {
+      router.replace('/dashboard')
+    }
+  }, [session.status, router])
 
   const handleLoginSubmit = async (values: z.infer<typeof loginSchema>) => {
     if (loading) return
@@ -56,15 +65,18 @@ export default function LoginPage() {
       }
     })
   }
-
-  return (
-    <LoginPageComponent
-      onLoginSubmit={handleLoginSubmit}
-      onRegisterSubmit={handleRegisterSubmit}
-      error={error || ''}
-      loading={loading}
+  if (session.status === 'authenticated' || session.status === 'loading') {
+    return <LoadingSpinner />
+  } else {  
+    return (
+      <LoginPageComponent
+        onLoginSubmit={handleLoginSubmit}
+        onRegisterSubmit={handleRegisterSubmit}
+        error={error || ''}
+        loading={loading}
       isVerified={isVerified}
       status={status}
     />
   )
+  }
 }

@@ -7,11 +7,26 @@ import FeaturesSection from "@/components/FeaturesSection"
 import PopularPlaylistsSection from "@/components/PopularPlaylistsSection"
 import TestimonialsSection from "@/components/TestimonialsSection"
 import PricingSection from "@/components/PricingSection"
+import { useSession } from "next-auth/react"
+import { useEffect } from "react"
+import LoadingSpinner from "./auth/loading-spinner"
+import { useRouter } from "next/navigation"
 
 export default function LandingPage() {
-  return (
-    <main className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-black text-white">
-      <Header />
+  const session = useSession()
+  const router = useRouter()
+  useEffect(() => {
+    if (session.status === 'authenticated') {
+      router.replace('/dashboard')
+    }
+  }, [session.status])
+  if (session.status === 'authenticated' || session.status === 'loading') {
+    return <LoadingSpinner />
+  }
+  else {    
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-black text-white">
+        <Header />
       <HeroSection />
       <FeaturesSection />
       <PopularPlaylistsSection />
@@ -21,4 +36,4 @@ export default function LandingPage() {
     </main>
   )
 }
-
+}

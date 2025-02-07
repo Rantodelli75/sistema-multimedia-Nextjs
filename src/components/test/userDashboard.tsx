@@ -1,13 +1,14 @@
 "use client"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Sidebar from "./Sidebar"
 import MusicContent from "./MusicContent"
 import { FaBars, FaMusic } from "react-icons/fa"
 
+
 export default function UserDashboardLayout(session: any) {
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(false)
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false)
-  
+ 
 
   return (
     <div className="relative flex min-h-screen bg-[#282828] bg-cover bg-center bg-no-repeat">
@@ -46,3 +47,4 @@ export default function UserDashboardLayout(session: any) {
     </div>
   )
 }
+
