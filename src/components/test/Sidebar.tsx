@@ -5,6 +5,7 @@ import Link from "next/link"
 import { FaMap, FaChartLine, FaCompactDisc, FaPlay, FaHeart, FaUser, FaCog, FaSignOutAlt } from "react-icons/fa"
 import { signOut } from "next-auth/react"
 import { useEffect } from "react"
+import { FaCopyright } from "react-icons/fa6"
 
 const menuItems = [
   { icon: FaMap, text: "Descubrir", href: "#" },
@@ -39,7 +40,7 @@ export default function Sidebar({ session }: { session: SessionData }) {
     <motion.nav 
       initial={{ x: -100 }}
       animate={{ x: 0 }}
-      className="w-[200px] lg:w-64 h-screen bg-black/20 backdrop-blur-lg p-4 lg:p-6 flex flex-col justify-between
+      className="w-[200px] lg:w-64 h-full bg-black/20 backdrop-blur-lg p-4 lg:p-6 flex flex-col justify-between lg:space-evenly
                  shadow-lg"
     >
       <div>
@@ -85,6 +86,14 @@ export default function Sidebar({ session }: { session: SessionData }) {
           </button>
         </li>
       </ul>
+      <div>
+        <p className="text-white/60 text-xs flex gap-1 justify-center"> 
+          <span>
+            <FaCopyright className="w-5 h-5" />
+          </span>
+          <span className="text-white/60 mt-[2px]">2025</span>
+        </p>
+      </div>
     </motion.nav>
   )
 }
