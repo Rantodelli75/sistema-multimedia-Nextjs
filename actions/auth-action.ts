@@ -35,7 +35,7 @@ export async function handleRegister(values: z.infer<typeof registerSchema>) {
     });
 
     if (existingUser) {
-      // Retornamos un objeto con el status 400 y el mensaje de error
+      console.log("Usuario ya existe - Status: 400");
       return {
         success: false,
         message: "El usuario ya existe",
