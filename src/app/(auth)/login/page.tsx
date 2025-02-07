@@ -43,8 +43,12 @@ export default function LoginPage() {
     if (isPending) return
 
     setError(null)
+    setStatus(null)
+    
     startTransition(async () => {
       const response = await handleRegister(values)
+      setStatus(response.status || null)
+      console.log(response.status)
       if (response.success) {
         router.push('/login')
         setError(response.message || 'Usuario registrado exitosamente')
