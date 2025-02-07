@@ -8,9 +8,10 @@ interface FormLoginProps {
     error: string
     loading: boolean
     isVerified: boolean
+    status: number | null
 }
 
-export default function LoginPageComponent({ onLoginSubmit, onRegisterSubmit, error, loading, isVerified }: FormLoginProps) {
+export default function LoginPageComponent({ onLoginSubmit, onRegisterSubmit, error, loading, isVerified, status }: FormLoginProps) {
   return (
     <LoginForm 
       onLoginSubmit={onLoginSubmit}
@@ -18,6 +19,7 @@ export default function LoginPageComponent({ onLoginSubmit, onRegisterSubmit, er
       error={error}
       loading={loading}
       isVerified={isVerified}
+      status={status}
     />
   )
 }

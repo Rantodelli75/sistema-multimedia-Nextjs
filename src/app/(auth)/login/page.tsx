@@ -13,6 +13,7 @@ export default function LoginPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [status, setStatus] = useState<number | null>(null)
   const [isPending, startTransition] = useTransition()
 
   const handleLoginSubmit = async (values: z.infer<typeof loginSchema>) => {
@@ -21,9 +22,10 @@ export default function LoginPage() {
     try {
       setLoading(true)
       setError('')
+      setStatus(null)
 
       const response = await authenticate(values)
-
+      setStatus(response.status !== undefined ? response.status : null)
       if (response.success) {
         router.replace('/dashboard')
       } else {
@@ -59,6 +61,7 @@ export default function LoginPage() {
       error={error || ''}
       loading={loading}
       isVerified={isVerified}
+      status={status}
     />
   )
 }

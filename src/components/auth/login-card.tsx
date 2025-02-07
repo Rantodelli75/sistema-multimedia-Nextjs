@@ -15,15 +15,22 @@ interface FormLoginProps {
   onRegisterSubmit: (values: z.infer<typeof registerSchema>) => Promise<void>
   error: string
   loading: boolean
+  status: number | null
 }
 
-export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, loading }: FormLoginProps) {
+export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, loading, status }: FormLoginProps) {
   const [isLogin, setIsLogin] = useState(true)
   const { toast } = useToast()
 
   // Show error toast when error prop changes
   useEffect(() => {
     if (error) {
+      if (status !== undefined) {
+        status === 418 ? toast({
+          variant: "destructive",
+          title: "Alerta",
+          description: error,
+        }) :
       toast({
         variant: "destructive",
         title: "Error",
@@ -31,7 +38,8 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
       })
       console.log("error")
     }
-  }, [error, toast])
+  }
+}, [error, toast])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -146,10 +154,6 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
               };
               onRegisterSubmit(userData);
               setIsLogin(true);
-              toast({
-                title: "Registrado con éxito",
-                description: "Ahora puedes iniciar sesión para que se envie el correo de verificación",
-              })
             }} className={`${glassStyle} px-8 pt-6 pb-8 mb-4`}>
               <h2 className="text-2xl font-bold mb-6 text-center text-white">Register</h2>
               <div className="mb-4 space-y-2">

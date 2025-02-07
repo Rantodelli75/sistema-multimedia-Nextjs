@@ -15,9 +15,10 @@ interface FormLoginProps {
   error: string
   loading: boolean
   isVerified: boolean
+  status: number | null
 }
 
-export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, loading, isVerified }: FormLoginProps) {
+export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, loading, isVerified, status  }: FormLoginProps) {
   const [showLogin, setShowLogin] = useState(false)
   const [showLoginComponent, setShowLoginComponent] = useState(false)
   useEffect(() => {
@@ -52,7 +53,7 @@ export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, load
             transition={{ duration: 1 }}
             className="w-full max-w-md relative mb-24 z-10"
           >
-            <LoginCard onLoginSubmit={onLoginSubmit} onRegisterSubmit={onRegisterSubmit} error={error} loading={loading}/>
+            <LoginCard onLoginSubmit={onLoginSubmit} onRegisterSubmit={onRegisterSubmit} error={error} loading={loading} status={status}/>
           </motion.div>
         )}
       </AnimatePresence>
