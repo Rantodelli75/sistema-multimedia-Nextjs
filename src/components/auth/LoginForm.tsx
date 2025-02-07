@@ -19,7 +19,7 @@ interface FormLoginProps {
 
 export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, loading, isVerified }: FormLoginProps) {
   const [showLogin, setShowLogin] = useState(false)
-
+  const [showLoginComponent, setShowLoginComponent] = useState(false)
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowLogin(true)
@@ -27,7 +27,15 @@ export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, load
 
     return () => clearTimeout(timer)
   }, [])
+  useEffect(() => {
+    if (showLogin) {
+      const timer = setTimeout(() => {
+        setShowLoginComponent(true)
+      }, 1000)
 
+      return () => clearTimeout(timer)
+    }
+  }, [showLogin])
   return (
     <main className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
       {/* Particles Background */}
@@ -36,12 +44,12 @@ export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, load
       </div>
 
       <AnimatePresence>
-        {showLogin && (
+        {showLoginComponent && (
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
+            initial={{ opacity: -0.5, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 1 }}
             className="w-full max-w-md relative mb-24 z-10"
           >
             <LoginCard onLoginSubmit={onLoginSubmit} onRegisterSubmit={onRegisterSubmit} error={error} loading={loading}/>
@@ -52,7 +60,7 @@ export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, load
       <motion.div
         initial={{ width: "50vw", height: "50vh", bottom: "50%", left: "50%" }}
         animate={showLogin ? {
-          width: ["50vw", "150vw", "150vw"],
+          width: ["50vh", "150vh", "150vh"],
           height: ["50vh", "150vh", "150vh"],
           bottom: ["50%", "-200vh", "-120vh"],
           left: ["50%", "50%", "50%"]
@@ -64,7 +72,7 @@ export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, load
         }}
         className="absolute -translate-x-1/2 pointer-events-none z-10"
       >
-        <SpinningRecord />
+        <SpinningRecord showLogin={showLogin} />
       </motion.div>
       {isVerified && (
         <AlertDialog defaultOpen>
