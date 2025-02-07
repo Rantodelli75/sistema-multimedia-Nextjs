@@ -19,7 +19,7 @@ export const authenticate = async (values: z.infer<typeof loginSchema>) => {
       console.log("Usuario no existe");
       return {
         success: false,
-        status: 401,
+        status: 404,
         message: "El usuario no existe",
         redirect: false
       };
@@ -32,22 +32,12 @@ export const authenticate = async (values: z.infer<typeof loginSchema>) => {
 
     return { success: true, status: 200 };
   } catch (error: any) {
-    console.log("Error en autenticación:", error);
-    
-    let message = "Error de autenticación";
-    
-    if (error instanceof AuthError) {
-      message = error.message;
-    } else if (error.cause?.message) {
-      message = error.cause.message;
-    } else if (error.message) {
-      message = error.message;
-    }
-
+    console.log("Error en autenticación:", error.cause);
+    let message = error.cause.err.toString().replace('Error: ', '')
     return {
       success: false,
       status: message === 'Email de verificacion enviado' ? 418 : 401,
-      message: message,
+      message: message === 'Email de verificacion enviado' ? 'Email de verificacion enviado' : message,
       redirect: false
     };
   }
