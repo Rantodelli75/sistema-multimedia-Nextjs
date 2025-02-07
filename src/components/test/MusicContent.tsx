@@ -206,7 +206,7 @@ export default function MusicContent() {
             <img 
               src={currentSong?.image || DEFAULT_ALBUM_COVER} 
               alt={currentSong?.title || 'No track selected'} 
-              className="w-14 h-14 rounded-lg shadow-lg" 
+              className="w-14 h-14 rounded-lg shadow-lg object-cover" 
             />
             <div className="flex-1">
               <h3 className="text-white font-medium truncate">{currentSong?.title || ''}</h3>
