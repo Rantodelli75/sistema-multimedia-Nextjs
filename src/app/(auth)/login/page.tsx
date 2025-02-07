@@ -2,11 +2,10 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { startTransition, useState, useTransition } from 'react'
+import LoginPageComponent from '@/components/auth/login_page'
+import { loginSchema, registerSchema } from '@/lib/zod'
+import { z } from 'zod'
 import { authenticate, handleRegister } from 'actions/auth-action'
-import FormLogin from "@/components/form-login";
-import LoginPageComponent from '@/components/auth/login_page';
-import { loginSchema, registerSchema } from '@/lib/zod';
-import { z } from 'zod';
 
 export default function LoginPage() {
   const searchParams = useSearchParams()
@@ -17,37 +16,38 @@ export default function LoginPage() {
   const [isPending, startTransition] = useTransition()
 
   const handleLoginSubmit = async (values: z.infer<typeof loginSchema>) => {
-    if (loading) return;
+    if (loading) return
 
     try {
-      setLoading(true);
-      setError('');
-      
-      const response = await authenticate(values);
-      console.log('Respuesta de autenticación:', response); // Para debugging
-      
+      setLoading(true)
+      setError('')
+
+      const response = await authenticate(values)
+
       if (response.success) {
-        router.replace(response.redirectUrl || '/dashboard');
+        router.replace('/dashboard')
       } else {
-        setError(response.message || 'Error al iniciar sesión');
+        setError(response.message || 'Error durante el inicio de sesión')
       }
     } catch (error) {
-      console.error('Error completo:', error);
-      setError('Error al iniciar sesión');
+      console.error('Error de autenticación:', error)
+      setError('Error al iniciar sesión')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
+
   const handleRegisterSubmit = async (values: z.infer<typeof registerSchema>) => {
     if (isPending) return
 
     setError(null)
     startTransition(async () => {
       const response = await handleRegister(values)
-      if (response.error) {
-        setError(response.error)
+      if (response.success) {
+        router.push('/login')
+        setError(response.error || 'Usuario registrado exitosamente')
       } else {
-        router.push("/dashboard")
+        setError(response.message || 'Error durante el registro')
       }
     })
   }
@@ -60,5 +60,5 @@ export default function LoginPage() {
       loading={loading}
       isVerified={isVerified}
     />
-  );
+  )
 }

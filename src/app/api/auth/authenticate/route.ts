@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
     },
   });
 
-  // Redirigir a la página de login con un mensaje de éxito
+  // Redirigir a la página de login 
   const redirectUrl = new URL('/login', request.nextUrl.origin);
   return Response.redirect(redirectUrl);
 }

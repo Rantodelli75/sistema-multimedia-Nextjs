@@ -10,79 +10,64 @@ import { revalidatePath } from 'next/cache'
 
 export const authenticate = async (values: z.infer<typeof loginSchema>) => {
   try {
-    const result = await signIn('credentials', {
-      email: values.email,
-      password: values.password,
-      redirect: false,
-    })
+    await signIn("credentials", {
+      ...values,
+      redirect: false
+    });
 
-    return { 
-      success: true,
-      redirectUrl: '/dashboard',
-      message: 'Autenticación exitosa'
-    }
-  } catch (error) {
-    console.error('Error en authenticate:', error)
+    return { success: true };
+  } catch (error: any) {
+    console.log("Error en autenticación:", error.cause);
+    let message = error.cause.err.toString()
     return {
       success: false,
-      message: error instanceof Error ? error.message : 'Error de autenticación'
-    }
+      message: message,
+      redirect: false
+    };
   }
 }
 
-export const handleRegister = async (
-    values: z.infer<typeof registerSchema>
-) => {
-    try {
+export async function handleRegister(values: z.infer<typeof registerSchema>) {
+  try {
+    // Primero verificamos si el usuario existe
+    const existingUser = await prisma.user.findUnique({
+      where: { email: values.email }
+    });
 
-        const {data, success} = registerSchema.safeParse(values)
-
-        if(!success) {
-            throw new Error("Invalid credentials")
-        }
-
-        //validacion si el user existe a traves del email
-        const user = await prisma.user.findUnique({
-            where: {email: data.email}
-        })
-
-        if(user) {
-            throw new Error("User already exists")
-        }
-
-        const hashedPassword = await bcrypt.hash(data.password, 10)
-
-        //creacion del usuario
-
-        await prisma.user.create({
-            data: {
-                name: data.name,
-                email: data.email,
-                password: hashedPassword
-            }
-        })
-
-        await signIn('credentials', {
-            email: data.email,
-            password: data.password,
-            redirect: false,
-        })
-
-        return {
-            success: true,
-            message: 'Usuario registrado exitosamente'
-        }
-       
-    } catch (error) {
-        if (error instanceof AuthError) {
-            return { error: error.cause?.err?.message }
-        }
-        return {
-            success: false,
-            message: error instanceof Error ? error.message : 'Error en el registro',
-        }
-    } finally {
-        // Revalidar la ruta si es necesario
-        revalidatePath('/login')
+    if (existingUser) {
+      // Retornamos un objeto con el status 400 y el mensaje de error
+      return {
+        success: false,
+        message: "El usuario ya existe",
+        status: 400
+      };
     }
+
+    // Si no existe, continuamos con el registro
+    const hashedPassword = await bcrypt.hash(values.password, 10);
+    
+    //creacion del usuario
+    await prisma.user.create({
+      data: {
+        name: values.name,
+        email: values.email,
+        password: hashedPassword
+      }
+    })
+
+    return {
+      success: true,
+      message: "Usuario registrado exitosamente",
+      status: 200
+    };
+
+  } catch (error) {
+    console.error("Error en registro:", error);
+    
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Error durante el registro",
+      status: 500
+    };
+  }
 }

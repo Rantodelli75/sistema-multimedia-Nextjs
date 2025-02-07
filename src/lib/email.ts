@@ -105,6 +105,7 @@ export const sendEmail = async (email: string, token: string) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
+    console.log("aqui")
     console.log('Email enviado con éxito:', info.response);
     return { success: true, data: info };
 
