@@ -4,14 +4,15 @@ import { FaPlay } from "react-icons/fa"
 export default function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <div className="text-center px-4">
+      <div className="absolute w-[400px] h-0 shadow-[0_0_250px_123px_#9333EA] z-[1] opacity-40" />
+      <div className="text-center px-4 relative z-10">
         <motion.h2
           className="text-6xl font-bold mb-4"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          Welcome to Nightgrovve
+          Bienvenido a Nightgrovve
         </motion.h2>
         <motion.p
           className="text-xl mb-8"
@@ -19,7 +20,7 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
         >
-          Discover the best nocturnal beats
+          Descubre los mejores ritmos nocturnos
         </motion.p>
         <motion.button
           className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full flex items-center mx-auto transition-all duration-300 relative overflow-hidden group"
@@ -33,7 +34,7 @@ export default function HeroSection() {
           }}
         >
           <span className="relative z-10 group-hover:text-white flex items-center">
-            <FaPlay className="mr-2" /> Start Listening
+            <FaPlay className="mr-2" /> Comenzar a Escuchar
           </span>
           <div className="absolute inset-0 bg-gradient-to-r from-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </motion.button>

@@ -93,27 +93,27 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   type="email"
                   id="email"
                   name="email"
-                  placeholder="Enter your email"
+                  placeholder="Ingresa tu email"
                   required
                   className="bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60  backdrop-blur-xl rounded-xl"
                 />
               </div>
               <div className="mb-6 space-y-2">
                 <Label htmlFor="password" className="text-white">
-                  Password
+                  Contraseña
                 </Label>
                 <Input
                   type="password"
                   id="password"
                   name="password"
-                  placeholder="Enter your password"
+                  placeholder="Ingresa tu contraseña"
                   required
                   className="bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60  backdrop-blur-xl rounded-xl"
                 />
               </div>
               <div className="flex items-center justify-between">
                 <Button type="submit" className="bg-white/30 hover:bg-white/40 text-white backdrop-blur-xl">
-                  Sign In
+                  Iniciar sesión
                 </Button>
                 <Button
                   type="button"
@@ -121,7 +121,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   onClick={() => setIsLogin(false)}
                   className="border-white/30 text-black hover:text-white hover:bg-white/20 backdrop-blur-xl"
                 >
-                  Register
+                  Registrarse
                 </Button>
               </div>
             </form>
@@ -154,13 +154,13 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
               <h2 className="text-2xl font-bold mb-6 text-center text-white">Register</h2>
               <div className="mb-4 space-y-2">
                 <Label htmlFor="register-name" className="text-white">
-                  Name
+                  Nombre
                 </Label>
                 <Input
                   type="text"
                   id="register-name"
                   name="name"
-                  placeholder="Enter your name"
+                  placeholder="Ingresa tu nombre"
                   required
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
                 />
@@ -171,40 +171,40 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   type="email"
                   id="register-email"
                   name="email"
-                  placeholder="Enter your email"
+                  placeholder="Ingresa tu email"
                   required
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
                 />
               </div>
               <div className="mb-4 space-y-2">
                 <Label htmlFor="register-password" className="text-white">
-                  Password
+                  Contraseña
                 </Label>
                 <Input
                   type="password"
                   id="register-password"
                   name="password"
-                  placeholder="Enter your password"
+                  placeholder="Ingresa tu contraseña"
                   required
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
                 />
               </div>
               <div className="mb-6 space-y-2">
                 <Label htmlFor="confirm-password" className="text-white">
-                  Confirm Password
+                  Confirmar contraseña
                 </Label>
                 <Input
                   type="password"
                   id="confirm-password"
                   name="confirmPassword"
-                  placeholder="Confirm your password"
+                  placeholder="Confirma tu contraseña"
                   required
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
                 />
               </div>
               <div className="flex items-center justify-between">
                 <Button type="submit" className="bg-white/30 hover:bg-white/40 text-white backdrop-blur-xl">
-                  Register
+                  Registrarse
                 </Button>
                 <Button
                   type="button"
@@ -212,7 +212,7 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   onClick={() => setIsLogin(true)}
                   className="border-white/30 text-black hover:text-white hover:bg-white/20 backdrop-blur-xl"
                 >
-                  Back to Login
+                  Volver al login
                 </Button>
               </div>
             </form>

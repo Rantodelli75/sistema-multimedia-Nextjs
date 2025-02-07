@@ -3,14 +3,25 @@
 import { motion } from "framer-motion"
 import { useState, useEffect } from "react"
 
-export default function SpinningRecord() {
+export default function SpinningRecord({ showLogin }: { showLogin: boolean }) {
   const [isAnimationComplete, setIsAnimationComplete] = useState(false)
+  const [isLoginAnimationComplete, setIsLoginAnimationComplete] = useState(true)
+
+  useEffect(() => {
+    if (showLogin) {
+      const timer2 = setTimeout(() => {
+        setIsLoginAnimationComplete(false)
+      }, 1500)
+      return () => clearTimeout(timer2)
+    }
+  }, [showLogin])
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsAnimationComplete(true)
     }, 2000) // Ajusta este valor para controlar cuándo comienza la animación de giro
 
+    
     return () => clearTimeout(timer)
   }, [])
 
@@ -41,7 +52,7 @@ export default function SpinningRecord() {
           </radialGradient>
         </defs>
         <circle cx="50" cy="50" r="45" fill="url(#recordGradient)" />
-        <circle cx="50" cy="50" r="35" fill="#ffffff" opacity="0.8" />
+        <circle cx="50" cy="50" r={isLoginAnimationComplete ? "20" : "35"} fill="#ffffff" opacity="0.8" />
         <circle cx="50" cy="50" r="5" fill="#1a1a1a" />
         <g opacity="0.7">
           <path d="M50 10 A40 40 0 0 1 90 50" fill="none" stroke="#ffffff" strokeWidth="0.5" />
