@@ -47,8 +47,7 @@ export default function LoginPage() {
     
     startTransition(async () => {
       const response = await handleRegister(values)
-      setStatus(response.status || null)
-      console.log(response.status)
+      setStatus(response.status !== undefined ? response.status : null)
       if (response.success) {
         router.push('/login')
         setError(response.message || 'Usuario registrado exitosamente')

@@ -7,16 +7,16 @@ import { signOut } from "next-auth/react"
 import { useEffect } from "react"
 
 const menuItems = [
-  { icon: FaMap, text: "Discover", href: "#" },
-  { icon: FaChartLine, text: "Trending", href: "#" },
-  { icon: FaCompactDisc, text: "Album", href: "#" },
-  { icon: FaPlay, text: "Playlist", href: "#" },
-  { icon: FaHeart, text: "Favorites", href: "#" },
+  { icon: FaMap, text: "Descubrir", href: "#" },
+  { icon: FaChartLine, text: "Tendencias", href: "#" },
+  { icon: FaCompactDisc, text: "Álbum", href: "#" },
+  { icon: FaPlay, text: "Lista de Reproducción", href: "#" },
+  { icon: FaHeart, text: "Favoritos", href: "#" },
 ]
 
 const bottomMenuItems = [
-  { icon: FaUser, text: "Profile", href: "#" },
-  { icon: FaCog, text: "Settings", href: "#" },
+  { icon: FaUser, text: "Perfil", href: "#" },
+  { icon: FaCog, text: "Configuración", href: "#" },
 ]
 interface User {
   name: string;
@@ -81,7 +81,7 @@ export default function Sidebar({ session }: { session: SessionData }) {
             className="w-full flex items-center gap-3 text-white/60 hover:text-white px-4 py-3 rounded-lg hover:bg-white/10"
           >
             <FaSignOutAlt className="w-5 h-5" />
-            <span>Logout</span>
+            <span>Cerrar Sesión</span>
           </button>
         </li>
       </ul>
