@@ -93,12 +93,57 @@ const featuredArtists = [
     name: "Taylor Swift"
   },
   {
-    image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/37e5ccfa-f9ee-458b-afa2-dcd85b495e4e",
-    name: "Taylor Swift"
+    image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/666e065b-eb53-4320-a580-30e266370955",
+    name: "Teddy Swims"
   },
   {
-    image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/37e5ccfa-f9ee-458b-afa2-dcd85b495e4e",
-    name: "Taylor Swift"
+    image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/619ed17f-5df2-4d32-a419-78f120a1aa5c",
+    name: "Dua Lipa"
+  },
+  {
+    image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/ea61baa7-9c4b-4f43-805e-81de5fc8aa2b",
+    name: "The Weeknd"
+  },
+  {
+    image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/33779e1a-55f9-402a-b004-002395d0fbf1",
+    name: "Bad Bunny"
+  },
+  {
+    image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/0ed3f51d-b769-4256-a4dd-8f35b12a1690",
+    name: "Billie Eilish"
+  }
+]
+
+const recommendedAlbums = [
+  {
+    image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/95b52c32-f5da-4fe6-956d-a5ed118bbdd2",
+    title: "Midnights",
+    artist: "Taylor Swift"
+  },
+  {
+    image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/6ddf81f5-2689-4f34-bf80-a1e07f14621c",
+    title: "I Wanna Dance With Somebody",
+    artist: "Teddy Swims"
+  },
+  {
+    image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/ab52d9d0-308e-43e0-a577-dce35fedd2a3",
+    title: "Future Nostalgia",
+    artist: "Dua Lipa"
+  },
+  {
+    image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/20c8fdd5-9f4a-4917-ae90-0239a52e8334",
+    title: "After Hours",
+    artist: "The Weeknd"
+  },
+  {
+    image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/df461a99-2fb3-4d55-ac16-2e0c6dd783e1",
+    title: "Un Verano Sin Ti",
+    artist: "Bad Bunny"
+  },
+  {
+    image: "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/33779e1a-55f9-402a-b004-002395d0fbf1",
+    title: "Happier Than Ever",
+    artist: "Billie Eilish"
   }
 ]
 
@@ -179,6 +224,49 @@ export default function MusicContent() {
           <CarouselPrevious className="hidden lg:flex z-50 bg-white/80 hover:bg-white/60" />
           <CarouselNext className="hidden lg:flex z-50 bg-white/80 hover:bg-white/60" />
         </Carousel>
+
+        <div className="mt-12 mb-8">
+          <h2 className="text-2xl font-bold text-white mb-6">Artistas Recomendados</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {featuredArtists.map((artist, index) => (
+              <div key={index} className="flex flex-col items-center group cursor-pointer">
+                <div className="relative w-32 h-32 rounded-full overflow-hidden mb-3">
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <FaPlay className="text-white w-8 h-8" />
+                  </div>
+                  <img 
+                    src={artist.image} 
+                    alt={artist.name}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+                <span className="text-white font-medium text-center">{artist.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-white mb-6">Álbumes Recomendados</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {recommendedAlbums.map((album, index) => (
+              <div key={index} className="group cursor-pointer">
+                <div className="relative overflow-hidden rounded-lg mb-3">
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                    <FaPlay className="text-white w-8 h-8" />
+                  </div>
+                  <img 
+                    src={album.image} 
+                    alt={album.title}
+                    className="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+                <h3 className="text-white font-medium">{album.title}</h3>
+                <p className="text-white/60 text-sm">{album.artist}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       {/* Music Player and Recommended Songs */}
