@@ -15,13 +15,13 @@ export const authenticate = async (values: z.infer<typeof loginSchema>) => {
       redirect: false
     });
 
-    return { success: true };
+    return { success: true, status: 200 };
   } catch (error: any) {
     console.log("Error en autenticación:", error.cause);
-    let message = error.cause.err.toString()
+    let message = error.cause.err.toString().replace('Error: ', '')
     return {
-      success: false,
-      message: message,
+      status: message === 'Email de verificacion enviado' ? 418 : 401,
+      message: message === 'Email de verificacion enviado' ? 'Email de verificacion enviado' : message,
       redirect: false
     };
   }
