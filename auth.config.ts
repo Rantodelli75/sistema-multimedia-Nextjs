@@ -16,25 +16,22 @@ export default {
         password: {},
       },
       authorize: async (credentials) => {
-       
         const {data , success } = loginSchema.safeParse(credentials)
 
         if(!success) { 
-          throw new Error("Invalid credentials")
+          return null
         }
 
         const user = await prisma.user.findUnique({
             where: {email: data.email}
         })
 
-        if(!user) throw new Error("Invalid credentials")
-
-          //valido la contraseña hasheada del usuario
+        if(!user) return null
 
         const passwordMatch = await bcrypt.compare(data.password, user.password!)
 
         if (!passwordMatch) { 
-          throw new Error("Invalid credentials")
+          return null
         }
 
         if (!user.emailVerified) {
@@ -69,9 +66,13 @@ export default {
         }
 
         return user
-
       },
     }),
   ],
+  pages: {
+    signIn: '/login',
+    error: '/login'
+  },
+  debug: true
 } satisfies NextAuthConfig
   
