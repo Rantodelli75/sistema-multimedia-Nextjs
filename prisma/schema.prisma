@@ -9,46 +9,143 @@ datasource db {
 
 model Account {
   id                String  @id @default(cuid())
-  userId            String  @map("user_id")
+  userId            String
   type              String
   provider          String
-  providerAccountId String  @map("provider_account_id")
-  refresh_token     String?
-  access_token      String?
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?
+  id_token          String? @db.Text
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
-  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String      @id @default(cuid())
   name          String?
-  email         String?   @unique
-  password      String?
-  emailVerified DateTime? @map("email_verified")
+  email         String?     @unique
+  emailVerified DateTime?
   image         String?
-  rol           Role      @default(user)
   accounts      Account[]
+  sessions      Session[]
+  password      String
+  createdAt     DateTime    @default(now()) @map("created_at")
 
-  @@map("users")
+  // Relaciones para el sistema de música
+  artists      Artist[]
+  playlists    Playlist[]
+  songLikes    SongLike[]
+  songPlays    SongPlay[]
+  artistLikes  ArtistLike[]
 }
 
 model VerificationToken {
-  identifier String @unique
-  token      String
+  identifier String
+  token      String   @unique
   expires    DateTime
 
-  @@id([identifier])
+  @@unique([identifier, token])
 }
 
-enum Role {
-  admin
-  user
-  artist
+model Artist {
+  id        BigInt   @id @default(autoincrement())
+  userId    String   @map("user_id")
+  name      String
+  bio       String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relaciones
+  user        User         @relation(fields: [userId], references: [id])
+  songs       Song[]
+  artistLikes ArtistLike[]
+}
+
+model Song {
+  id          BigInt   @id @default(autoincrement())
+  artistId    BigInt   @map("artist_id")
+  title       String
+  genre       String?
+  releaseDate DateTime? @map("release_date")
+  duration    Int?      // Duración en segundos
+  filePath    String   @map("file_path")
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relaciones
+  artist         Artist          @relation(fields: [artistId], references: [id])
+  playlistSongs  PlaylistSong[]
+  songLikes      SongLike[]
+  songPlays      SongPlay[]
+}
+
+model Playlist {
+  id          BigInt   @id @default(autoincrement())
+  userId      String   @map("user_id")
+  name        String
+  description String?
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Relaciones
+  user          User            @relation(fields: [userId], references: [id])
+  playlistSongs PlaylistSong[]
+}
+
+model PlaylistSong {
+  playlistId BigInt @map("playlist_id")
+  songId     BigInt @map("song_id")
+
+  // Relaciones
+  playlist   Playlist @relation(fields: [playlistId], references: [id])
+  song       Song     @relation(fields: [songId], references: [id])
+
+  @@id([playlistId, songId])
+}
+
+model SongLike {
+  userId    String   @map("user_id")
+  songId    BigInt   @map("song_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relaciones
+  user User @relation(fields: [userId], references: [id])
+  song Song @relation(fields: [songId], references: [id])
+
+  @@id([userId, songId])
+}
+
+model SongPlay {
+  userId    String   @map("user_id")
+  songId    BigInt   @map("song_id")
+  playedAt  DateTime @default(now()) @map("played_at")
+
+  // Relaciones
+  user User @relation(fields: [userId], references: [id])
+  song Song @relation(fields: [songId], references: [id])
+
+  @@id([userId, songId, playedAt])
+}
+
+model ArtistLike {
+  userId    String   @map("user_id")
+  artistId  BigInt   @map("artist_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // Relaciones
+  user   User   @relation(fields: [userId], references: [id])
+  artist Artist @relation(fields: [artistId], references: [id])
+
+  @@id([userId, artistId])
 }

@@ -92,7 +92,7 @@ export const sendEmail = async (email: string, token: string) => {
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h2>Verificación de correo electrónico</h2>
           <p>Haz clic en el siguiente enlace para verificar tu correo electrónico:</p>
-          <a href="${process.env.NEXT_PUBLIC_URL}/api/auth/authenticate?token=${token}" 
+          <a href="${process.env.NEXT_PUBLIC_API_URL}/api/auth/authenticate?token=${token}" 
              style="display: inline-block; padding: 10px 20px; background-color: #007bff; 
                     color: white; text-decoration: none; border-radius: 5px;">
             Verificar correo electrónico
