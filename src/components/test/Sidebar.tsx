@@ -40,7 +40,7 @@ export default function Sidebar({ session }: { session: SessionData }) {
     <motion.nav 
       initial={{ x: -100 }}
       animate={{ x: 0 }}
-      className="w-[200px] lg:w-64 h-full bg-black/20 backdrop-blur-lg p-4 lg:p-6 flex flex-col justify-between lg:space-evenly
+      className="w-[200px] sticky top-0 left-0 lg:w-64 h-screen bg-black/20 backdrop-blur-lg p-4 lg:p-6 flex flex-col justify-between lg:space-evenly
                  shadow-lg"
     >
       <div>

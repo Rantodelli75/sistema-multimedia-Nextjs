@@ -38,8 +38,8 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
       })
       console.log("error")
     }
-  }
-}, [error, toast])
+  }}
+  , [error, toast])
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -103,6 +103,9 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   name="email"
                   placeholder="Ingresa tu email"
                   required
+                  maxLength={255}
+                  pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                  title="Ingrese un correo electrónico válido."
                   className="bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60  backdrop-blur-xl rounded-xl"
                 />
               </div>
@@ -116,6 +119,9 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   name="password"
                   placeholder="Ingresa tu contraseña"
                   required
+                  maxLength={128}
+                  pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                  title="La contraseña debe tener al menos 8 caracteres, incluyendo letras, números y un carácter especial (@, $, !, %, *, ?, &)."
                   className="bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60  backdrop-blur-xl rounded-xl"
                 />
               </div>
@@ -166,7 +172,10 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   name="name"
                   placeholder="Ingresa tu nombre"
                   required
-                  className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
+                  maxLength={50}
+                  pattern="^[A-Za-zÀ-ÿ\s]{1,50}$"
+                  title="El nombre solo debe contener letras y espacios."
+                  className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl rounded-xl"
                 />
                 <Label htmlFor="register-email" className="text-white">
                   Email
@@ -177,6 +186,9 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   name="email"
                   placeholder="Ingresa tu email"
                   required
+                  maxLength={255}
+                  pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+                  title="Ingrese un correo electrónico válido."
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
                 />
               </div>
@@ -190,6 +202,9 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   name="password"
                   placeholder="Ingresa tu contraseña"
                   required
+                  maxLength={128}
+                  pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                  title="La contraseña debe tener al menos 8 caracteres, incluyendo letras, números y un carácter especial (@, $, !, %, *, ?, &)."
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
                 />
               </div>
@@ -203,6 +218,9 @@ export default function LoginCard({ onLoginSubmit, onRegisterSubmit, error, load
                   name="confirmPassword"
                   placeholder="Confirma tu contraseña"
                   required
+                  maxLength={128}
+                  pattern="^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                  title="La contraseña debe tener al menos 8 caracteres, incluyendo letras, números y un carácter especial (@, $, !, %, *, ?, &)."
                   className="bg-white/20 border-white/30 text-white placeholder:text-white/60 focus:border-white/50 focus:ring-white/50 backdrop-blur-xl"
                 />
               </div>
