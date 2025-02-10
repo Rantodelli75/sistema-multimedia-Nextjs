@@ -1,49 +1,134 @@
-import Logout from "@/components/logout";
-import { auth } from "../../../../auth";
+import { auth } from "auth"
+import { redirect } from "next/navigation"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Logout from "@/components/logout"
+import { DataTable } from "@/components/DataTable"
+import { prisma } from "@/lib/prisma"
 
+async function getStats() {
+  const [usersCount, artistsCount, songsCount, playlistsCount] = await Promise.all([
+    prisma.user.count(),
+    prisma.artist.count(),
+    prisma.song.count(),
+    prisma.playlist.count(),
+  ])
 
-const AdminPage = async () => {
-  const session = await auth();
+  return {
+    usersCount,
+    artistsCount,
+    songsCount,
+    playlistsCount
+  }
+}
+
+export default async function AdminPage() {
+  const session = await auth()
   
-  // Logging para debug
-  console.log("Session completa:", JSON.stringify(session, null, 2));
-  console.log("Usuario completo:", session?.user);
-  console.log("Rol del usuario:", session?.user?.role);
-
-  if (!session || !session.user) {
-    return <div>Por favor, inicia sesión primero</div>;
+  if (!session || !session.user || session.user.role !== "admin") {
+    redirect("/")
   }
 
-  // Verificamos role en lugar de rol
-  if (!session.user.role) {
-    return (
-      <div>
-        <h2>Error de Rol</h2>
-        <p>No se detectó un rol en tu sesión</p>
-        <p>Datos de sesión disponibles:</p>
-        <pre style={{ backgroundColor: '#f5f5f5', padding: '1rem' }}>
-          {JSON.stringify(session, null, 2)}
-        </pre>
-      </div>
-    );
-  }
-
-  if (session.user.role !== "admin") {
-    return (
-      <div>
-        <p>No tienes permisos para acceder a esta página</p>
-        <p>Tu rol actual es: {session.user.role}</p>
-      </div>
-    );
-  }
+  const stats = await getStats()
 
   return (
-    <>
-      <h1>Panel de Administración</h1>
-      <pre>{JSON.stringify(session, null, 2)}</pre>
-      <Logout />
-    </>
-  );
-};
+    <div className="flex-1 space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold tracking-tight">Panel de Administración</h1>
+        <Logout />
+      </div>
 
-export default AdminPage;
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Usuarios</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.usersCount}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Artistas</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.artistsCount}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Canciones</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.songsCount}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Total Playlists</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.playlistsCount}</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Últimos Usuarios</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RecentUsers />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Últimas Canciones</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <RecentSongs />
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
+}
+
+// Componentes auxiliares para las tablas recientes
+function RecentUsers() {
+  const columns = [
+    { key: 'name', label: 'Name' },
+    { key: 'email', label: 'Email' },
+    { key: 'createdAt', label: 'Created At' },
+  ]
+
+  return (
+    <DataTable
+      data={[]} // Aquí deberías cargar los datos reales
+      columns={columns}
+      itemsPerPage={5}
+      showActions={false}
+    />
+  )
+}
+
+function RecentSongs() {
+  const columns = [
+    { key: 'title', label: 'Title' },
+    { key: 'artist', label: 'Artist' },
+    { key: 'createdAt', label: 'Created At' },
+  ]
+
+  return (
+    <DataTable
+      data={[]} // Aquí deberías cargar los datos reales
+      columns={columns}
+      itemsPerPage={5}
+      showActions={false}
+    />
+  )
+}

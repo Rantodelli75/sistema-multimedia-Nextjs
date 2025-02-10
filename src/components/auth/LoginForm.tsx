@@ -1,97 +1,99 @@
-'use client'
+import { useState } from "react"
+import { motion } from "framer-motion"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { formVariants, glassStyle } from "./login-card"
+import { emailRegex, passwordRegex } from "@/lib/regex"
 
-import { AnimatePresence, motion } from "framer-motion"
-import { useEffect, useState } from "react"
-import LoginCard from "./login-card"
-import SpinningRecord from "./spinning-record"
-import ParticlesBg from "./particles-background"
-import { loginSchema, registerSchema } from "@/lib/zod"
-import { z } from "zod"
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction } from "@/components/ui/alert-dialog"
-
-interface FormLoginProps {
-  onLoginSubmit: (values: z.infer<typeof loginSchema>) => Promise<void>
-  onRegisterSubmit: (values: z.infer<typeof registerSchema>) => Promise<void>
-  error: string
-  loading: boolean
-  isVerified: boolean
-  status: number | null
+interface LoginFormProps {
+  onLoginSubmit: (values: { email: string; password: string }) => Promise<void>
+  setIsLogin: (value: boolean) => void
+  error?: string
+  status?: number
+  loading?: boolean
 }
 
-export default function FormLogin({ onLoginSubmit, onRegisterSubmit, error, loading, isVerified, status  }: FormLoginProps) {
-  const [showLogin, setShowLogin] = useState(false)
-  const [showLoginComponent, setShowLoginComponent] = useState(false)
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowLogin(true)
-    }, 3500)
+export function LoginForm({ onLoginSubmit, setIsLogin, loading }: LoginFormProps) {
+  const [loginEmail, setLoginEmail] = useState("")
+  const [loginPassword, setLoginPassword] = useState("")
+  const [loginErrors, setLoginErrors] = useState<{ email?: string; password?: string }>({})
 
-    return () => clearTimeout(timer)
-  }, [])
-  useEffect(() => {
-    if (showLogin) {
-      const timer = setTimeout(() => {
-        setShowLoginComponent(true)
-      }, 1000)
+  const handleLoginSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const errors: { email?: string; password?: string } = {}
 
-      return () => clearTimeout(timer)
+    if (!emailRegex.test(loginEmail)) {
+      errors.email = "Correo electrónico inválido."
     }
-  }, [showLogin])
+
+    if (!passwordRegex.test(loginPassword)) {
+      errors.password = "La contraseña debe tener al menos 8 caracteres, incluyendo una letra y un número."
+    }
+
+    setLoginErrors(errors)
+
+    if (Object.keys(errors).length === 0) {
+      await onLoginSubmit({
+        email: loginEmail,
+        password: loginPassword
+      })
+    }
+  }
+
   return (
-    <main className="min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
-      {/* Particles Background */}
-      <div className="absolute inset-0 z-0">
-        <ParticlesBg />
-      </div>
-
-      <AnimatePresence>
-        {showLoginComponent && (
-          <motion.div
-            initial={{ opacity: -0.5, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -50 }}
-            transition={{ duration: 1 }}
-            className="w-full max-w-md relative mb-24 z-10"
+    <motion.div
+      key="login"
+      variants={formVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+      className="absolute w-full"
+    >
+      <form onSubmit={handleLoginSubmit} className={`${glassStyle} px-8 pt-6 pb-8 mb-4`}>
+        <h2 className="text-2xl font-bold mb-6 text-center text-white font-coolvetica">Login</h2>
+        <div className="mb-4 space-y-2">
+          <Label htmlFor="email" className="text-white">Email</Label>
+          <Input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="Ingresa tu email"
+            required
+            value={loginEmail}
+            onChange={(e) => setLoginEmail(e.target.value)}
+            className={`bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60 backdrop-blur-xl rounded-xl ${loginErrors.email ? 'border-red-500' : ''}`}
+          />
+          {loginErrors.email && <p className="text-red-500 text-sm">{loginErrors.email}</p>}
+        </div>
+        <div className="mb-6 space-y-2">
+          <Label htmlFor="password" className="text-white">Contraseña</Label>
+          <Input
+            type="password"
+            id="password"
+            name="password"
+            placeholder="Ingresa tu contraseña"
+            required
+            value={loginPassword}
+            onChange={(e) => setLoginPassword(e.target.value)}
+            className={`bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60 backdrop-blur-xl rounded-xl ${loginErrors.password ? 'border-red-500' : ''}`}
+          />
+          {loginErrors.password && <p className="text-red-500 text-sm">{loginErrors.password}</p>}
+        </div>
+        <div className="flex items-center justify-between">
+          <Button type="submit" className="bg-white/30 hover:bg-white/40 text-white backdrop-blur-xl" disabled={loading}>
+            {loading ? "Cargando..." : "Iniciar sesión"}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setIsLogin(false)}
+            className="border-white/30 text-black hover:text-white hover:bg-white/20 backdrop-blur-xl"
           >
-            <LoginCard onLoginSubmit={onLoginSubmit} onRegisterSubmit={onRegisterSubmit} error={error} loading={loading} status={status}/>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <motion.div
-        initial={{ width: "50vw", height: "50vh", bottom: "50%", left: "50%" }}
-        animate={showLogin ? {
-          width: ["50vh", "150vh", "150vh"],
-          height: ["50vh", "150vh", "150vh"],
-          bottom: ["50%", "-200vh", "-120vh"],
-          left: ["50%", "50%", "50%"]
-        } : {}}
-        transition={{ 
-          duration: 2,
-          times: [0, 0.6, 1],
-          ease: "easeInOut"
-        }}
-        className="absolute -translate-x-1/2 pointer-events-none z-10"
-      >
-        <SpinningRecord showLogin={showLogin} />
-      </motion.div>
-      {isVerified && (
-        <AlertDialog defaultOpen>
-          <AlertDialogContent className="bg-white/10 backdrop-blur-[2px] drop-shadow-2xl rounded-2xl border-[1px] border-white/20 border-r-white/10 border-b-white/10">
-            <AlertDialogHeader>
-              <AlertDialogTitle className="text-white">Your account is verified</AlertDialogTitle>
-              <AlertDialogDescription className="text-white/80">
-                Your account is verified. You can now login.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogAction className="bg-white/30 hover:bg-white/40 text-white backdrop-blur-xl">
-                Understood
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-      )}
-    </main>
+            Registrarse
+          </Button>
+        </div>
+      </form>
+    </motion.div>
   )
 }
