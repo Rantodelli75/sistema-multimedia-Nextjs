@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast"
 import { z } from "zod"
 import { registerSchema } from "@/lib/zod"
 import { emailRegex, passwordRegex } from "@/lib/regex"
+import { Eye, EyeOff } from 'lucide-react'
 
 interface RegisterFormProps {
   onRegisterSubmit: (values: z.infer<typeof registerSchema>) => Promise<void>
@@ -31,6 +32,8 @@ export function RegisterForm({ onRegisterSubmit, setIsLogin, loading, error, sta
     confirmPassword?: string
   }>({})
   const { toast } = useToast()
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   // Regex para validaciones
 
@@ -138,32 +141,50 @@ export function RegisterForm({ onRegisterSubmit, setIsLogin, loading, error, sta
           <Label htmlFor="register-password" className="text-white">
             Contraseña
           </Label>
-          <Input
-            type="password"
-            id="register-password"
-            name="password"
-            placeholder="Ingresa tu contraseña"
-            required
-            value={registerPassword}
-            onChange={(e) => setRegisterPassword(e.target.value)}
-            className={`bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60 backdrop-blur-xl rounded-xl ${registerErrors.password ? 'border-red-500' : ''}`}
-          />
+          <div className="relative">
+            <Input
+              type={showPassword ? "text" : "password"}
+              id="register-password"
+              name="password"
+              placeholder="Ingresa tu contraseña"
+              required
+              value={registerPassword}
+              onChange={(e) => setRegisterPassword(e.target.value)}
+              className={`bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60 backdrop-blur-xl rounded-xl pr-10 ${registerErrors.password ? 'border-red-500' : ''}`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-0 px-3 flex items-center text-white/60 hover:text-white/80"
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
           {registerErrors.password && <p className="text-red-500 text-sm">{registerErrors.password}</p>}
         </div>
         <div className="mb-6 space-y-2">
           <Label htmlFor="confirm-password" className="text-white">
             Confirmar contraseña
           </Label>
-          <Input
-            type="password"
-            id="confirm-password"
-            name="confirmPassword"
-            placeholder="Confirma tu contraseña"
-            required
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className={`bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60 backdrop-blur-xl rounded-xl ${registerErrors.confirmPassword ? 'border-red-500' : ''}`}
-          />
+          <div className="relative">
+            <Input
+              type={showConfirmPassword ? "text" : "password"}
+              id="confirm-password"
+              name="confirmPassword"
+              placeholder="Confirma tu contraseña"
+              required
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className={`bg-white/20 focus:ring-0 focus:outline-none shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.2)] border-none text-white placeholder:text-white/60 backdrop-blur-xl rounded-xl pr-10 ${registerErrors.confirmPassword ? 'border-red-500' : ''}`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute inset-y-0 right-0 px-3 flex items-center text-white/60 hover:text-white/80"
+            >
+              {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
+          </div>
           {registerErrors.confirmPassword && <p className="text-red-500 text-sm">{registerErrors.confirmPassword}</p>}
         </div>
         <div className="flex items-center justify-between">
