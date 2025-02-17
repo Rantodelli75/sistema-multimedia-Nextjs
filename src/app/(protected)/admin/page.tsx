@@ -109,9 +109,17 @@ function RecentUsers() {
   return (
     <DataTable
       data={[]} // Aquí deberías cargar los datos reales
-      columns={columns}
+      columns={columns.map(column => ({ ...column, key: 'id' }))}
       itemsPerPage={5}
-      showActions={false}
+      onCreate={function (item: never): Promise<void> {
+        throw new Error("Function not implemented.")
+      } } onUpdate={function (id: string, item: never): Promise<void> {
+        throw new Error("Function not implemented.")
+      } } onDelete={function (id: string): Promise<void> {
+        throw new Error("Function not implemented.")
+      } } renderForm={function (item: null, onSubmit: (item: never) => void): React.ReactNode {
+        throw new Error("Function not implemented.")
+      } }
     />
   )
 }
@@ -126,9 +134,15 @@ function RecentSongs() {
   return (
     <DataTable
       data={[]} // Aquí deberías cargar los datos reales
-      columns={columns}
-      itemsPerPage={5}
-      showActions={false}
-    />
+      columns={columns.map(column => ({ ...column, key: 'id' }))}
+      itemsPerPage={5} onCreate={function (item: never): Promise<void> {
+        throw new Error("Function not implemented.")
+      } } onUpdate={function (id: string, item: never): Promise<void> {
+        throw new Error("Function not implemented.")
+      } } onDelete={function (id: string): Promise<void> {
+        throw new Error("Function not implemented.")
+      } } renderForm={function (item: null, onSubmit: (item: never) => void): React.ReactNode {
+        throw new Error("Function not implemented.")
+      } }    />
   )
 }
