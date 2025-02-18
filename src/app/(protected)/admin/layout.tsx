@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
-import Logout from "@/components/logout"
 import AdminLayout from "@/components/admin/AdminLayout"
 import { auth } from "auth"
+import Logout from "@/components/common/logout"
 
 export default async function ProtectedAdminLayout({
   children,

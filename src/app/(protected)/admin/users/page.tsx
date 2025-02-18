@@ -4,6 +4,7 @@ import React from 'react'
 import { DataTable } from '@/components/common/DataTable'
 import { useToast } from '@/hooks/use-toast'
 import { Eye, EyeOff } from 'lucide-react'
+import { auth } from 'auth'
 
 // Define User type based on Prisma model
 interface User {
