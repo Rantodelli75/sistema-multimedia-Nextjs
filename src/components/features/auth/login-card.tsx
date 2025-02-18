@@ -2,9 +2,9 @@
 
 import { useState } from "react"
 import { AnimatePresence } from "framer-motion"
-import { LoginForm } from "./LoginForm"
-import { RegisterForm } from "./registerForm"
-import { FormLoginProps } from "./types"
+import { LoginForm } from "@/components/features/auth/forms/LoginForm"
+import { RegisterForm } from "@/components/features/auth/forms/registerForm"
+import { FormLoginProps } from "@/components/features/auth/types"
 
 export const formVariants = {
   initial: {

@@ -1,8 +1,7 @@
 "use client"
 
 import React from 'react'
-import AdminLayout from '@/components/admin/AdminLayout'
-import { DataTable } from '@/components/DataTable'
+import { DataTable } from '@/components/common/DataTable'
 import { useToast } from '@/hooks/use-toast'
 
 interface Song {
@@ -179,7 +178,7 @@ export default function SongsAdminPage() {
   }
 
   return (
-    <AdminLayout>
+    <div>
       <h1 className="text-2xl font-bold mb-4">Songs Management</h1>
       <DataTable
         data={data.map(song => ({...song, id: song.id.toString()}))}
@@ -190,6 +189,6 @@ export default function SongsAdminPage() {
         renderForm={renderForm}
         itemsPerPage={10}
       />
-    </AdminLayout>
+    </div>
   )
 }

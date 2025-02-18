@@ -1,8 +1,7 @@
 "use client"
 
 import React from 'react'
-import AdminLayout from '@/components/admin/AdminLayout'
-import { DataTable } from '@/components/DataTable'
+import { DataTable } from '@/components/common/DataTable'
 import { useToast } from '@/hooks/use-toast'
 
 // Define Playlist type based on Prisma model
@@ -152,7 +151,7 @@ export default function PlaylistsAdminPage() {
   }
 
   return (
-    <AdminLayout>
+    <div>
       <h1 className="text-2xl font-bold mb-4">Playlists</h1>
       <DataTable
         data={data}
@@ -163,6 +162,6 @@ export default function PlaylistsAdminPage() {
         renderForm={renderForm}
         itemsPerPage={10}
       />
-    </AdminLayout>
+    </div>
   )
 }

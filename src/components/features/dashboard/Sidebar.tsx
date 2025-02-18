@@ -8,7 +8,8 @@ import { useEffect } from "react"
 import { FaCopyright } from "react-icons/fa6"
 
 const menuItems = [
-  { icon: FaMap, text: "Descubrir", href: "#" },
+  { icon: FaMap, text: "Descubrir", href: "/dashboard" },
+  { icon: FaUser, text: "Perfil", href: "/profile" },
   { icon: FaChartLine, text: "Tendencias", href: "#" },
   { icon: FaCompactDisc, text: "Álbum", href: "#" },
   { icon: FaPlay, text: "Lista de Reproducción", href: "#" },
@@ -16,26 +17,18 @@ const menuItems = [
 ]
 
 const bottomMenuItems = [
-  { icon: FaUser, text: "Perfil", href: "#" },
   { icon: FaCog, text: "Configuración", href: "#" },
 ]
-interface User {
-  name: string;
-  email: string;
-  image: null | string;
-}
-
-interface Session {
-  user: User;
-  expires: string;
-}
 
 interface SessionData {
-  session: Session;
+  user: {
+    name?: string;
+    email?: string;
+    image?: string | null;
+  }
 }
 
 export default function Sidebar({ session }: { session: SessionData }) {
-
   return (
     <motion.nav 
       initial={{ x: -100 }}
@@ -46,11 +39,13 @@ export default function Sidebar({ session }: { session: SessionData }) {
       <div>
         <div className="user-info flex flex-col items-center gap-2 lg:gap-3 mb-6 lg:mb-8">
           <img
-            src={session.session.user.image ? session.session.user.image : "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/37e5ccfa-f9ee-458b-afa2-dcd85b495e4e"}
+            src={session.user.image || "https://github.com/ecemgo/mini-samples-great-tricks/assets/13468728/37e5ccfa-f9ee-458b-afa2-dcd85b495e4e"}
             alt="user"
             className="w-16 h-16 lg:w-24 lg:h-24 rounded-full"
           />
-          <p className="text-white font-semibold text-sm lg:text-base">{session.session.user.name ? session.session.user.name : session.session.user.email}</p>
+          <p className="text-white font-semibold text-sm lg:text-base">
+            {session.user.name || session.user.email}
+          </p>
         </div>
 
         <ul className="space-y-2">

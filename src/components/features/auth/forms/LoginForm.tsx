@@ -3,7 +3,7 @@ import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { formVariants, glassStyle } from "./login-card"
+import { formVariants, glassStyle } from "@/components/features/auth/login-card"
 import { emailRegex, passwordRegex } from "@/lib/regex"
 import { Eye, EyeOff } from 'lucide-react'
 

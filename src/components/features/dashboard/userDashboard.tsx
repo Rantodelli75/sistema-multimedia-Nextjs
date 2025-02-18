@@ -1,14 +1,24 @@
 "use client"
-import { useEffect, useState } from "react"
+import { useEffect, useState, ReactNode } from "react"
 import Sidebar from "./Sidebar"
 import MusicContent from "./MusicContent"
 import { FaBars, FaMusic } from "react-icons/fa"
+import LoadingSpinner from "@/components/features/auth/loading-spinner"
 
+interface UserDashboardLayoutProps {
+  session: any
+  children: ReactNode
+}
 
-export default function UserDashboardLayout(session: any) {
+export default function UserDashboardLayout({ session, children }: UserDashboardLayoutProps) {
   const [isLeftSidebarOpen, setIsLeftSidebarOpen] = useState(false)
   const [isRightSidebarOpen, setIsRightSidebarOpen] = useState(false)
- 
+  
+  useEffect(() => {
+    if (session === undefined) {
+      console.log(session)
+    }
+  }, [session])
 
   return (
     <div className="relative flex min-h-screen bg-[#282828] bg-cover bg-center bg-no-repeat">
@@ -32,7 +42,7 @@ export default function UserDashboardLayout(session: any) {
       </div>
 
       {/* Main Content */}
-      <MusicContent />
+      {children}
 
       {/* Overlay for mobile when sidebar is open */}
       {(isLeftSidebarOpen || isRightSidebarOpen) && (

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import AdminLayout from '@/components/admin/AdminLayout'
-import { DataTable } from '@/components/DataTable'
+import { DataTable } from '@/components/common/DataTable'
 import { useToast } from '@/hooks/use-toast'
 
 interface Artist {

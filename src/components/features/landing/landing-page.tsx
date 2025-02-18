@@ -1,15 +1,15 @@
 "use client"
 
-import Footer from "@/components/Footer"
-import Header from "@/components/Header"
-import HeroSection from "@/components/HeroSection"
-import FeaturesSection from "@/components/FeaturesSection"
-import PopularPlaylistsSection from "@/components/PopularPlaylistsSection"
-import TestimonialsSection from "@/components/TestimonialsSection"
-import PricingSection from "@/components/PricingSection"
+import Footer from "@/components/layout/Footer"
+import Header from "@/components/layout/Header"
+import HeroSection from "@/components/features/landing/HeroSection"
+import FeaturesSection from "@/components/features/landing/FeaturesSection"
+import PopularPlaylistsSection from "@/components/features/landing/PopularPlaylistsSection"
+import TestimonialsSection from "@/components/features/landing/TestimonialsSection"
+import PricingSection from "@/components/features/landing/PricingSection"
 import { useSession } from "next-auth/react"
 import { useEffect } from "react"
-import LoadingSpinner from "./auth/loading-spinner"
+import LoadingSpinner from "../auth/loading-spinner"
 import { useRouter } from "next/navigation"
 
 export default function LandingPage() {
