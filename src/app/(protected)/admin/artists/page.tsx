@@ -3,6 +3,7 @@
 import React from 'react'
 import { DataTable } from '@/components/common/DataTable'
 import { useToast } from '@/hooks/use-toast'
+import { useRenderForm, FieldDefinition } from '@/hooks/useRenderForm'
 
 interface Artist {
   id: string
@@ -82,61 +83,13 @@ export default function ArtistsAdminPage() {
     }
   }
 
-  const renderForm = (item: Artist | null, onSubmit: (item: Artist) => void) => {
-    const [name, setName] = React.useState(item?.name || '')
-    const [bio, setBio] = React.useState(item?.bio || '')
-    const [userId, setUserId] = React.useState(item?.userId || '')
+  const artistFields: FieldDefinition<Artist>[] = [
+    { key: 'name', label: 'Name', placeholder: 'Enter name', required: true, maxLength: 50, pattern: '^[A-Za-zÀ-ÿ\\s]{1,50}$' },
+    { key: 'bio', label: 'Bio', placeholder: 'Enter bio', required: false, maxLength: 500 },
+    { key: 'userId', label: 'User ID', placeholder: 'Enter user ID', required: true },
+  ]
 
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault()
-      const artist: Artist = {
-        id: item?.id || '',
-        name,
-        bio,
-        userId,
-        createdAt: item?.createdAt || new Date(),
-      }
-      onSubmit(artist)
-    }
-
-    return (
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-        <label>
-          Name:
-          <input
-            type="text"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            required
-            maxLength={50}
-            pattern="^[A-Za-zÀ-ÿ\s]{1,50}$"
-            title="El nombre solo debe contener letras y espacios."
-            className="input-class"
-          />
-        </label>
-        <label>
-          Bio:
-          <textarea
-            value={bio}
-            onChange={e => setBio(e.target.value)}
-            maxLength={500}
-            className="input-class"
-          />
-        </label>
-        <label>
-          User ID:
-          <input
-            type="text"
-            value={userId}
-            onChange={e => setUserId(e.target.value)}
-            required
-            className="input-class"
-          />
-        </label>
-        <button type="submit" className="button-class">Submit</button>
-      </form>
-    )
-  }
+  const { renderForm } = useRenderForm<Artist>(artistFields, handleCreate)
 
   return (
     <div>

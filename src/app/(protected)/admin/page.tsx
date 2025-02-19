@@ -1,7 +1,7 @@
 import { auth } from "auth"
 import { redirect } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import Logout from "@/components/logout"
+import Logout from "@/components/common/logout"
 import { DataTable } from "@/components/common/DataTable"
 import { prisma } from "@/lib/prisma"
 

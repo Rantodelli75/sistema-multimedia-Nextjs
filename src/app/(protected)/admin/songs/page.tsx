@@ -3,6 +3,7 @@
 import React from 'react'
 import { DataTable } from '@/components/common/DataTable'
 import { useToast } from '@/hooks/use-toast'
+import { useRenderForm, FieldDefinition } from '@/hooks/useRenderForm'
 
 interface Song {
   id: string
@@ -29,7 +30,7 @@ export default function SongsAdminPage() {
 
   React.useEffect(() => {
     fetch('/api/admin/songs')
-      .then(res => res.json())
+      .then((res) => res.json())
       .then((data: Song[]) => setData(data))
       .catch(() => toast({ title: 'Error fetching songs', variant: 'destructive' }))
   }, [toast])
@@ -43,7 +44,7 @@ export default function SongsAdminPage() {
       })
       if (res.ok) {
         const createdSong = await res.json()
-        setData(prev => [...prev, createdSong])
+        setData((prev) => [...prev, createdSong])
         toast({ title: 'Song created successfully', style: { backgroundColor: 'green', color: 'white' } })
       } else {
         throw new Error('Failed to create song')
@@ -61,9 +62,9 @@ export default function SongsAdminPage() {
         body: JSON.stringify(updatedFields),
       })
       if (res.ok) {
-        setData(prev => prev.map(song => 
-          song.id.toString() === id ? { ...song, ...updatedFields } : song
-        ))
+        setData((prev) =>
+          prev.map((song) => (song.id.toString() === id ? { ...song, ...updatedFields } : song))
+        )
         toast({ title: 'Song updated successfully', style: { backgroundColor: 'green', color: 'white' } })
       } else {
         throw new Error('Failed to update song')
@@ -77,7 +78,7 @@ export default function SongsAdminPage() {
     try {
       const res = await fetch(`/api/admin/songs/${id}`, { method: 'DELETE' })
       if (res.ok) {
-        setData(prev => prev.filter(song => song.id.toString() !== id))
+        setData((prev) => prev.filter((song) => song.id.toString() !== id))
         toast({ title: 'Song deleted successfully', style: { backgroundColor: 'green', color: 'white' } })
       } else {
         throw new Error('Failed to delete song')
@@ -87,101 +88,22 @@ export default function SongsAdminPage() {
     }
   }
 
-  const renderForm = (item: Song | null, onSubmit: (item: Song) => void) => {
-    const [title, setTitle] = React.useState(item?.title || '')
-    const [genre, setGenre] = React.useState(item?.genre || '')
-    const [artistId, setArtistId] = React.useState(item?.artistId?.toString() || '')
-    const [releaseDate, setReleaseDate] = React.useState(
-      item?.releaseDate ? new Date(item.releaseDate).toISOString().split('T')[0] : ''
-    )
-    const [duration, setDuration] = React.useState(item?.duration?.toString() || '')
-    const [filePath, setFilePath] = React.useState(item?.filePath || '')
+  const songFields: FieldDefinition<Song>[] = [
+    { key: 'title', label: 'Title', placeholder: 'Enter title', required: true, maxLength: 100 },
+    { key: 'genre', label: 'Genre', placeholder: 'Enter genre', required: false },
+    { key: 'artistId', label: 'Artist ID', placeholder: 'Enter artist ID', required: true },
+    { key: 'releaseDate', label: 'Release Date', type: 'date', placeholder: 'Enter release date', required: false },
+    { key: 'duration', label: 'Duration', type: 'number', placeholder: 'Enter duration in seconds', required: false },
+    { key: 'filePath', label: 'File Path', placeholder: 'Enter file path', required: true },
+  ]
 
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault()
-      onSubmit({
-        id: item?.id || '0',
-        artistId: artistId,
-        title,
-        genre,
-        releaseDate: releaseDate ? new Date(releaseDate) : undefined,
-        duration: duration ? parseInt(duration) : undefined,
-        filePath,
-        createdAt: item?.createdAt || new Date(),
-      })
-    }
-
-    return (
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-        <label>
-          Title:
-          <input
-            type="text"
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-            required
-            maxLength={100}
-            className="input-class"
-          />
-        </label>
-        <label>
-          Genre:
-          <input
-            type="text"
-            value={genre}
-            onChange={e => setGenre(e.target.value)}
-            className="input-class"
-          />
-        </label>
-        <label>
-          Artist ID:
-          <input
-            type="number"
-            value={artistId}
-            onChange={e => setArtistId(e.target.value)}
-            required
-            className="input-class"
-          />
-        </label>
-        <label>
-          Release Date:
-          <input
-            type="date"
-            value={releaseDate}
-            onChange={e => setReleaseDate(e.target.value)}
-            className="input-class"
-          />
-        </label>
-        <label>
-          Duration (seconds):
-          <input
-            type="number"
-            value={duration}
-            onChange={e => setDuration(e.target.value)}
-            min="0"
-            className="input-class"
-          />
-        </label>
-        <label>
-          File Path:
-          <input
-            type="text"
-            value={filePath}
-            onChange={e => setFilePath(e.target.value)}
-            required
-            className="input-class"
-          />
-        </label>
-        <button type="submit" className="button-class">Submit</button>
-      </form>
-    )
-  }
+  const { renderForm } = useRenderForm<Song>(songFields, handleCreate)
 
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Songs Management</h1>
       <DataTable
-        data={data.map(song => ({...song, id: song.id.toString()}))}
+        data={data.map((song) => ({ ...song, id: song.id.toString() }))}
         columns={columns}
         onCreate={handleCreate}
         onUpdate={handleUpdate}
