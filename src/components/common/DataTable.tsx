@@ -86,7 +86,7 @@ export function DataTable<T extends { id: string }>({
           placeholder="Search items..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-sm bg-white-200 border-b border-black text-white"
+          className="max-w-sm bg-white-200 border-b border-black text-black"
         />
       </div>
 
