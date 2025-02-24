@@ -24,6 +24,26 @@ const columns = [
 export default function ArtistsAdminPage() {
   const [data, setData] = React.useState<Artist[]>([])
   const { toast } = useToast()
+  const [isLoading, setIsLoading] = React.useState(true)
+
+  const fetchArtists = async () => {
+    try {
+      setIsLoading(true)
+      const response = await fetch('/api/admin/artists')
+      if (!response.ok) {
+        throw new Error('Error al obtener artistas')
+      }
+      const result = await response.json()
+      setData(result.listArtists)
+    } catch (error) {
+      toast({ 
+        title: 'Error al cargar artistas', 
+        variant: 'destructive' 
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   React.useEffect(() => {
     fetch('/api/admin/artists')
@@ -94,15 +114,19 @@ export default function ArtistsAdminPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Artists</h1>
-      <DataTable
-        data={data}
-        columns={columns}
-        onCreate={handleCreate}
-        onUpdate={handleUpdate}
-        onDelete={handleDelete}
+      {isLoading ? (
+        <div>Cargando artistas...</div>
+      ) : (
+        <DataTable
+          data={data}
+          columns={columns}
+          onCreate={handleCreate}
+          onUpdate={handleUpdate}
+          onDelete={handleDelete}
         renderForm={renderForm}
-        itemsPerPage={10}
-      />
+          itemsPerPage={10}
+        />
+      )}
     </div>
   )
 }
