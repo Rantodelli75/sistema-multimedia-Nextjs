@@ -40,6 +40,8 @@ export function DataTable<T extends { id: string }>({
   const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
+    if (!items) return
+    
     const filtered = items.filter((item) =>
       columns.some((column) => String(item[column.key]).toLowerCase().includes(searchTerm.toLowerCase())),
     )
@@ -64,8 +66,8 @@ export function DataTable<T extends { id: string }>({
     setItems((prevItems) => prevItems.filter((item) => item.id !== id))
   }
 
-  const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
-  const paginatedItems = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  const totalPages = Math.ceil((filteredItems ?? []).length / itemsPerPage)
+  const paginatedItems = (filteredItems ?? []).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
 
   return (
     <div>

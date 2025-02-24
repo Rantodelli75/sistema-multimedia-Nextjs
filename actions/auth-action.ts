@@ -12,12 +12,7 @@ export const authenticate = async (values: z.infer<typeof loginSchema>) => {
   try {
     // Primero verificamos si el usuario existe
     const existingUser = await prisma.user.findUnique({
-      where: { email: values.email },
-      select: {
-        id: true,
-        email: true,
-        role: true // Asegúrate de que tu modelo User tenga un campo 'role'
-      }
+      where: { email: values.email }
     });
 
     if (!existingUser) {
@@ -35,15 +30,7 @@ export const authenticate = async (values: z.infer<typeof loginSchema>) => {
       redirect: false
     });
 
-    // Verificamos si el usuario es admin y enviamos la ruta correspondiente
-    const redirectUrl = existingUser.role === 'ADMIN' ? '/admin/users' : '/dashboard';
-    
-    return { 
-      success: true, 
-      status: 200,
-      redirect: true,
-      redirectUrl 
-    };
+    return { success: true, status: 200 };
   } catch (error: any) {
     console.log("Error en autenticación:", error.cause);
     let message = error.cause.err.toString().replace('Error: ', '')

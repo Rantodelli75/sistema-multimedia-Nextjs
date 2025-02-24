@@ -20,7 +20,15 @@ export async function GET(request: NextRequest) {
         role: true,
       }
     });
-    return NextResponse.json({ totalUsers, listUsers });
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          totalUsers,
+          listUsers
+        }
+      }
+    );
   } catch (error) {
     console.error('Error al obtener total de usuarios:', error);
     return NextResponse.json({ 
