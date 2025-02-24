@@ -43,7 +43,18 @@ export function useRenderForm<T>(
     item: T | null
     onSubmit: (data: T) => void
   }) {
-    const [formData, setFormData] = React.useState<T>(item || ({} as T))
+    const [formData, setFormData] = React.useState<T>(() => {
+      if (item) {
+        // Create a clean copy of the item, removing undefined values
+        return Object.entries(item).reduce((acc, [key, value]) => {
+          if (value !== undefined) {
+            acc[key as keyof T] = value as T[keyof T]
+          }
+          return acc
+        }, {} as T)
+      }
+      return {} as T
+    })
 
     const handleChange = (key: keyof T, value: string) => {
       setFormData((prev) => ({

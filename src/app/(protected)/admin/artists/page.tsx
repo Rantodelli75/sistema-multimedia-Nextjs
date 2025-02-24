@@ -174,7 +174,42 @@ export default function ArtistsAdminPage() {
     fetchArtists()
   }, [])
 
-  const { renderForm } = useRenderForm<Artist>(artistFields, handleCreate)
+  const renderForm = (item: Artist | null, onSubmit: (data: Artist) => void) => {
+    const fields = [
+      { 
+        key: 'name', 
+        label: 'Nombre', 
+        placeholder: 'Nombre del artista', 
+        required: true,
+        value: item?.name 
+      },
+      { 
+        key: 'bio', 
+        label: 'Biografía', 
+        placeholder: 'Biografía del artista',
+        type: 'textarea',
+        value: item?.bio
+      },
+      { 
+        key: 'createdAt', 
+        label: 'Fecha de Creación',
+        readOnly: true,
+        render: (value: any) => value ? new Date(value).toLocaleDateString() : 'N/A'
+      },
+      {
+        key: 'user',
+        label: 'Usuario',
+        readOnly: true,
+        render: (value: any) => value?.name || value?.email || 'N/A'
+      }
+    ]
+    const { renderForm } = useRenderForm<Artist>(
+      item ? fields as FieldDefinition<Artist>[] : artistFields, 
+      item ? (data) => onSubmit(data) : handleCreate
+    )
+    
+    return renderForm(item, onSubmit)
+  }
 
   return (
     <div className="p-4">
