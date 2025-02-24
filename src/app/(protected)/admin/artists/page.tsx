@@ -23,6 +23,7 @@ const columns = [
 
 export default function ArtistsAdminPage() {
   const [data, setData] = React.useState<Artist[]>([])
+  const [users, setUsers] = React.useState<{ id: string, name?: string, email?: string }[]>([])
   const { toast } = useToast()
   const [isLoading, setIsLoading] = React.useState(true)
 
@@ -30,11 +31,12 @@ export default function ArtistsAdminPage() {
     try {
       setIsLoading(true)
       const response = await fetch('/api/admin/artists')
-      if (!response.ok) {
+      if (response.ok) {
+        const result = await response.json()
+        setData(result.listArtists)
+      } else {
         throw new Error('Error al obtener artistas')
       }
-      const result = await response.json()
-      setData(result.listArtists)
     } catch (error) {
       toast({ 
         title: 'Error al cargar artistas', 
@@ -50,6 +52,13 @@ export default function ArtistsAdminPage() {
       .then(res => res.json())
       .then((data: Artist[]) => setData(data))
       .catch(() => toast({ title: 'Error fetching artists', variant: 'destructive' }))
+  }, [toast])
+
+  React.useEffect(() => {
+    fetch('/api/admin/users')
+      .then(res => res.json())
+      .then((data) => setUsers(data.listUsers))
+      .catch(() => toast({ title: 'Error fetching users', variant: 'destructive' }))
   }, [toast])
 
   const handleCreate = async (newArtist: Artist) => {
@@ -106,7 +115,16 @@ export default function ArtistsAdminPage() {
   const artistFields: FieldDefinition<Artist>[] = [
     { key: 'name', label: 'Name', placeholder: 'Enter name', required: true, maxLength: 50, pattern: '^[A-Za-zÀ-ÿ\\s]{1,50}$' },
     { key: 'bio', label: 'Bio', placeholder: 'Enter bio', required: false, maxLength: 500 },
-    { key: 'userId', label: 'User ID', placeholder: 'Enter user ID', required: true },
+    { 
+      key: 'userId', 
+      label: 'User', 
+      type: 'select',
+      required: true,
+      options: users.map(user => ({
+        value: user.id,
+        label: `${user.name || 'Unnamed'} (${user.email || 'No email'})`
+      }))
+    },
   ]
 
   const { renderForm } = useRenderForm<Artist>(artistFields, handleCreate)
