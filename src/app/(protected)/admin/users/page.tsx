@@ -22,7 +22,6 @@ const columns = [
   { key: 'name' as keyof User, label: 'Name' },
   { key: 'email' as keyof User, label: 'Email' },
   { key: 'createdAt' as keyof User, label: 'Created At' },
-  { key: 'password' as keyof User, label: 'Password' },
   { key: 'emailVerified' as keyof User, label: 'Email Verified' },
   { key: 'role' as keyof User, label: 'Role' },
   // Add more columns as desired
@@ -59,14 +58,24 @@ export default function UsersAdminPage() {
 
   }, [])
 
-  // Definición de campos para el formulario
-  const userFields: FieldDefinition<User>[] = [
+  // Separar campos para crear y editar
+  const createUserFields: FieldDefinition<User>[] = [
     { key: 'name', label: 'Name', placeholder: 'Enter name', required: true, maxLength: 50, pattern: '^[A-Za-zÀ-ÿ\\s]{1,50}$' },
     { key: 'email', label: 'Email', type: 'email', placeholder: 'Enter email', required: true, maxLength: 255 },
     { key: 'password', label: 'Password', type: 'password', placeholder: 'Enter password', required: true, maxLength: 255 },
     { key: 'role', label: 'Role', type: 'select', options: ['ADMIN', 'USER', 'ARTIST'], required: true },
-    // Nota: en este ejemplo se maneja la contraseña solo al crear
   ]
+
+  const editUserFields: FieldDefinition<User>[] = columns.map(column => ({
+    key: column.key,
+    label: column.label,
+    type: column.key === 'role' ? 'select' : 
+          column.key === 'email' ? 'email' : 
+          column.key === 'emailVerified' || column.key === 'createdAt' ? 'datetime-local' : 
+          'text',
+    options: column.key === 'role' ? ['ADMIN', 'USER', 'ARTIST'] : undefined,
+    required: ['name', 'email', 'role'].includes(String(column.key)),
+  }))
 
   const handleCreate = async (newUser: User) => {
     try {
@@ -119,8 +128,12 @@ export default function UsersAdminPage() {
     }
   }
 
-  // Utilizamos el hook para obtener la función renderForm.
-  const { renderForm } = useRenderForm<User>(userFields, handleCreate)
+  // Modificar la función renderForm para usar diferentes campos según el modo
+  const renderForm = (item: User | null, onSubmit: (data: User) => void) => {
+    const fields = item ? editUserFields : createUserFields
+    const { renderForm } = useRenderForm<User>(fields, handleCreate)
+    return renderForm(item, onSubmit)
+  }
 
   return (
     <div>

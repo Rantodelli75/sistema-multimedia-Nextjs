@@ -120,7 +120,7 @@ export function DataTable<T extends { id: string }>({
                       Edit
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="bg-black-800 text-white">
+                  <DialogContent className="bg-[url('/assets/images/bgb.jpg')] bg-repeat bg-[length:100px_100px] bg-opacity-5 text-white">
                     <DialogHeader>
                       <DialogTitle>Edit Item</DialogTitle>
                     </DialogHeader>
@@ -138,7 +138,7 @@ export function DataTable<T extends { id: string }>({
 
       <Pagination className="mt-4">
         <PaginationContent>
-          <PaginationItem key="prev">
+          <PaginationItem>
             <PaginationPrevious
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
