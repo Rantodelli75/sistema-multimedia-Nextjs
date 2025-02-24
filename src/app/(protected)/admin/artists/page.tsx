@@ -36,10 +36,10 @@ const columns = [
     render: (artist: Artist) => artist.user?.name || artist.user?.email || 'N/A'
   },
   {
-    key: 'songCount' as keyof Artist,
+    key: '_count' as keyof Artist,
     label: 'Canciones',
     render: (artist: Artist) => artist._count.songs
-  },
+  }
 ]
 
 const artistFields: FieldDefinition<Artist>[] = [

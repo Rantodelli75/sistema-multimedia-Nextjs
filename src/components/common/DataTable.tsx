@@ -16,7 +16,11 @@ import {
 
 interface DataTableProps<T> {
   data: T[]
-  columns: { key: Extract<keyof T, string>; label: string }[]
+  columns: {
+    key: Extract<keyof T, string>
+    label: string
+    render?: (item: T) => React.ReactNode
+  }[]
   onCreate?: (item: T) => Promise<void>
   onUpdate?: (id: string, item: Partial<T>) => Promise<void>
   onDelete?: (id: string) => Promise<void>
@@ -108,7 +112,7 @@ export function DataTable<T extends { id: string }>({
             <TableRow key={item.id} className="border-b border-black">
               {columns.map((column) => (
                 <TableCell key={String(column.key)} className="text-black-300">
-                  {String(item[column.key])}
+                  {column.render ? column.render(item) : String(item[column.key])}
                 </TableCell>
               ))}
               <TableCell>
