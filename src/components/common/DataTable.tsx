@@ -16,11 +16,11 @@ import {
 
 interface DataTableProps<T> {
   data: T[]
-  columns: { key: keyof T; label: string }[]
-  onCreate: (item: T) => Promise<void>
-  onUpdate: (id: string, item: Partial<T>) => Promise<void>
-  onDelete: (id: string) => Promise<void>
-  renderForm: (item: T | null, onSubmit: (item: T) => void) => React.ReactNode
+  columns: { key: Extract<keyof T, string>; label: string }[]
+  onCreate?: (item: T) => Promise<void>
+  onUpdate?: (id: string, item: Partial<T>) => Promise<void>
+  onDelete?: (id: string) => Promise<void>
+  renderForm?: (item: T | null, onSubmit: (item: T) => void) => React.ReactNode
   itemsPerPage?: number
 }
 
@@ -48,19 +48,19 @@ export function DataTable<T extends { id: string }>({
   }, [searchTerm, items, columns])
 
   const handleCreate = async (item: T) => {
-    await onCreate(item)
+    await onCreate?.(item)
     setItems((prevItems) => [...prevItems, item])
   }
 
   const handleUpdate = async (id: string, item: Partial<T>) => {
-    await onUpdate(id, item)
+    await onUpdate?.(id, item)
     setItems((prevItems) =>
       prevItems.map((prevItem) => (prevItem.id === id ? ({ ...prevItem, ...item } as T) : prevItem)),
     )
   }
 
   const handleDelete = async (id: string) => {
-    await onDelete(id)
+    await onDelete?.(id)
     setItems((prevItems) => prevItems.filter((item) => item.id !== id))
   }
 
@@ -78,7 +78,7 @@ export function DataTable<T extends { id: string }>({
             <DialogHeader>
               <DialogTitle>Add New Item</DialogTitle>
             </DialogHeader>
-            {renderForm(null, handleCreate)}
+            {renderForm?.(null, handleCreate)}
           </DialogContent>
         </Dialog>
         <Input
@@ -124,7 +124,7 @@ export function DataTable<T extends { id: string }>({
                     <DialogHeader>
                       <DialogTitle>Edit Item</DialogTitle>
                     </DialogHeader>
-                    {renderForm(editingItem, (updatedItem) => handleUpdate(item.id, updatedItem))}
+                    {renderForm?.(editingItem, (updatedItem) => handleUpdate(item.id, updatedItem))}
                   </DialogContent>
                 </Dialog>
                 <Button variant="destructive" onClick={() => handleDelete(item.id)}>

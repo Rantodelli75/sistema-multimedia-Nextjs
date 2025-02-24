@@ -7,6 +7,11 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { cn } from '@/lib/utils'
 
+export interface SelectOption {
+  value: string
+  label: string
+}
+
 export interface FieldDefinition<T> {
   key: keyof T
   label: string
@@ -16,7 +21,8 @@ export interface FieldDefinition<T> {
   pattern?: string
   maxLength?: number
   multiline?: boolean
-  options?: string[]
+  options?: string[] | SelectOption[]
+  accept?: string
 }
 
 /**
@@ -42,6 +48,15 @@ export function useRenderForm<T>(
         ...prev,
         [key]: value,
       }))
+    }
+
+    const handleFileChange = (key: keyof T, files: FileList | null) => {
+      if (files && files[0]) {
+        setFormData((prev) => ({
+          ...prev,
+          [key]: files[0],
+        }))
+      }
     }
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -75,11 +90,29 @@ export function useRenderForm<T>(
               >
                 <option value="">Select {field.label}</option>
                 {field.options.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
-                  </option>
+                  typeof option === 'string' ? (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ) : (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  )
                 ))}
               </select>
+            ) : field.type === 'file' ? (
+              <Input
+                id={String(field.key)}
+                type="file"
+                onChange={(e) => handleFileChange(field.key, e.target.files)}
+                required={field.required}
+                accept={field.accept}
+                className={cn(
+                  "border border-input bg-background",
+                  "focus:ring-2 focus:ring-nightgroove-primary focus:border-transparent text-black"
+                )}
+              />
             ) : field.multiline ? (
               <Textarea
                 id={String(field.key)}
