@@ -3,10 +3,11 @@
 import React from 'react'
 import { DataTable } from '@/components/common/DataTable'
 import { useToast } from '@/hooks/use-toast'
+import { useRenderForm, FieldDefinition } from '@/hooks/useRenderForm'
 
-// Define Playlist type based on Prisma model
+// Definición del tipo Playlist basado en el modelo Prisma
 interface Playlist {
-  id: string        // Convertimos BigInt a string para el DataTable
+  id: string        // Convertido de BigInt a string para DataTable
   userId: string
   name: string
   description?: string
@@ -25,12 +26,12 @@ export default function PlaylistsAdminPage() {
 
   React.useEffect(() => {
     fetch('/api/admin/playlists')
-      .then(res => res.json())
+      .then((res) => res.json())
       .then((rawData) => {
         // Convertir BigInt id a string
         const formattedData = rawData.map((playlist: any) => ({
           ...playlist,
-          id: playlist.id.toString()
+          id: playlist.id.toString(),
         }))
         setData(formattedData)
       })
@@ -44,15 +45,15 @@ export default function PlaylistsAdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...newPlaylist,
-          id: undefined // Remove id for creation
+          id: undefined, // Remover id para la creación
         }),
       })
       if (res.ok) {
         const createdPlaylist = await res.json()
-        setData(prev => [...prev, {
-          ...createdPlaylist,
-          id: createdPlaylist.id.toString()
-        }])
+        setData((prev) => [
+          ...prev,
+          { ...createdPlaylist, id: createdPlaylist.id.toString() },
+        ])
         toast({ title: 'Playlist created successfully', style: { backgroundColor: 'green', color: 'white' } })
       } else {
         throw new Error('Failed to create playlist')
@@ -70,7 +71,7 @@ export default function PlaylistsAdminPage() {
         body: JSON.stringify(updatedFields),
       })
       if (res.ok) {
-        setData(prev => prev.map(playlist => 
+        setData((prev) => prev.map((playlist) =>
           playlist.id === id ? { ...playlist, ...updatedFields } : playlist
         ))
         toast({ title: 'Playlist updated successfully', style: { backgroundColor: 'green', color: 'white' } })
@@ -86,7 +87,7 @@ export default function PlaylistsAdminPage() {
     try {
       const res = await fetch(`/api/admin/playlists/${id}`, { method: 'DELETE' })
       if (res.ok) {
-        setData(prev => prev.filter(playlist => playlist.id !== id))
+        setData((prev) => prev.filter((playlist) => playlist.id !== id))
         toast({ title: 'Playlist deleted successfully', style: { backgroundColor: 'green', color: 'white' } })
       } else {
         throw new Error('Failed to delete playlist')
@@ -96,59 +97,13 @@ export default function PlaylistsAdminPage() {
     }
   }
 
-  const renderForm = (item: Playlist | null, onSubmit: (item: Playlist) => void) => {
-    const [name, setName] = React.useState(item?.name || '')
-    const [description, setDescription] = React.useState(item?.description || '')
-    const [userId, setUserId] = React.useState(item?.userId || '')
+  const playlistFields: FieldDefinition<Playlist>[] = [
+    { key: 'name', label: 'Name', placeholder: 'Enter name', required: true, maxLength: 100 },
+    { key: 'description', label: 'Description', placeholder: 'Enter description', required: false, maxLength: 500 },
+    { key: 'userId', label: 'User ID', placeholder: 'Enter user ID', required: true },
+  ]
 
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault()
-      const playlist: Playlist = {
-        id: item?.id || '',
-        userId,
-        name,
-        description,
-        createdAt: item?.createdAt || new Date(),
-      }
-      onSubmit(playlist)
-    }
-
-    return (
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-        <label>
-          Name:
-          <input
-            type="text"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            required
-            maxLength={100}
-            className="input-class"
-          />
-        </label>
-        <label>
-          Description:
-          <textarea
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-            maxLength={500}
-            className="input-class"
-          />
-        </label>
-        <label>
-          User ID:
-          <input
-            type="text"
-            value={userId}
-            onChange={e => setUserId(e.target.value)}
-            required
-            className="input-class"
-          />
-        </label>
-        <button type="submit" className="button-class">Submit</button>
-      </form>
-    )
-  }
+  const { renderForm } = useRenderForm<Playlist>(playlistFields, handleCreate)
 
   return (
     <div>

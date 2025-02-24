@@ -3,8 +3,7 @@
 import React from 'react'
 import { DataTable } from '@/components/common/DataTable'
 import { useToast } from '@/hooks/use-toast'
-import { Eye, EyeOff } from 'lucide-react'
-import { auth } from 'auth'
+import { useRenderForm, FieldDefinition } from '@/hooks/useRenderForm'
 
 // Define User type based on Prisma model
 interface User {
@@ -29,13 +28,12 @@ export default function UsersAdminPage() {
   const [data, setData] = React.useState<User[]>([])
   const { toast } = useToast()
 
-  React.useEffect(() => {
-    // Fetch users data from API
-    fetch('/api/admin/users')
-      .then(res => res.json())
-      .then((data: User[]) => setData(data))
-      .catch(() => toast({ title: 'Error fetching users', variant: 'destructive' }))
-  }, [toast])
+  // Definición de campos para el formulario
+  const userFields: FieldDefinition<User>[] = [
+    { key: 'name', label: 'Name', placeholder: 'Enter name', required: true, maxLength: 50, pattern: '^[A-Za-zÀ-ÿ\\s]{1,50}$' },
+    { key: 'email', label: 'Email', type: 'email', placeholder: 'Enter email', required: true, maxLength: 255 },
+    // Nota: en este ejemplo se maneja la contraseña solo al crear
+  ]
 
   const handleCreate = async (newUser: User) => {
     try {
@@ -88,84 +86,8 @@ export default function UsersAdminPage() {
     }
   }
 
-  const renderForm = (item: User | null, onSubmit: (item: User) => void) => {
-    const [name, setName] = React.useState(item?.name || '')
-    const [email, setEmail] = React.useState(item?.email || '')
-    const [password, setPassword] = React.useState('')
-    const [showPassword, setShowPassword] = React.useState(false)
-
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault()
-      const user: User = {
-        id: item?.id || '',
-        name,
-        email,
-        password: password || item?.password || '',
-        createdAt: item?.createdAt || new Date(),
-      }
-      onSubmit(user)
-    }
-
-    return (
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
-        <label>
-          Name:
-          <input
-            type="text"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            required
-            maxLength={50}
-            pattern="^[A-Za-zÀ-ÿ\s]{1,50}$"
-            title="El nombre solo debe contener letras y espacios."
-            className="input-class"
-          />
-        </label>
-        <label>
-          Email:
-          <input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-            maxLength={255}
-            pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
-            title="Ingrese un correo electrónico válido."
-            className="input-class"
-          />
-        </label>
-        {!item && (
-          <label>
-            Password:
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                required
-                maxLength={128}
-                pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&#+\-_<>.,;:()[\]{}|/\\~^]{8,}$"
-                title="La contraseña debe tener al menos 8 caracteres, incluyendo al menos una letra y un número. Puede incluir caracteres especiales (@$!%*?&#+\-_<>.,;:()[]{}|/\~^)."
-                className="input-class w-full pr-10"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 px-2 flex items-center text-gray-400 hover:text-gray-600"
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4" />
-                ) : (
-                  <Eye className="h-4 w-4" />
-                )}
-              </button>
-            </div>
-          </label>
-        )}
-        <button type="submit" className="button-class">Submit</button>
-      </form>
-    )
-  }
+  // Utilizamos el hook para obtener la función renderForm.
+  const { renderForm } = useRenderForm<User>(userFields, handleCreate)
 
   return (
     <div>

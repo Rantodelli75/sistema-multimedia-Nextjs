@@ -3,6 +3,7 @@
 import React from 'react'
 import { DataTable } from '@/components/common/DataTable'
 import { useToast } from '@/hooks/use-toast'
+import { useRenderForm, FieldDefinition } from '@/hooks/useRenderForm'
 
 interface Song {
   id: string
@@ -36,7 +37,7 @@ export default function SongsAdminPage() {
 
   React.useEffect(() => {
     fetch('/api/admin/songs')
-      .then(res => res.json())
+      .then((res) => res.json())
       .then((data: Song[]) => setData(data))
       .catch(() => toast({ title: 'Error fetching songs', variant: 'destructive' }))
   }, [toast])
@@ -50,7 +51,7 @@ export default function SongsAdminPage() {
       })
       if (res.ok) {
         const createdSong = await res.json()
-        setData(prev => [...prev, createdSong])
+        setData((prev) => [...prev, createdSong])
         toast({ title: 'Song created successfully', style: { backgroundColor: 'green', color: 'white' } })
       } else {
         throw new Error('Failed to create song')
@@ -68,9 +69,9 @@ export default function SongsAdminPage() {
         body: JSON.stringify(updatedFields),
       })
       if (res.ok) {
-        setData(prev => prev.map(song => 
-          song.id.toString() === id ? { ...song, ...updatedFields } : song
-        ))
+        setData((prev) =>
+          prev.map((song) => (song.id.toString() === id ? { ...song, ...updatedFields } : song))
+        )
         toast({ title: 'Song updated successfully', style: { backgroundColor: 'green', color: 'white' } })
       } else {
         throw new Error('Failed to update song')
@@ -84,7 +85,7 @@ export default function SongsAdminPage() {
     try {
       const res = await fetch(`/api/admin/songs/${id}`, { method: 'DELETE' })
       if (res.ok) {
-        setData(prev => prev.filter(song => song.id.toString() !== id))
+        setData((prev) => prev.filter((song) => song.id.toString() !== id))
         toast({ title: 'Song deleted successfully', style: { backgroundColor: 'green', color: 'white' } })
       } else {
         throw new Error('Failed to delete song')
@@ -220,7 +221,7 @@ export default function SongsAdminPage() {
     <div>
       <h1 className="text-2xl font-bold mb-4">Songs Management</h1>
       <DataTable
-        data={data.map(song => ({...song, id: song.id.toString()}))}
+        data={data.map((song) => ({ ...song, id: song.id.toString() }))}
         columns={columns}
         onCreate={handleCreate}
         onUpdate={handleUpdate}
