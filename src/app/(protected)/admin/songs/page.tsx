@@ -119,9 +119,9 @@ export default function SongsAdminPage() {
       label: 'Artist', 
       type: 'select',
       required: true,
-      options: artists.map(artist => ({
+      options: (artists || []).map(artist => ({
         value: artist.id,
-        label: artist.name
+        label: artist.name || 'Unnamed Artist'
       }))
     },
     { 
