@@ -158,3 +158,21 @@ export async function DELETE(request: NextRequest) {
   }
 }
 
+export async function PUT(request: NextRequest) {
+  try {
+    const session = await auth()
+    if (session?.user?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const body = await request.json()
+    const { id, name, email, role } = body
+  } catch (error) {
+    console.error('Error al actualizar usuario:', error)
+    return NextResponse.json({ 
+      success: false,
+      error: 'Error al actualizar usuario',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 })
+  }
+}
