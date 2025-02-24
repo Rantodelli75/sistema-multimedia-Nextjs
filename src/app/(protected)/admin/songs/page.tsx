@@ -144,10 +144,10 @@ export default function SongsAdminPage() {
   const { renderForm } = useRenderForm<Song>(songFields, handleCreate)
 
   return (
-    <div>
+    <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Songs Management</h1>
       <DataTable
-        data={data.map((song) => ({ ...song, id: song.id.toString() }))}
+        data={data}
         columns={columns}
         onCreate={handleCreate}
         onUpdate={handleUpdate}
