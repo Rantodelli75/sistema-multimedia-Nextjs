@@ -133,12 +133,6 @@ export default function SongsAdminPage() {
       type: 'date' 
     },
     { 
-      key: 'duration', 
-      label: 'Duration (seconds)', 
-      type: 'number',
-      required: true 
-    },
-    { 
       key: 'filePath', 
       label: 'Audio File', 
       type: 'file',
