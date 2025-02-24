@@ -16,6 +16,7 @@ export interface FieldDefinition<T> {
   pattern?: string
   maxLength?: number
   multiline?: boolean
+  options?: string[]
 }
 
 /**
@@ -60,7 +61,26 @@ export function useRenderForm<T>(
               {field.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
             
-            {field.multiline ? (
+            {field.type === 'select' && field.options ? (
+              <select
+                id={String(field.key)}
+                value={(formData[field.key] as unknown as string) || ''}
+                onChange={(e) => handleChange(field.key, e.target.value)}
+                required={field.required}
+                className={cn(
+                  "w-full rounded-md border border-input bg-background px-3 py-2",
+                  "focus:ring-2 focus:ring-nightgroove-primary focus:border-transparent",
+                  "text-sm text-black"
+                )}
+              >
+                <option value="">Select {field.label}</option>
+                {field.options.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            ) : field.multiline ? (
               <Textarea
                 id={String(field.key)}
                 value={(formData[field.key] as unknown as string) || ''}
@@ -70,7 +90,7 @@ export function useRenderForm<T>(
                 maxLength={field.maxLength}
                 className={cn(
                   "min-h-[100px] border border-input bg-background",
-                  "focus:ring-2 focus:ring-nightgroove-primary focus:border-transparent"
+                  "focus:ring-2 focus:ring-nightgroove-primary focus:border-transparent text-black"
                 )}
               />
             ) : (
@@ -85,7 +105,7 @@ export function useRenderForm<T>(
                 pattern={field.pattern}
                 className={cn(
                   "border border-input bg-background",
-                  "focus:ring-2 focus:ring-nightgroove-primary focus:border-transparent"
+                  "focus:ring-2 focus:ring-nightgroove-primary focus:border-transparent, text-black"
                 )}
               />
             )}

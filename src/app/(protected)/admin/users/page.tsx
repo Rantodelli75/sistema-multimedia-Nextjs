@@ -3,6 +3,7 @@ import React from 'react'
 import { DataTable } from '@/components/common/DataTable'
 import { useToast } from '@/hooks/use-toast'
 import { useRenderForm, FieldDefinition } from '@/hooks/useRenderForm'
+import { Role } from '@prisma/client'
 
 // Define User type based on Prisma model
 interface User {
@@ -13,12 +14,17 @@ interface User {
   image?: string
   password: string
   createdAt: Date
+  role: Role
   // Add other fields as necessary
 }
 const columns = [
+  { key: 'id' as keyof User, label: 'ID' },
   { key: 'name' as keyof User, label: 'Name' },
   { key: 'email' as keyof User, label: 'Email' },
   { key: 'createdAt' as keyof User, label: 'Created At' },
+  { key: 'password' as keyof User, label: 'Password' },
+  { key: 'emailVerified' as keyof User, label: 'Email Verified' },
+  { key: 'role' as keyof User, label: 'Role' },
   // Add more columns as desired
 ]
 
@@ -57,6 +63,8 @@ export default function UsersAdminPage() {
   const userFields: FieldDefinition<User>[] = [
     { key: 'name', label: 'Name', placeholder: 'Enter name', required: true, maxLength: 50, pattern: '^[A-Za-zÀ-ÿ\\s]{1,50}$' },
     { key: 'email', label: 'Email', type: 'email', placeholder: 'Enter email', required: true, maxLength: 255 },
+    { key: 'password', label: 'Password', type: 'password', placeholder: 'Enter password', required: true, maxLength: 255 },
+    { key: 'role', label: 'Role', type: 'select', options: ['ADMIN', 'USER', 'ARTIST'], required: true },
     // Nota: en este ejemplo se maneja la contraseña solo al crear
   ]
 
