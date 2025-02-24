@@ -15,9 +15,9 @@ interface Artist {
 }
 
 const columns = [
-  { key: 'name' as keyof Artist, label: 'Name' },
-  { key: 'bio' as keyof Artist, label: 'Bio' },
-  { key: 'createdAt' as keyof Artist, label: 'Created At' },
+  { key: 'name' as keyof Artist, label: 'Nombre de Artísta' },
+  { key: 'bio' as keyof Artist, label: 'Biografía' },
+  { key: 'createdAt' as keyof Artist, label: 'Fecha de Creación' },
   // Add more columns as desired
 ]
 
