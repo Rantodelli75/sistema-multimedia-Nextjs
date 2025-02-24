@@ -85,8 +85,7 @@ export default function UsersAdminPage() {
         body: JSON.stringify(newUser),
       })
       if (res.ok) {
-        const createdUser = await res.json()
-        setData(prev => [...prev, createdUser])
+        fetchUsers()
         toast({ title: 'User created successfully', style: { backgroundColor: 'green', color: 'white' } })
       } else {
         throw new Error('Failed to create user')
