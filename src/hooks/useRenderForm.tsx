@@ -1,7 +1,11 @@
+"use client"
+
 import React from 'react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
+import { cn } from '@/lib/utils'
 
 export interface FieldDefinition<T> {
   key: keyof T
@@ -11,6 +15,7 @@ export interface FieldDefinition<T> {
   required?: boolean
   pattern?: string
   maxLength?: number
+  multiline?: boolean
 }
 
 /**
@@ -44,27 +49,53 @@ export function useRenderForm<T>(
     }
 
     return (
-      <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
         {fields.map((field) => (
-          <div key={String(field.key)} className="flex flex-col">
-            <Label htmlFor={String(field.key)} className="mb-1">
+          <div key={String(field.key)} className="space-y-2">
+            <Label 
+              htmlFor={String(field.key)}
+              className="text-sm font-medium text-gray-700"
+            >
               {field.label}
+              {field.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
-            <Input
-              id={String(field.key)}
-              type={field.type || 'text'}
-              value={(formData[field.key] as unknown as string) || ''}
-              onChange={(e) => handleChange(field.key, e.target.value)}
-              placeholder={field.placeholder}
-              required={field.required}
-              maxLength={field.maxLength}
-              pattern={field.pattern}
-              className="input-class"
-            />
+            
+            {field.multiline ? (
+              <Textarea
+                id={String(field.key)}
+                value={(formData[field.key] as unknown as string) || ''}
+                onChange={(e) => handleChange(field.key, e.target.value)}
+                placeholder={field.placeholder}
+                required={field.required}
+                maxLength={field.maxLength}
+                className={cn(
+                  "min-h-[100px] border border-input bg-background",
+                  "focus:ring-2 focus:ring-nightgroove-primary focus:border-transparent"
+                )}
+              />
+            ) : (
+              <Input
+                id={String(field.key)}
+                type={field.type || 'text'}
+                value={(formData[field.key] as unknown as string) || ''}
+                onChange={(e) => handleChange(field.key, e.target.value)}
+                placeholder={field.placeholder}
+                required={field.required}
+                maxLength={field.maxLength}
+                pattern={field.pattern}
+                className={cn(
+                  "border border-input bg-background",
+                  "focus:ring-2 focus:ring-nightgroove-primary focus:border-transparent"
+                )}
+              />
+            )}
           </div>
         ))}
-        <Button type="submit" className="button-class">
-          Submit
+        <Button 
+          type="submit"
+          className="w-full bg-nightgroove-primary hover:bg-nightgroove-secondary text-white"
+        >
+          {item ? 'Update' : 'Create'}
         </Button>
       </form>
     )
