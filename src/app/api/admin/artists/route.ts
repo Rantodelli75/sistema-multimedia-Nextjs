@@ -9,7 +9,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     const totalArtists = await prisma.artist.count();
-    return NextResponse.json({ totalArtists });
+    const listArtists = await prisma.artist.findMany();
+    return NextResponse.json({ totalArtists, listArtists });
   } catch (error) {
     console.error('Error al obtener total de artistas:', error);
     return NextResponse.json({ error: 'Error al obtener total de artistas' }, { status: 500 });

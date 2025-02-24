@@ -9,7 +9,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
     const totalUsers = await prisma.user.count();
-    return NextResponse.json({ totalUsers });
+    const listUsers = await prisma.user.findMany();
+    return NextResponse.json({ totalUsers, listUsers });
   } catch (error) {
     console.error('Error al obtener total de usuarios:', error);
     return NextResponse.json({ error: 'Error al obtener total de usuarios' }, { status: 500 });
