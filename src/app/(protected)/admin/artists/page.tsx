@@ -9,65 +9,89 @@ interface Artist {
   id: string
   name: string
   bio?: string
-  createdAt: Date
+  createdAt: string
   userId: string
-  // Add other fields as necessary
+  user: {
+    name?: string
+    email?: string
+  }
+  _count: {
+    songs: number
+    artistLikes: number
+  }
 }
 
 const columns = [
-  { key: 'name' as keyof Artist, label: 'Nombre de Artísta' },
+  { key: 'id' as keyof Artist, label: 'ID' },
+  { key: 'name' as keyof Artist, label: 'Nombre' },
   { key: 'bio' as keyof Artist, label: 'Biografía' },
-  { key: 'createdAt' as keyof Artist, label: 'Fecha de Creación' },
-  // Add more columns as desired
+  { 
+    key: 'createdAt' as keyof Artist, 
+    label: 'Fecha de Creación',
+    render: (artist: Artist) => new Date(artist.createdAt).toLocaleDateString()
+  },
+  { 
+    key: 'user' as keyof Artist, 
+    label: 'Usuario',
+    render: (artist: Artist) => artist.user?.name || artist.user?.email || 'N/A'
+  },
+  {
+    key: 'songCount' as keyof Artist,
+    label: 'Canciones',
+    render: (artist: Artist) => artist._count.songs
+  },
+]
+
+const artistFields: FieldDefinition<Artist>[] = [
+  { 
+    key: 'name' as keyof Artist, 
+    label: 'Nombre', 
+    placeholder: 'Nombre del artista', 
+    required: true 
+  },
+  { 
+    key: 'bio' as keyof Artist, 
+    label: 'Biografía', 
+    placeholder: 'Biografía del artista',
+    type: 'textarea'
+  },
+  { 
+    key: 'userId' as keyof Artist, 
+    label: 'Usuario', 
+    placeholder: 'Seleccione un usuario',
+    type: 'select',
+    required: true
+  }
 ]
 
 export default function ArtistsAdminPage() {
   const [data, setData] = React.useState<Artist[]>([])
-  const { toast } = useToast()
   const [isLoading, setIsLoading] = React.useState(true)
+  const [error, setError] = React.useState<string | null>(null)
+  const { toast } = useToast()
 
-  const fetchArtists = async () => {
-    try {
-      setIsLoading(true)
-      const response = await fetch('/api/admin/artists')
-      if (!response.ok) {
-        throw new Error('Error al obtener artistas')
-      }
-      const result = await response.json()
-      setData(result.listArtists)
-    } catch (error) {
-      toast({ 
-        title: 'Error al cargar artistas', 
-        variant: 'destructive' 
-      })
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  React.useEffect(() => {
-    fetch('/api/admin/artists')
-      .then(res => res.json())
-      .then((data: Artist[]) => setData(data))
-      .catch(() => toast({ title: 'Error fetching artists', variant: 'destructive' }))
-  }, [toast])
-
-  const handleCreate = async (newArtist: Artist) => {
+  const handleCreate = async (newArtist: Partial<Artist>) => {
     try {
       const res = await fetch('/api/admin/artists', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newArtist),
       })
-      if (res.ok) {
-        const createdArtist = await res.json()
-        setData(prev => [...prev, createdArtist])
-        toast({ title: 'Artist created successfully', style: { backgroundColor: 'green', color: 'white' } })
-      } else {
-        throw new Error('Failed to create artist')
+      
+      if (!res.ok) {
+        throw new Error('Error al crear artista')
       }
+
+      await fetchArtists()
+      toast({ 
+        title: 'Artista creado correctamente',
+        style: { backgroundColor: 'green', color: 'white' }
+      })
     } catch (error) {
-      toast({ title: 'Error creating artist', variant: 'destructive' })
+      toast({ 
+        title: 'Error al crear artista',
+        variant: 'destructive'
+      })
     }
   }
 
@@ -78,52 +102,105 @@ export default function ArtistsAdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedFields),
       })
-      if (res.ok) {
-        setData(prev => prev.map(artist => artist.id === id ? { ...artist, ...updatedFields } : artist))
-        toast({ title: 'Artist updated successfully', style: { backgroundColor: 'green', color: 'white' } })
-      } else {
-        throw new Error('Failed to update artist')
+
+      if (!res.ok) {
+        throw new Error('Error al actualizar artista')
       }
+
+      await fetchArtists()
+      toast({ 
+        title: 'Artista actualizado correctamente',
+        style: { backgroundColor: 'green', color: 'white' }
+      })
     } catch (error) {
-      toast({ title: 'Error updating artist', variant: 'destructive' })
+      toast({ 
+        title: 'Error al actualizar artista',
+        variant: 'destructive'
+      })
     }
   }
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/admin/artists/${id}`, { method: 'DELETE' })
-      if (res.ok) {
-        setData(prev => prev.filter(artist => artist.id !== id))
-        toast({ title: 'Artist deleted successfully', style: { backgroundColor: 'green', color: 'white' } })
-      } else {
-        throw new Error('Failed to delete artist')
+      const res = await fetch(`/api/admin/artists?id=${id}`, {
+        method: 'DELETE'
+      })
+
+      if (!res.ok) {
+        throw new Error('Error al eliminar artista')
       }
+
+      await fetchArtists()
+      toast({ 
+        title: 'Artista eliminado correctamente',
+        style: { backgroundColor: 'green', color: 'white' }
+      })
     } catch (error) {
-      toast({ title: 'Error deleting artist', variant: 'destructive' })
+      toast({ 
+        title: 'Error al eliminar artista',
+        variant: 'destructive'
+      })
     }
   }
 
-  const artistFields: FieldDefinition<Artist>[] = [
-    { key: 'name', label: 'Name', placeholder: 'Enter name', required: true, maxLength: 50, pattern: '^[A-Za-zÀ-ÿ\\s]{1,50}$' },
-    { key: 'bio', label: 'Bio', placeholder: 'Enter bio', required: false, maxLength: 500 },
-    { key: 'userId', label: 'User ID', placeholder: 'Enter user ID', required: true },
-  ]
+  const fetchArtists = async () => {
+    try {
+      setIsLoading(true)
+      setError(null)
+      const response = await fetch('/api/admin/artists')
+      
+      if (!response.ok) {
+        throw new Error('Error al obtener artistas')
+      }
+
+      const result = await response.json()
+      if (result.success) {
+        setData(result.data.listArtists)
+      } else {
+        throw new Error(result.error)
+      }
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Error desconocido')
+      toast({ 
+        title: 'Error al cargar artistas',
+        variant: 'destructive'
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  React.useEffect(() => {
+    fetchArtists()
+  }, [])
 
   const { renderForm } = useRenderForm<Artist>(artistFields, handleCreate)
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold mb-4">Artists</h1>
-      {isLoading ? (
-        <div>Cargando artistas...</div>
-      ) : (
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Artistas</h1>
+      
+      {isLoading && (
+        <div className="flex items-center justify-center p-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+          <span className="ml-2">Cargando artistas...</span>
+        </div>
+      )}
+
+      {error && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <p>{error}</p>
+        </div>
+      )}
+
+      {!isLoading && !error && (
         <DataTable
           data={data}
           columns={columns}
           onCreate={handleCreate}
           onUpdate={handleUpdate}
           onDelete={handleDelete}
-        renderForm={renderForm}
+          renderForm={renderForm}
           itemsPerPage={10}
         />
       )}

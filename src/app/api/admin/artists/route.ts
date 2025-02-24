@@ -9,12 +9,57 @@ export async function GET(request: NextRequest) {
     if (session?.user?.role !== 'ADMIN') {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
+
     const totalArtists = await prisma.artist.count();
-    const listArtists = await prisma.artist.findMany();
-    return NextResponse.json({ totalArtists, listArtists });
+    const artists = await prisma.artist.findMany({
+      select: {
+        id: true,
+        name: true,
+        bio: true,
+        createdAt: true,
+        user: {
+          select: {
+            name: true,
+            email: true,
+          }
+        },
+        songs: {
+          select: {
+            id: true,
+            title: true,
+          }
+        },
+        _count: {
+          select: {
+            songs: true,
+            artistLikes: false,
+          }
+        }
+      }
+    });
+
+    // Convertir BigInt a String en el resultado
+    const listArtists = artists.map(artist => ({
+      ...artist,
+      id: String(artist.id), // Convertir BigInt a String
+      createdAt: artist.createdAt.toISOString(), // Formatear fecha
+    }));
+
+    return NextResponse.json({ 
+      success: true,
+      data: {
+        totalArtists, 
+        listArtists
+      }
+    });
+
   } catch (error) {
-    console.error('Error al obtener total de artistas:', error);
-    return NextResponse.json({ error: 'Error al obtener total de artistas' }, { status: 500 });
+    console.error('Error al obtener artistas:', error);
+    return NextResponse.json({ 
+      success: false,
+      error: 'Error al obtener total de artistas',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
 
