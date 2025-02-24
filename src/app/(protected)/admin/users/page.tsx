@@ -41,7 +41,7 @@ export default function UsersAdminPage() {
         throw new Error('Error al obtener usuarios')
       }
       const result = await response.json()
-      setData(result.listUsers)
+      setData(result.data.listUsers)
     } catch (error) {
       toast({ 
         title: 'Error al cargar usuarios', 
