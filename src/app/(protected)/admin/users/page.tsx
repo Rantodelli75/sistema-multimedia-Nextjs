@@ -63,7 +63,7 @@ export default function UsersAdminPage() {
     { key: 'name', label: 'Name', placeholder: 'Enter name', required: true, maxLength: 50, pattern: '^[A-Za-zÀ-ÿ\\s]{1,50}$' },
     { key: 'email', label: 'Email', type: 'email', placeholder: 'Enter email', required: true, maxLength: 255 },
     { key: 'password', label: 'Password', type: 'password', placeholder: 'Enter password', required: true, maxLength: 255 },
-    { key: 'role', label: 'Role', type: 'select', options: ['ADMIN', 'USER', 'ARTIST'], required: true },
+    { key: 'role', label: 'Role', type: 'select', options: ['ADMIN', 'USER'], required: true },
   ]
 
   const editUserFields: FieldDefinition<User>[] = columns.map(column => ({
