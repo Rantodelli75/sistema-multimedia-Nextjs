@@ -115,15 +115,25 @@ export default function UsersAdminPage() {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/admin/users/${id}`, { method: 'DELETE' })
+      const res = await fetch(`/api/admin/users?id=${id}`, { 
+        method: 'DELETE'
+      })
+      
       if (res.ok) {
-        setData(prev => prev.filter(user => user.id !== id))
-        toast({ title: 'User deleted successfully', style: { backgroundColor: 'green', color: 'white' } })
+        await fetchUsers() // Recargar la lista después de eliminar
+        toast({ 
+          title: 'Usuario eliminado correctamente', 
+          style: { backgroundColor: 'green', color: 'white' } 
+        })
       } else {
-        throw new Error('Failed to delete user')
+        const error = await res.json()
+        throw new Error(error.error || 'Error al eliminar usuario')
       }
     } catch (error) {
-      toast({ title: 'Error deleting user', variant: 'destructive' })
+      toast({ 
+        title: error instanceof Error ? error.message : 'Error al eliminar usuario', 
+        variant: 'destructive' 
+      })
     }
   }
 
