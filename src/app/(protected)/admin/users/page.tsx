@@ -1,5 +1,4 @@
 "use client"
-
 import React from 'react'
 import { DataTable } from '@/components/common/DataTable'
 import { useToast } from '@/hooks/use-toast'
@@ -16,7 +15,6 @@ interface User {
   createdAt: Date
   // Add other fields as necessary
 }
-
 const columns = [
   { key: 'name' as keyof User, label: 'Name' },
   { key: 'email' as keyof User, label: 'Email' },
