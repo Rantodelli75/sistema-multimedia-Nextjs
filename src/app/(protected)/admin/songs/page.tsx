@@ -45,7 +45,10 @@ export default function SongsAdminPage() {
   React.useEffect(() => {
     fetch('/api/admin/artists')
       .then(res => res.json())
-      .then((data) => setArtists(data.listArtists))
+      .then((data) => {
+        setArtists(data.data.listArtists);
+        console.log(data.data.listArtists)
+      })
       .catch(() => toast({ title: 'Error fetching artists', variant: 'destructive' }))
   }, [toast])
 
@@ -119,7 +122,7 @@ export default function SongsAdminPage() {
       label: 'Artist', 
       type: 'select',
       required: true,
-      options: (artists || []).map(artist => ({
+      options: artists.map(artist => ({
         value: artist.id,
         label: artist.name || 'Unnamed Artist'
       }))
