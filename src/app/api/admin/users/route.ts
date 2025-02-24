@@ -13,6 +13,10 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ totalUsers, listUsers });
   } catch (error) {
     console.error('Error al obtener total de usuarios:', error);
-    return NextResponse.json({ error: 'Error al obtener total de usuarios' }, { status: 500 });
+    return NextResponse.json({ 
+      success: false,
+      error: 'Error al obtener total de usuarios',
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }

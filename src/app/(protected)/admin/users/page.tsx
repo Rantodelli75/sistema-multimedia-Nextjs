@@ -26,7 +26,33 @@ const columns = [
 
 export default function UsersAdminPage() {
   const [data, setData] = React.useState<User[]>([])
+  const [isLoading, setIsLoading] = React.useState(true)
   const { toast } = useToast()
+
+  // Agregar función para obtener usuarios
+  const fetchUsers = async () => {
+    try {
+      setIsLoading(true)
+      const response = await fetch('/api/admin/users')
+      if (!response.ok) {
+        throw new Error('Error al obtener usuarios')
+      }
+      const result = await response.json()
+      setData(result.data.listUsers)
+    } catch (error) {
+      toast({ 
+        title: 'Error al cargar usuarios', 
+        variant: 'destructive' 
+      })
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Agregar useEffect para cargar datos al montar el componente
+  React.useEffect(() => {
+    fetchUsers()
+  }, [])
 
   // Definición de campos para el formulario
   const userFields: FieldDefinition<User>[] = [
@@ -92,15 +118,19 @@ export default function UsersAdminPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold mb-4">Users</h1>
-      <DataTable
-        data={data}
-        columns={columns}
-        onCreate={handleCreate}
-        onUpdate={handleUpdate}
-        onDelete={handleDelete}
-        renderForm={renderForm}
-        itemsPerPage={10}
-      />
+      {isLoading ? (
+        <div>Cargando usuarios...</div>
+      ) : (
+        <DataTable
+          data={data}
+          columns={columns}
+          onCreate={handleCreate}
+          onUpdate={handleUpdate}
+          onDelete={handleDelete}
+          renderForm={renderForm}
+          itemsPerPage={10}
+        />
+      )}
     </div>
   )
 }
