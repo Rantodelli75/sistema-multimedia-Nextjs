@@ -23,6 +23,8 @@ export interface FieldDefinition<T> {
   multiline?: boolean
   options?: string[] | SelectOption[]
   accept?: string
+  readOnly?: boolean
+  render?: (value: any) => string
 }
 
 /**
@@ -76,7 +78,13 @@ export function useRenderForm<T>(
               {field.required && <span className="text-red-500 ml-1">*</span>}
             </Label>
             
-            {field.type === 'select' && field.options ? (
+            {field.readOnly ? (
+              <div className="px-3 py-2 border rounded-md bg-gray-100 text-gray-600">
+                {field.render ? 
+                  field.render(formData[field.key]) : 
+                  String(formData[field.key] || 'N/A')}
+              </div>
+            ) : field.type === 'select' && field.options ? (
               <select
                 id={String(field.key)}
                 value={(formData[field.key] as unknown as string) || ''}

@@ -21,8 +21,8 @@ const columns = [
   { key: 'id' as keyof User, label: 'ID' },
   { key: 'name' as keyof User, label: 'Name' },
   { key: 'email' as keyof User, label: 'Email' },
-  { key: 'createdAt' as keyof User, label: 'Created At' },
-  { key: 'emailVerified' as keyof User, label: 'Email Verified' },
+  { key: 'createdAt' as keyof User, label: 'Created At', render: (item: User) => new Date(item.createdAt).toLocaleDateString() },
+  { key: 'emailVerified' as keyof User, label: 'Email Verified', render: (item: User) => item.emailVerified ? new Date(item.emailVerified).toLocaleDateString() : 'N/A' },
   { key: 'role' as keyof User, label: 'Role' },
   // Add more columns as desired
 ]
@@ -71,10 +71,15 @@ export default function UsersAdminPage() {
     label: column.label,
     type: column.key === 'role' ? 'select' : 
           column.key === 'email' ? 'email' : 
-          column.key === 'emailVerified' || column.key === 'createdAt' ? 'datetime-local' : 
           'text',
     options: column.key === 'role' ? ['ADMIN', 'USER', 'ARTIST'] : undefined,
     required: ['name', 'email', 'role'].includes(String(column.key)),
+    readOnly: ['createdAt', 'emailVerified', "id"].includes(String(column.key)),
+    render: column.key === 'createdAt' ? 
+      (value: any) => value ? new Date(value).toLocaleDateString() : 'N/A' :
+      column.key === 'emailVerified' ?
+      (value: any) => value ? new Date(value).toLocaleDateString() : 'N/A' :
+      undefined
   }))
 
   const handleCreate = async (newUser: User) => {
