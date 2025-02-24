@@ -38,11 +38,15 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    // Convertir BigInt a String en el resultado
+    // Convertir BigInt a String en el resultado, incluyendo los IDs de las canciones
     const listArtists = artists.map(artist => ({
       ...artist,
-      id: String(artist.id), // Convertir BigInt a String
-      createdAt: artist.createdAt.toISOString(), // Formatear fecha
+      id: String(artist.id),
+      songs: artist.songs.map(song => ({
+        ...song,
+        id: String(song.id)
+      })),
+      createdAt: artist.createdAt.toISOString(),
     }));
 
     return NextResponse.json({ 
