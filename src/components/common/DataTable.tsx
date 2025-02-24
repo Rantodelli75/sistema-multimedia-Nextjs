@@ -138,20 +138,20 @@ export function DataTable<T extends { id: string }>({
 
       <Pagination className="mt-4">
         <PaginationContent>
-          <PaginationItem>
+          <PaginationItem key="prev">
             <PaginationPrevious
               onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
               className={currentPage === 1 ? "pointer-events-none opacity-50" : ""}
             />
           </PaginationItem>
           {[...Array(totalPages)].map((_, i) => (
-            <PaginationItem key={i}>
+            <PaginationItem key={`page-${i + 1}`}>
               <PaginationLink onClick={() => setCurrentPage(i + 1)} isActive={currentPage === i + 1}>
                 {i + 1}
               </PaginationLink>
             </PaginationItem>
           ))}
-          <PaginationItem>
+          <PaginationItem key="next">
             <PaginationNext
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
               className={currentPage === totalPages ? "pointer-events-none opacity-50" : ""}

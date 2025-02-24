@@ -95,7 +95,7 @@ export default function UsersAdminPage() {
         body: JSON.stringify(updatedFields),
       })
       if (res.ok) {
-        setData(prev => prev.map(user => user.id === id ? { ...user, ...updatedFields } : user))
+        fetchUsers()
         toast({ title: 'User updated successfully', style: { backgroundColor: 'green', color: 'white' } })
       } else {
         throw new Error('Failed to update user')
