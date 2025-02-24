@@ -2,12 +2,12 @@
 
 import { useRouter, useSearchParams } from 'next/navigation'
 import { startTransition, useState, useTransition, useEffect } from 'react'
-import LoginPageComponent from '@/components/auth/login_page'
+import LoginPageComponent from '@/components/features/auth/login_page'
 import { loginSchema, registerSchema } from '@/lib/zod'
 import { z } from 'zod'
 import { authenticate, handleRegister } from 'actions/auth-action'
 import { useSession } from 'next-auth/react'
-import LoadingSpinner from '@/components/auth/loading-spinner'
+import LoadingSpinner from '@/components/features/auth/loading-spinner'
 
 export default function LoginPage() {
   const searchParams = useSearchParams()

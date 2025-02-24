@@ -1,9 +1,9 @@
-import Logout from "@/components/logout"
+import Logout from "@/components/common/logout"
 import { auth } from "../../../../auth"
-import UserDashboard from "@/components/test/userDashboard"
-import LoadingSpinner from "@/components/auth/loading-spinner"
-
-
+import UserDashboardLayout from "@/components/features/dashboard/userDashboard"
+import LoadingSpinner from "@/components/features/auth/loading-spinner"
+import MusicContent from "@/components/features/dashboard/MusicContent"
+import { redirect } from "next/navigation"
 
 export default async function DasboardPage() {
     const session = await auth()
@@ -12,9 +12,15 @@ export default async function DasboardPage() {
   if (session === null) {
     return <LoadingSpinner shouldReturn={true} />
   }
+  if (session && session.user.role === "ADMIN") {
+    redirect("/admin/users")
+  }
+   
   return (
     <>
-      <UserDashboard session={session}/>
+      <UserDashboardLayout session={session}>
+        <MusicContent />
+      </UserDashboardLayout>
     </>
   )
 }

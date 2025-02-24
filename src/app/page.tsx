@@ -1,7 +1,6 @@
 "use client";
 
-import LandingPage from "@/components/landing-page";
-import UserDashboard from "@/components/test/userDashboard";
+import LandingPage from "@/components/features/landing/landing-page";
 
 export default function Home() {
   return (

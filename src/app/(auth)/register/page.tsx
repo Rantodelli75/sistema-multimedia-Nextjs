@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { handleRegister } from "actions/auth-action"
 import { z } from "zod"
 import { registerSchema } from "@/lib/zod"
-import LoginPageComponent from '@/components/auth/login_page'
+import LoginPageComponent from '@/components/features/auth/login_page'
 import RegisterForm from '@/components/auth/RegisterForm'
 import VideoBackground from '@/components/auth/VideoBackground'
 import CircularWaveAnimation from '@/components/auth/CircularWaveAnimation'
