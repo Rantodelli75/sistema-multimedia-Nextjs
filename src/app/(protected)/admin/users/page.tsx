@@ -36,7 +36,7 @@ export default function UsersAdminPage() {
         throw new Error('Error al obtener usuarios')
       }
       const result = await response.json()
-      setData(result.data.listUsers)
+      setData(result.listUsers)
     } catch (error) {
       toast({ 
         title: 'Error al cargar usuarios', 
@@ -50,6 +50,7 @@ export default function UsersAdminPage() {
   // Agregar useEffect para cargar datos al montar el componente
   React.useEffect(() => {
     fetchUsers()
+
   }, [])
 
   // Definición de campos para el formulario

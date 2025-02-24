@@ -7,7 +7,7 @@ interface AdminLayoutProps {
 
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-background bg-[url('/assets/images/bga.jpg')] bg-center">
       <aside className="w-64 h-full">
         <AdminSidebar />
       </aside>

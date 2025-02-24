@@ -17,9 +17,8 @@ export default async function ProtectedAdminLayout({
 
   return (
     <AdminLayout>
-      <div className="flex-1">
+      <div className="flex-1 ">
         <div className="flex justify-end mb-4">
-          <Logout />
         </div>
         {children}
       </div>

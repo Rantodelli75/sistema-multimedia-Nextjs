@@ -46,7 +46,7 @@ export function AdminSidebar() {
   const pathname = usePathname()
 
   return (
-    <div className="flex flex-col h-full bg-white border-r border-gray-200">
+    <div className="flex flex-col h-full bg-[url('/assets/images/bgb.jpg')] bg-repeat bg-[length:100px_100px] bg-opacity-5 border-r border-gray-200">
       <div className="p-6 border-b border-gray-200">
         <h2 className="font-coolvetica text-2xl bg-gradient-to-r from-nightgroove-primary to-nightgroove-secondary bg-clip-text text-transparent">
           NightGroove
@@ -65,12 +65,12 @@ export function AdminSidebar() {
                 "hover:bg-nightgroove-primary hover:bg-opacity-10",
                 isActive
                   ? "bg-nightgroove-primary bg-opacity-10 text-nightgroove-primary font-medium"
-                  : "text-gray-600 hover:text-nightgroove-primary"
+                  : "text-white hover:text-nightgroove-primary"
               )}
             >
               <item.icon className={cn(
                 "w-5 h-5",
-                isActive ? "text-nightgroove-primary" : "text-gray-400"
+                isActive ? "text-nightgroove-primary" : "text-white"
               )} />
               <span>{item.title}</span>
             </Link>
@@ -82,7 +82,7 @@ export function AdminSidebar() {
         <Button
           variant="ghost"
           className={cn(
-            "w-full justify-start text-gray-600",
+            "w-full justify-start text-white",
             "hover:bg-red-50 hover:text-red-600",
             "transition-colors duration-200"
           )}

@@ -74,7 +74,7 @@ export function DataTable<T extends { id: string }>({
           <DialogTrigger asChild>
             <Button className="bg-blue-500 hover:bg-blue-600">Add Item</Button>
           </DialogTrigger>
-          <DialogContent className="bg-gray-800 text-white">
+          <DialogContent className="bg-[url('/assets/images/bgb.jpg')] bg-repeat bg-[length:100px_100px] bg-opacity-5 text-white">
             <DialogHeader>
               <DialogTitle>Add New Item</DialogTitle>
             </DialogHeader>
@@ -86,26 +86,26 @@ export function DataTable<T extends { id: string }>({
           placeholder="Search items..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-sm bg-gray-700 text-white"
+          className="max-w-sm bg-white-200 border-b border-black text-white"
         />
       </div>
 
       <Table>
         <TableHeader>
-          <TableRow className="border-b border-gray-700">
+          <TableRow className="border-b border-black">
             {columns.map((column) => (
-              <TableHead key={String(column.key)} className="text-gray-300">
+              <TableHead key={String(column.key)} className="text-black-300">
                 {column.label}
               </TableHead>
             ))}
-            <TableHead className="text-gray-300">Actions</TableHead>
+            <TableHead className="text-black-300">Actions</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {paginatedItems.map((item) => (
-            <TableRow key={item.id} className="border-b border-gray-700">
+            <TableRow key={item.id} className="border-b border-black">
               {columns.map((column) => (
-                <TableCell key={String(column.key)} className="text-gray-300">
+                <TableCell key={String(column.key)} className="text-black-300">
                   {String(item[column.key])}
                 </TableCell>
               ))}
@@ -120,7 +120,7 @@ export function DataTable<T extends { id: string }>({
                       Edit
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="bg-gray-800 text-white">
+                  <DialogContent className="bg-black-800 text-white">
                     <DialogHeader>
                       <DialogTitle>Edit Item</DialogTitle>
                     </DialogHeader>
