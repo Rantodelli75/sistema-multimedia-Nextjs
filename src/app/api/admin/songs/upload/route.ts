@@ -9,34 +9,53 @@ export async function POST(request: NextRequest) {
     const formData = await request.formData();
     const audioFile = formData.get('audio');
 
-    // Verificar que audioFile sea un objeto File
     if (!(audioFile instanceof File)) {
-      return NextResponse.json({ error: 'No se proporcionó un archivo de audio válido' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'No se proporcionó un archivo de audio válido' }, 
+        { status: 400 }
+      );
     }
 
-    // Generar un nombre único para el archivo
+    // Validar el tipo de archivo
+    if (!audioFile.type.startsWith('audio/')) {
+      return NextResponse.json(
+        { error: 'El archivo debe ser un archivo de audio' }, 
+        { status: 400 }
+      );
+    }
+
+    // Crear la carpeta si no existe
+    const uploadDir = path.join(process.cwd(), 'public/uploads');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+
+    // Generar nombre único
     const fileName = `${uuidv4()}-${audioFile.name}`;
-    const filePath = path.join(process.cwd(), 'public/uploads', fileName); // Asegúrate de que esta carpeta exista
-    console.log(filePath);
-    // Guardar el archivo en el sistema de archivos
+    const filePath = path.join(uploadDir, fileName);
+
+    // Guardar el archivo
     const buffer = Buffer.from(await audioFile.arrayBuffer());
     await fs.promises.writeFile(filePath, buffer);
 
-    // Guardar la información del archivo en la base de datos
+    // Crear entrada en la base de datos
     const newSong = await prisma.song.create({
       data: {
-        title: audioFile.name,
-        filePath: filePath, 
-        artistId: parseInt(formData.get('artistId') as string), 
-        genre: formData.get('genre') as string, 
-        duration: audioFile.size, 
-        releaseDate: new Date(Date.now()), 
+        title: formData.get('title') as string,
+        filePath: `/uploads/${fileName}`,
+        artistId: parseInt(formData.get('artistId') as string),
+        genre: formData.get('genre') as string,
+        releaseDate: new Date(formData.get('releaseDate') as string),
+        duration: 0, // Aquí podrías agregar lógica para obtener la duración real del archivo
       },
     });
 
     return NextResponse.json(newSong);
   } catch (error) {
     console.error('Error al subir el archivo de audio:', error);
-    return NextResponse.json({ error: 'Error al subir el archivo de audio' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Error al subir el archivo de audio' }, 
+      { status: 500 }
+    );
   }
 }

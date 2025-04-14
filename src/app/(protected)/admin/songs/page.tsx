@@ -1,24 +1,27 @@
-"use client"
+"use client";
 
-import React from 'react'
-import { DataTable } from '@/components/common/DataTable'
-import { useToast } from '@/hooks/use-toast'
-import { useRenderForm, FieldDefinition } from '@/hooks/useRenderForm'
+import React from 'react';
+import { DataTable } from '@/components/common/DataTable';
+import { useToast } from '@/hooks/use-toast';
+import { useRenderForm, FieldDefinition } from '@/hooks/useRenderForm';
+import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
+import fs from 'fs';
 
 interface Song {
-  id: string
-  artistId: string
-  title: string
-  genre?: string
-  releaseDate?: Date
-  duration?: number
-  filePath: string
-  createdAt: Date
+  id: string;
+  artistId: string;
+  title: string;
+  genre?: string;
+  releaseDate?: Date;
+  duration?: number;
+  filePath: string;
+  createdAt: Date;
 }
 
 interface Artist {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
 const columns = [
@@ -27,49 +30,41 @@ const columns = [
   { key: 'releaseDate' as keyof Song, label: 'Release Date' },
   { key: 'duration' as keyof Song, label: 'Duration' },
   { key: 'createdAt' as keyof Song, label: 'Created At' },
-]
+];
 
 export default function SongsAdminPage() {
-  const [data, setData] = React.useState<Song[]>([])
-  const { toast } = useToast()
-  const [audioFile, setAudioFile] = React.useState<File | null>(null)
-  const [artists, setArtists] = React.useState<Artist[]>([])
+  const [data, setData] = React.useState<Song[]>([]);
+  const { toast } = useToast();
+  const [artists, setArtists] = React.useState<Artist[]>([]);
 
-  React.useEffect(() => {
-    fetch('/api/admin/songs')
-      .then((res) => res.json())
-      .then((data: Song[]) => setData(data))
-      .catch(() => toast({ title: 'Error fetching songs', variant: 'destructive' }))
-  }, [toast])
+  // ... (tus useEffect para cargar datos permanecen igual)
 
-  React.useEffect(() => {
-    fetch('/api/admin/artists')
-      .then(res => res.json())
-      .then((data) => {
-        setArtists(data.data.listArtists);
-        console.log(data.data.listArtists)
-      })
-      .catch(() => toast({ title: 'Error fetching artists', variant: 'destructive' }))
-  }, [toast])
-
-  const handleCreate = async (newSong: Song) => {
+  const handleCreate = async (newSongData: any) => {
     try {
+      const formData = new FormData();
+      formData.append('audio', newSongData.filePath); // Asegúrate de que el campo de archivo se llame 'audio'
+      formData.append('title', newSongData.title);
+      formData.append('genre', newSongData.genre);
+      formData.append('artistId', newSongData.artistId);
+      formData.append('releaseDate', newSongData.releaseDate);
+  
       const res = await fetch('/api/admin/songs', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newSong),
-      })
+        body: formData,
+      });
+  
       if (res.ok) {
-        const createdSong = await res.json()
-        setData((prev) => [...prev, createdSong])
-        toast({ title: 'Song created successfully', style: { backgroundColor: 'green', color: 'white' } })
+        const createdSong = await res.json();
+        setData((prev) => [...prev, createdSong]);
+        toast({ title: 'Song created successfully', style: { backgroundColor: 'green', color: 'white' } });
       } else {
-        throw new Error('Failed to create song')
+        throw new Error('Failed to create song in database');
       }
     } catch (error) {
-      toast({ title: 'Error creating song', variant: 'destructive' })
+      console.error(error);
+      toast({ title: 'Error creating song', variant: 'destructive' });
     }
-  }
+  };
 
   const handleUpdate = async (id: string, updatedFields: Partial<Song>) => {
     try {
@@ -90,7 +85,7 @@ export default function SongsAdminPage() {
       toast({ title: 'Error updating song', variant: 'destructive' })
     }
   }
-
+  
   const handleDelete = async (id: string) => {
     try {
       const res = await fetch(`/api/admin/songs/${id}`, { method: 'DELETE' })
@@ -137,11 +132,11 @@ export default function SongsAdminPage() {
       label: 'Audio File', 
       type: 'file',
       required: true,
-      accept: 'audio/*' 
+      accept: 'audio/mpeg, audio/mp3' 
     }
-  ]
+  ];
 
-  const { renderForm } = useRenderForm<Song>(songFields, handleCreate)
+  const { renderForm } = useRenderForm<Song>(songFields, handleCreate);
 
   return (
     <div className="container mx-auto p-4">
@@ -156,5 +151,7 @@ export default function SongsAdminPage() {
         itemsPerPage={10}
       />
     </div>
-  )
+  );
 }
+
+
