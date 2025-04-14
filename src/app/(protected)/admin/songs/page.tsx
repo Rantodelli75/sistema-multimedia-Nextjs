@@ -37,32 +37,64 @@ export default function SongsAdminPage() {
   const { toast } = useToast();
   const [artists, setArtists] = React.useState<Artist[]>([]);
 
-  // ... (tus useEffect para cargar datos permanecen igual)
+  React.useEffect(() => {
+    fetch('/api/admin/artists')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.data.listArtists) {
+          setArtists(data.data.listArtists);
+        }
+      })
+      .catch(() => toast({ 
+        title: 'Error al cargar los artistas', 
+        variant: 'destructive' 
+      }));
+  }, [toast]);
 
   const handleCreate = async (newSongData: any) => {
     try {
       const formData = new FormData();
-      formData.append('audio', newSongData.filePath); // Asegúrate de que el campo de archivo se llame 'audio'
-      formData.append('title', newSongData.title);
-      formData.append('genre', newSongData.genre);
-      formData.append('artistId', newSongData.artistId);
-      formData.append('releaseDate', newSongData.releaseDate);
   
-      const res = await fetch('/api/admin/songs', {
+      // Asegúrate de que artistId y otros campos no sean BigInt
+      const artistId = typeof newSongData.artistId === 'bigint' ? newSongData.artistId.toString() : newSongData.artistId;
+  
+      formData.append('audio', newSongData.filePath);
+      formData.append('title', newSongData.title || '');
+      formData.append('genre', newSongData.genre || '');
+      formData.append('artistId', artistId || '');
+      formData.append('releaseDate', newSongData.releaseDate ? new Date(newSongData.releaseDate).toISOString() : new Date().toISOString());
+  
+      const res = await fetch('/api/admin/songs/upload', {
         method: 'POST',
         body: formData,
+        headers: {
+          'Accept': 'application/json',
+        }
       });
   
-      if (res.ok) {
-        const createdSong = await res.json();
-        setData((prev) => [...prev, createdSong]);
-        toast({ title: 'Song created successfully', style: { backgroundColor: 'green', color: 'white' } });
-      } else {
-        throw new Error('Failed to create song in database');
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Error desconocido' }));
+        throw new Error(errorData.error || 'Error al subir la canción');
       }
+  
+      const result = await res.json();
+  
+      if (result.success) {
+        setData(prev => [...prev, result.data]);
+        toast({
+          title: 'Canción subida exitosamente',
+          style: { backgroundColor: 'green', color: 'white' }
+        });
+      } else {
+        throw new Error(result.error || 'Error al procesar la respuesta del servidor');
+      }
+  
     } catch (error) {
-      console.error(error);
-      toast({ title: 'Error creating song', variant: 'destructive' });
+      console.error('Error en handleCreate:', error);
+      toast({
+        title: error instanceof Error ? error.message : 'Error al crear la canción',
+        variant: 'destructive'
+      });
     }
   };
 

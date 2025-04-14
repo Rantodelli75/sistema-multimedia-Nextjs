@@ -75,47 +75,56 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { email, name, password, role = 'ARTIST' } = body
+    const { name, bio, userId } = body
 
     // Validar datos requeridos
-    if (!email || !password) {
+    if (!name || !userId) {
       return NextResponse.json({ 
         success: false, 
-        error: 'Email y password son requeridos' 
+        error: 'Nombre y userId son requeridos' 
       }, { status: 400 })
     }
 
-    // Verificar si el usuario ya existe
+    // Verificar si el usuario existe
     const existingUser = await prisma.user.findUnique({
-      where: { email }
+      where: { id: userId }
     })
 
-    if (existingUser) {
+    if (!existingUser) {
       return NextResponse.json({ 
         success: false, 
-        error: 'El artista ya existe' 
-      }, { status: 400 })
+        error: 'Usuario no encontrado' 
+      }, { status: 404 })
     }
 
-    // Hashear el password
-    const hashedPassword = await hash(password, 10)
-
-    // Crear el usuario
-    const newUser = await prisma.user.create({
+    // Crear el artista
+    const newArtist = await prisma.artist.create({
       data: {
-        email,
         name,
-        password: hashedPassword,
-        role,
+        bio,
+        userId
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+            email: true
+          }
+        }
       }
     })
 
-    // Omitir el password en la respuesta
-    const { password: _, ...userWithoutPassword } = newUser
+    // Convertir BigInt a String en la respuesta
+    const serializedArtist = {
+      ...newArtist,
+      id: String(newArtist.id),
+      userId: String(newArtist.userId),
+      createdAt: newArtist.createdAt.toISOString()
+    }
 
     return NextResponse.json({ 
       success: true, 
-      user: userWithoutPassword 
+      data: serializedArtist 
     })
 
   } catch (error) {
@@ -135,7 +144,7 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Obtener el ID del usuario de los parámetros de la URL
+    // Obtener el ID del artista de los parámetros de la URL
     const url = new URL(request.url)
     const id = url.searchParams.get('id')
 
@@ -146,28 +155,20 @@ export async function DELETE(request: NextRequest) {
       }, { status: 400 })
     }
 
-    // Verificar si el usuario existe
-    const existingUser = await prisma.user.findUnique({
+    // Primero verificar si el artista existe
+    const existingArtist = await prisma.artist.findUnique({
       where: { id }
     })
 
-    if (!existingUser) {
+    if (!existingArtist) {
       return NextResponse.json({ 
         success: false, 
         error: 'Artista no encontrado' 
       }, { status: 404 })
     }
 
-    // Evitar que un admin se elimine a sí mismo
-    if (id === session.user.id) {
-      return NextResponse.json({ 
-        success: false, 
-        error: 'No puedes eliminar tu propia cuenta' 
-      }, { status: 400 })
-    }
-
-    // Eliminar el usuario
-    await prisma.user.delete({
+    // Eliminar el artista
+    await prisma.artist.delete({
       where: { id }
     })
 

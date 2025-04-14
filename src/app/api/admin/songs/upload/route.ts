@@ -4,8 +4,17 @@ import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
 
+// Configuración para manejar archivos grandes
+export const config = {
+  api: {
+    bodyParser: false,
+    responseLimit: '11mb',
+  },
+}
+
 export async function POST(request: NextRequest) {
   try {
+    // Aumentar el tiempo de espera para archivos grandes
     const formData = await request.formData();
     const audioFile = formData.get('audio');
 
@@ -16,6 +25,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validar tamaño del archivo (10MB)
+    const maxSize = 10 * 1024 * 1024;
+    if (audioFile.size > maxSize) {
+      return NextResponse.json({ 
+        error: 'El archivo excede el tamaño máximo permitido de 10MB' 
+      }, { status: 400 });
+    }
+
     // Validar el tipo de archivo
     if (!audioFile.type.startsWith('audio/')) {
       return NextResponse.json(
@@ -24,8 +41,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Crear la carpeta si no existe
-    const uploadDir = path.join(process.cwd(), 'public/uploads');
+    // Crear la carpeta music si no existe
+    const uploadDir = path.join(process.cwd(), 'public/music');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
@@ -34,27 +51,51 @@ export async function POST(request: NextRequest) {
     const fileName = `${uuidv4()}-${audioFile.name}`;
     const filePath = path.join(uploadDir, fileName);
 
-    // Guardar el archivo
-    const buffer = Buffer.from(await audioFile.arrayBuffer());
-    await fs.promises.writeFile(filePath, buffer);
+    try {
+      // Guardar el archivo en chunks para manejar archivos grandes
+      const chunks = [];
+      const reader = audioFile.stream().getReader();
+      
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+      }
+      
+      const buffer = Buffer.concat(chunks);
+      await fs.promises.writeFile(filePath, buffer);
+    } catch (error) {
+      console.error('Error al guardar el archivo:', error);
+      return NextResponse.json(
+        { error: 'Error al guardar el archivo de audio' },
+        { status: 500 }
+      );
+    }
 
     // Crear entrada en la base de datos
     const newSong = await prisma.song.create({
       data: {
         title: formData.get('title') as string,
-        filePath: `/uploads/${fileName}`,
+        filePath: `/music/${fileName}`,
         artistId: parseInt(formData.get('artistId') as string),
-        genre: formData.get('genre') as string,
-        releaseDate: new Date(formData.get('releaseDate') as string),
-        duration: 0, // Aquí podrías agregar lógica para obtener la duración real del archivo
+        genre: formData.get('genre') as string || '',
+        releaseDate: new Date(formData.get('releaseDate') as string || new Date()),
+        duration: 0,
       },
     });
 
-    return NextResponse.json(newSong);
+    return NextResponse.json({
+      success: true,
+      data: newSong
+    });
   } catch (error) {
-    console.error('Error al subir el archivo de audio:', error);
+    console.error('Error al procesar la solicitud:', error);
     return NextResponse.json(
-      { error: 'Error al subir el archivo de audio' }, 
+      { 
+        success: false,
+        error: 'Error al procesar la solicitud',
+        details: error instanceof Error ? error.message : 'Error desconocido'
+      }, 
       { status: 500 }
     );
   }

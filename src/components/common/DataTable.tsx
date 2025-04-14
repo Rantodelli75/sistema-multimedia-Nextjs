@@ -94,7 +94,8 @@ export function DataTable<T extends { id: string }>({
             {renderForm?.(null, async (newItem) => {
               console.log('DataTable create newItem:', newItem);
               if (userList) {
-                const selectedUser = userList.find((user) => user.id === newItem.id)
+                //@ts-ignore
+                const selectedUser = userList.find((user) => user.id === newItem.userId)
                 if (selectedUser) {
                   await handleCreate({ ...newItem, user: selectedUser } as T)
                 }
