@@ -47,9 +47,13 @@ export function DataTable<T extends { id: string }>({
   const [currentPage, setCurrentPage] = useState(1)
 
   // Filtering is now done directly on the data prop
-  const filteredItems = data.filter((item) =>
-    columns.some((column) => String(item[column.key]).toLowerCase().includes(searchTerm.toLowerCase())),
-  )
+  const filteredItems = Array.isArray(data)
+    ? data.filter((item) =>
+        columns.some((column) =>
+          String(item[column.key]).toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      )
+    : [];
 
   useEffect(() => {
     setCurrentPage(1)
