@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     const newSong = await prisma.song.create({
       data: {
         title: audioFile.name,
-        filePath: filePath, 
+        filePath: `/uploads/${fileName}`, 
         artistId: parseInt(formData.get('artistId') as string), 
         genre: formData.get('genre') as string, 
         duration: audioFile.size, 
