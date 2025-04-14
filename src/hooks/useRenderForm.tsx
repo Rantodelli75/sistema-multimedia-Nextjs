@@ -43,6 +43,13 @@ export function useRenderForm<T>(
     item: T | null
     onSubmit: (data: T) => void
   }) {
+    const defaultFormData = fields.reduce((acc, field) => {
+      if (field.required && field.key) {
+        acc[field.key] = '';
+      }
+      return acc;
+    }, {} as T);
+
     const [formData, setFormData] = React.useState<T>(() => {
       if (item) {
         // Create a clean copy of the item, removing undefined values
@@ -53,10 +60,13 @@ export function useRenderForm<T>(
           return acc
         }, {} as T)
       }
-      return {} as T
+      return defaultFormData;
     })
 
+    console.log('Initial formData:', formData);
+
     const handleChange = (key: keyof T, value: string) => {
+      console.log(`Selected value for ${String(key)}:`, value)
       setFormData((prev) => ({
         ...prev,
         [key]: value,
@@ -96,30 +106,36 @@ export function useRenderForm<T>(
                   String(formData[field.key] || 'N/A')}
               </div>
             ) : field.type === 'select' && field.options ? (
-              <select
-                id={String(field.key)}
-                value={(formData[field.key] as unknown as string) || ''}
-                onChange={(e) => handleChange(field.key, e.target.value)}
-                required={field.required}
-                className={cn(
-                  "w-full rounded-md border border-input bg-background px-3 py-2",
-                  "focus:ring-2 focus:ring-nightgroove-primary focus:border-transparent",
-                  "text-sm text-black"
-                )}
-              >
-                <option value="">Select {field.label}</option>
-                {field.options.map((option) => (
-                  typeof option === 'string' ? (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ) : (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  )
-                ))}
-              </select>
+              <>
+                {console.log(`Rendering select for ${String(field.key)}:`, {
+                  value: formData[field.key],
+                  options: field.options
+                })}
+                <select
+                  id={String(field.key)}
+                  value={(formData[field.key] as unknown as string) || ''}
+                  onChange={(e) => handleChange(field.key, e.target.value)}
+                  required={field.required}
+                  className={cn(
+                    "w-full rounded-md border border-input bg-background px-3 py-2",
+                    "focus:ring-2 focus:ring-nightgroove-primary focus:border-transparent",
+                    "text-sm text-black"
+                  )}
+                >
+                  <option value="">Select {field.label}</option>
+                  {field.options.map((option) => (
+                    typeof option === 'string' ? (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ) : (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    )
+                  ))}
+                </select>
+              </>
             ) : field.type === 'file' ? (
               <Input
                 id={String(field.key)}

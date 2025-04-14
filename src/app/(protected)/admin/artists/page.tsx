@@ -60,17 +60,20 @@ const artistFields: FieldDefinition<Artist>[] = [
     label: 'Usuario', 
     placeholder: 'Seleccione un usuario',
     type: 'select',
+    options: [], // Se llenará dinámicamente
     required: true
   }
 ]
 
 export default function ArtistsAdminPage() {
   const [data, setData] = React.useState<Artist[]>([])
+  const [users, setUsers] = React.useState<{ id: string; name: string }[]>([])
   const [isLoading, setIsLoading] = React.useState(true)
   const [error, setError] = React.useState<string | null>(null)
   const { toast } = useToast()
 
   const handleCreate = async (newArtist: Partial<Artist>) => {
+    console.log("Creating artist:", newArtist)
     try {
       const res = await fetch('/api/admin/artists', {
         method: 'POST',
@@ -143,7 +146,7 @@ export default function ArtistsAdminPage() {
     }
   }
 
-  const fetchArtists = async () => {
+  const fetchArtists = React.useCallback(async () => {
     try {
       setIsLoading(true)
       setError(null)
@@ -168,47 +171,77 @@ export default function ArtistsAdminPage() {
     } finally {
       setIsLoading(false)
     }
-  }
+  }, [toast])
+
+  const fetchUsers = React.useCallback(async () => {
+    console.log('Fetching users...');
+    try {
+      const response = await fetch('/api/admin/users');
+
+      if (!response.ok) {
+        throw new Error('Error al obtener usuarios');
+      }
+
+      const result = await response.json();
+      console.log('API response for users:', result);
+      if (result.success) {
+        setUsers(result.data.listUsers);
+      } else {
+        throw new Error(result.error);
+      }
+    } catch {
+      toast({ 
+        title: 'Error al cargar usuarios',
+        variant: 'destructive',
+      });
+    }
+  }, [toast]);
 
   React.useEffect(() => {
     fetchArtists()
-  }, [])
+    fetchUsers()
+  }, [fetchArtists, fetchUsers])
+  console.log('Users:', users)
 
   const renderForm = (item: Artist | null, onSubmit: (data: Artist) => void) => {
-    const fields = [
+    console.log('Estado de usuarios antes de renderizar el formulario:', users);
+    const fields: FieldDefinition<Artist>[] = [
       { 
         key: 'name', 
         label: 'Nombre', 
         placeholder: 'Nombre del artista', 
-        required: true,
-        value: item?.name 
+        required: true
       },
       { 
         key: 'bio', 
         label: 'Biografía', 
         placeholder: 'Biografía del artista',
-        type: 'textarea',
-        value: item?.bio
+        type: 'textarea'
       },
       { 
-        key: 'createdAt', 
-        label: 'Fecha de Creación',
-        readOnly: true,
-        render: (value: any) => value ? new Date(value).toLocaleDateString() : 'N/A'
-      },
-      {
-        key: 'user',
-        label: 'Usuario',
-        readOnly: true,
-        render: (value: any) => value?.name || value?.email || 'N/A'
+        key: 'userId', 
+        label: 'Usuario', 
+        placeholder: 'Seleccione un usuario',
+        type: 'select',
+        options: users.map(user => ({ value: user.id, label: user.name })),
+        required: true
       }
-    ]
-    const { renderForm } = useRenderForm<Artist>(
-      item ? fields as FieldDefinition<Artist>[] : artistFields, 
-      item ? (data) => onSubmit(data) : handleCreate
-    )
-    
-    return renderForm(item, onSubmit)
+    ];
+
+    const { renderForm } = useRenderForm<Artist>(fields, (data) => {
+      console.log('Submitting new artist:', data);
+      onSubmit(data);
+    });
+    return renderForm(item, onSubmit);
+  };
+
+  if (users.length === 0) {
+    return (
+      <div className="flex items-center justify-center p-4">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+        <span className="ml-2">Cargando usuarios...</span>
+      </div>
+    );
   }
 
   return (
@@ -237,6 +270,7 @@ export default function ArtistsAdminPage() {
           onDelete={handleDelete}
           renderForm={renderForm}
           itemsPerPage={10}
+          userList={users}
         />
       )}
     </div>

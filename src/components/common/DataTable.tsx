@@ -26,6 +26,7 @@ interface DataTableProps<T> {
   onDelete?: (id: string) => Promise<void>
   renderForm?: (item: T | null, onSubmit: (item: T) => void) => React.ReactNode
   itemsPerPage?: number
+  userList?: { id: string; name: string }[] // Nueva propiedad para la lista de usuarios
 }
 
 export function DataTable<T extends { id: string }>({
@@ -36,47 +37,49 @@ export function DataTable<T extends { id: string }>({
   onDelete,
   renderForm,
   itemsPerPage = 10,
+  userList,
 }: DataTableProps<T>) {
-  const [items, setItems] = useState<T[]>(data)
-  const [filteredItems, setFilteredItems] = useState<T[]>(data)
+  // Remove local state for items and filteredItems
+  // const [items, setItems] = useState<T[]>(data)
+  // const [filteredItems, setFilteredItems] = useState<T[]>(data)
   const [editingItem, setEditingItem] = useState<T | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [currentPage, setCurrentPage] = useState(1)
 
+  // Filtering is now done directly on the data prop
+  const filteredItems = data.filter((item) =>
+    columns.some((column) => String(item[column.key]).toLowerCase().includes(searchTerm.toLowerCase())),
+  )
+
   useEffect(() => {
-    if (!items) return
-    
-    const filtered = items.filter((item) =>
-      columns.some((column) => String(item[column.key]).toLowerCase().includes(searchTerm.toLowerCase())),
-    )
-    setFilteredItems(filtered)
     setCurrentPage(1)
-  }, [searchTerm, items, columns])
+  }, [searchTerm, data, columns])
 
   const handleCreate = async (item: T) => {
     await onCreate?.(item)
-    setItems((prevItems) => [...prevItems, item])
+    // No local state update; parent will update data prop
   }
 
   const handleUpdate = async (id: string, item: Partial<T>) => {
     await onUpdate?.(id, item)
-    setItems((prevItems) =>
-      prevItems.map((prevItem) => (prevItem.id === id ? ({ ...prevItem, ...item } as T) : prevItem)),
-    )
+    // No local state update; parent will update data prop
   }
 
   const handleDelete = async (id: string) => {
     await onDelete?.(id)
-    setItems((prevItems) => prevItems.filter((item) => item.id !== id))
+    // No local state update; parent will update data prop
   }
 
-  const totalPages = Math.ceil((filteredItems ?? []).length / itemsPerPage)
-  const paginatedItems = (filteredItems ?? []).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  const totalPages = Math.ceil(filteredItems.length / itemsPerPage)
+  const paginatedItems = filteredItems.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+
+  // Dialog open state for Add Item
+  const [addDialogOpen, setAddDialogOpen] = useState(false);
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <Dialog>
+        <Dialog open={addDialogOpen} onOpenChange={setAddDialogOpen}>
           <DialogTrigger asChild>
             <Button className="bg-blue-500 hover:bg-blue-600">Add Item</Button>
           </DialogTrigger>
@@ -84,7 +87,18 @@ export function DataTable<T extends { id: string }>({
             <DialogHeader>
               <DialogTitle>Add New Item</DialogTitle>
             </DialogHeader>
-            {renderForm?.(null, handleCreate)}
+            {renderForm?.(null, async (newItem) => {
+              console.log('DataTable create newItem:', newItem);
+              if (userList) {
+                const selectedUser = userList.find((user) => user.id === newItem.id)
+                if (selectedUser) {
+                  await handleCreate({ ...newItem, user: selectedUser } as T)
+                }
+              } else {
+                await handleCreate(newItem)
+              }
+              setAddDialogOpen(false); // Close dialog after create
+            })}
           </DialogContent>
         </Dialog>
         <Input
