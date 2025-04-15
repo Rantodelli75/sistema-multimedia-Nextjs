@@ -4,12 +4,16 @@ import { auth } from 'auth';
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await auth()
+    const session = await auth();
+    console.log('Session:', session); // Log de la sesión
+
     if (session?.user?.role !== 'ADMIN') {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const totalSongs = await prisma.song.count();
+    console.log('Total Songs Count:', totalSongs); // Log del total de canciones
+
     const songs = await prisma.song.findMany({
       select: {
         id: true,
@@ -18,7 +22,8 @@ export async function GET(request: NextRequest) {
         releaseDate: true,
         createdAt: true,
       }
-    })
+    });
+    console.log('Songs from Database:', songs); // Log de las canciones obtenidas de la base de datos
 
     // Convertir BigInt a String en el resultado
     const listSongs = songs.map(song => ({
@@ -26,6 +31,7 @@ export async function GET(request: NextRequest) {
       id: String(song.id), // Convertir BigInt a String
       createdAt: song.createdAt.toISOString(), // Formatear fecha
     }));
+    console.log('Formatted Songs List:', listSongs); // Log de la lista de canciones formateadas
 
     return NextResponse.json({ 
       success: true,

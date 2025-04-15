@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 import path from 'path';
+import { auth } from 'auth';
 
 // Configuración para manejar archivos grandes
 export const config = {
@@ -84,9 +85,15 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Convertir campos que pueden ser BigInt a String
     return NextResponse.json({
       success: true,
-      data: newSong
+      data: {
+        ...newSong,
+        id: newSong.id.toString(), // Convertir id a string
+        artistId: newSong.artistId.toString(), // Convertir artistId a string
+        // Si hay otros campos que puedan ser BigInt, conviértelos también
+      }
     });
   } catch (error) {
     console.error('Error al procesar la solicitud:', error);
@@ -98,5 +105,66 @@ export async function POST(request: NextRequest) {
       }, 
       { status: 500 }
     );
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const session = await auth();
+    // console.log('Session:', session); // Puedes comentar/eliminar logs en producción
+
+    if (session?.user?.role !== 'ADMIN') {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const totalSongs = await prisma.song.count();
+    // console.log('Total Songs Count:', totalSongs);
+
+    const songs = await prisma.song.findMany({
+      select: { // <--- SELECCIONAR TODOS LOS CAMPOS NECESARIOS
+        id: true,
+        title: true,
+        genre: true,        // Añadido
+        releaseDate: true,
+        duration: true,
+        filePath: true,     // Añadido
+        createdAt: true,
+        artistId: true      // Añadido
+        // Si quisieras el nombre del artista directamente:
+        // artist: { select: { name: true } } // (requiere ajustar el map y la interfaz Song)
+      },
+      orderBy: {
+        createdAt: 'desc' // Opcional: mantener un orden consistente
+      }
+    });
+    // console.log('Songs from Database:', songs);
+
+    // Convertir BigInt a String y formatear fechas en el resultado
+    const listSongs = songs.map(song => ({
+      ...song,
+      id: String(song.id),                // Convertir id a string
+      artistId: String(song.artistId),    // Convertir artistId a string (IMPORTANTE)
+      createdAt: song.createdAt.toISOString(), // Formatear fecha createdAt
+      // Opcional: Formatear releaseDate si es necesario o prefieres ISO string
+      // releaseDate: song.releaseDate ? song.releaseDate.toISOString() : null,
+    }));
+    // console.log('Formatted Songs List:', listSongs);
+
+    // Devolver la estructura anidada
+    return NextResponse.json({
+      success: true,
+      data: {
+        totalSongs,
+        listSongs // El array de canciones está aquí
+      }
+    });
+
+  } catch (error) {
+    console.error('Error al obtener canciones:', error);
+    return NextResponse.json({
+      success: false,
+      error: 'Error al obtener canciones', // Mensaje más específico
+      details: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
 }
